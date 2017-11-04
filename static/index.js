@@ -1,4 +1,4 @@
-let initial_day = {{ date_ordinal }};
+let initial_day = $("#initial-day").attr("data-day");
 
 function refresh_table() {
     fetch("/_get_preferences/" + initial_day)
