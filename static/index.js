@@ -25,9 +25,9 @@ $("#add-employee-submit").on("click", function() {
         data: {name: $("#add-employee-name-input").val()},
         success: function(json_response) {
             console.log(json_response);
+            refresh_table();
         }
     });
-    refresh_table();
 });
 
 function set_dates(dates) {
