@@ -78,7 +78,6 @@ def get_preferences(date_ordinal=None):
     pref_table = {}
     employees = get_employees()
 
-    pref_table = {}
     for emp in employees:
         pref_entry = db.employees.find_one({"employee_id": emp["_id"], "week": date_ordinal})
         if pref_entry is None:
@@ -90,7 +89,7 @@ def get_preferences(date_ordinal=None):
         pref_table[str(emp["_id"])] = pref_entry
 
     dates = [datetime.date.fromordinal(o).strftime("%a %b %d")
-                for o in range(date_ordinal, date_ordinal + 7)]
+             for o in range(date_ordinal, date_ordinal + 7)]
 
     return_data = {
         "pref_table": pref_table,
