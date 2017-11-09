@@ -1,24 +1,39 @@
+// passes ordinal date of first Monday (Monday at beginning of schedule)
 let initial_day = $("#initial-day").attr("data-day");
 
+// updates table
 function refresh_table() {
     fetch("/_get_preferences/" + initial_day)
+
+        // converts response to json
         .then(response => response.json())
+
         .then((json_pref_table) => {
+            // prints table info???
             console.log(json_pref_table);
+            // sets dates according to set_dates function
             set_dates(json_pref_table.dates);
+            // renders table according to render_pref_table function
             render_pref_table(json_pref_table.pref_table, json_pref_table.dates, json_pref_table.employees);
     });
 }
 
+// refreshes table
 refresh_table();
 
+// when you click on a option in the "Available/Unavailable" dropdown, the dropdown button changes accordingly
 $(".available-dropdown-select").on("click", function () {
+    // add data to button: if "available" is selected, available==True; otherwise, available==False
     $("#available-dropdown").data("available", $(this).data("val"))
+        // changes button text to "available" or "unavailable"
         .text($(this).data("text"));
 });
 
+// when you click "save" in the "add employee" modal, the submitted information is saved and the employee preference
+// table is refreshed
 $("#add-employee-submit").on("click", function() {
     console.log("hi");
+    // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     $.ajax({
         type: "POST",
         url: "/_add_employee",
@@ -30,12 +45,14 @@ $("#add-employee-submit").on("click", function() {
     });
 });
 
+// takes a list of dates and adds them as column headers in the employees preference table
 function set_dates(dates) {
     for (d = 0; d < 7; d++) {
         $("#date-" + d).text(dates[d]);
     }
 }
 
+// converts a number from 0 to 23 to 12-hour time (i.e. XX AM/PM)
 function hour_to_12_hour(h) {
     if (h == 0) {
         return {hour: 12, half: "AM"};
@@ -51,7 +68,9 @@ function hour_to_12_hour(h) {
     }
 }
 
+// converts an XX AM/PM pair to a number form 0 to 23
 function hour_to_24_hour(h) {
+    // if h.half == "AM" then offset = 0, else offset = 12
     let offset = h.half == "AM" ? 0 : 12;
     if (h.hour == 12 && h.half == "AM") {
         offset = -12;
@@ -62,6 +81,7 @@ function hour_to_24_hour(h) {
     return h.hour + offset;
 }
 
+// takes dict output of hour_to_12_hour and returns a string
 function hour_to_str(h) {
     let t = hour_to_12_hour(h);
     return t.hour + t.half;
@@ -81,13 +101,21 @@ function hour_to_str(h) {
         {% endfor %}
 */
 
+// renders an updated preference table
+// arguments: dict, list, list
 function render_pref_table(pref_table, dates, employees) {
+    // clears all entries in pref_table
     $("#pref-table-body").empty();
+
+    // for each key _id key in pref_table
     for (let employee_id in pref_table) {
         console.log(employee_id);
 
+        // creates html row
         let emp_row = document.createElement("tr");
+        // adds row to table
         $("#pref-table-body").append(emp_row);
+
         let emp_name = $("<th/>", { scope: "row" });
         emp_row.append(emp_name[0]);
         emp_name.append($("<button/>", {
