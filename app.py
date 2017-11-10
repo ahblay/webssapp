@@ -74,15 +74,11 @@ def add_preferences():
     day = request.json['day']
     available = request.json['available']
 
-    all_prefs = {}
-    all_prefs[day] = prefs
-
     db = get_db()
 
     db.employees.update({'_id': employee_id},
                         {"$set":
-                            {"prefs": all_prefs,
-                             "available": available}
+                            {"total_prefs": {day: {"prefs": prefs, "available": available}}}
                          })
 
 
