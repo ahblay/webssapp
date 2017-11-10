@@ -20,8 +20,9 @@ function refresh_table(date) {
     });
 }
 
-// refreshes table
+render_index_bar();
 refresh_table();
+
 
 // when you click on a option in the "Available/Unavailable" dropdown, the dropdown button changes accordingly
 $(".available-dropdown-select").on("click", function () {
@@ -251,10 +252,29 @@ function create_availability_row(pref) {
 
 $("#employee-setup-button").on("click", function() {
 
-    $('#add-employee-button').fadeOut()
-    $('#pref-table-shell').fadeOut()
+    render_emp_setup_bar();
 
-})
+    $('#add-employee-button').fadeOut();
+    $('#pref-table-shell').fadeOut();
+
+});
+
+//View selector scripts
+
+$("#view-select").on("change", function() {
+    $("option[value=" + this.value + "]", this)
+        .attr("selected", true).siblings()
+        .removeAttr("selected");
+
+
+});
+
+function change_view(selected_option) {
+
+
+}
+
+//Action bar scripts
 
 function render_emp_setup_bar(){
     let action_bar = $("#action-bar")
@@ -262,29 +282,51 @@ function render_emp_setup_bar(){
     let save = document.createElement("button")
     let cancel = document.createElement("button")
 
-    action_bar.fadeOut()
-    action_bar.empty()
+    action_bar.fadeOut(function(){
+        action_bar.empty()
 
-    $(save).addClass("btn btn-info")
-        .text("< Back")
-        .on("click", function () {
-            $("#pref-table-shell").fadeIn();
+        $(save).addClass("btn btn-info")
+            .text("< Back")
+            .on("click", function () {
+                $("#pref-table-shell").fadeIn();
+            });
+
+        action_bar.append(save)
+
+        $(cancel).addClass("btn btn-danger")
+            .text("Cancel")
+            .on("click", function () {
+                console.log("Cancelled!");
         });
 
-    action_bar.append(save)
-
-    $(cancel).addClass("btn btn-danger")
-        .text("Cancel")
-        .on("click", function () {
-            console.log("Cancelled!");
-        });
-
-    action_bar.append(cancel)
-    action_bar.fadeIn()
+        action_bar.append(cancel)
+        action_bar.fadeIn()
+     })
 }
 
 function render_index_bar(){
+    let action_bar = $("#action-bar")
 
+    let add_emp = document.createElement("button")
+    let optimize = document.createElement("button")
+
+    action_bar.fadeOut(function(){
+        $(add_emp).addClass("btn btn-outline-dark")
+            .text("Add Employee")
+            .on("click", function(){
+                console.log("Added employee!")
+        });
+
+        $(optimize).addClass("btn btn-outline-dark")
+            .text("Optimize!")
+            .on("click", function(){
+                console.log("Optimizing schedule!")
+        })
+
+        action_bar.append(add_emp)
+        action_bar.append(optimize)
+        action_bar.fadeIn()
+    })
 }
 
 $('#first_week').on('click', function() {
