@@ -2,6 +2,7 @@
 
 {% block optionalmeta %}
 <meta id="initial-day" data-day="{{ date_ordinal }}">
+<meta id="next_week_initial-day" data-day="{{ next_week_date_ordinal }}">
 {% endblock %}
 
 {% block containedcontent %}
@@ -17,6 +18,12 @@
 </div>
 
 
+<div class="btn-group float-right">
+    <button type="button" class="btn btn-xs btn-outline-dark" id="first_week" disabled>&laquo;</button>
+    <button type="button" class="btn btn-xs btn-outline-dark" id="second_week">&raquo;</button>
+</div>
+
+<table class="table table-bordered table-striped">
 <table class="table table-bordered table-striped" id="pref-table-shell">
     <thead>
         <tr>

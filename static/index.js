@@ -1,9 +1,11 @@
 // passes ordinal date of first Monday (Monday at beginning of schedule)
 let initial_day = $("#initial-day").attr("data-day");
+let next_week_initial_day = $("#next_week_initial-day").attr("data-day");
 
 // updates table
-function refresh_table() {
-    fetch("/_get_preferences/" + initial_day)
+function refresh_table(date) {
+    date = typeof date !== 'undefined' ? date: initial_day;
+    fetch("/_get_preferences/" + date)
 
         // converts response to json
         .then(response => response.json())
@@ -102,7 +104,7 @@ function hour_to_str(h) {
 */
 
 // renders an updated preference table
-// arguments: dict, list, list
+// arguments: dict, list, dict
 function render_pref_table(pref_table, dates, employees) {
     // clears all entries in pref_table
     $("#pref-table-body").empty();
@@ -188,6 +190,16 @@ function render_pref_table(pref_table, dates, employees) {
                 prefs: new_pref,
                 available: available
             }
+
+            $.ajax({
+                type: "POST",
+                url: "/add_preferences",
+                data: {'id': employee_id, 'day': day, 'prefs': new_pref, 'available': available},
+                success: function(json_response) {
+                    console.log(json_response);
+                }
+            });
+
             render_pref_table(pref_table, dates, employees);
         });
     }
@@ -237,6 +249,12 @@ function create_availability_row(pref) {
     $("#preference-table").append(pref_row);
 }
 
+$('#second_week').on('click', function() {
+    $('#pref_table_body').empty();
+    refresh_table(next_week_initial_day);
+    $(this).prop('disabled', true);
+    $('#first_week').prop('disabled', false);
+})
 $("#employee-setup-button").on("click", function() {
 
     $('#add-employee-button').fadeOut()
@@ -275,3 +293,9 @@ function render_index_bar(){
 
 }
 
+$('#first_week').on('click', function() {
+    $('#pref_table_body').empty();
+    refresh_table(initial_day);
+    $(this).prop('disabled', true);
+    $('#second_week').prop('disabled', false);
+})

@@ -47,7 +47,7 @@ def add_employee():
 
     # create new employee entry in collection with the name entered in the form and all other fields default
     db = get_db()
-    _id = db.employees.insert({
+    db.employees.insert({
         "name": name,
         "shift_length": 0,
         "max_hours": 0,
@@ -66,6 +66,26 @@ def add_employee():
     return jsonify({"success": True, "message": "Employee added successfully"})
 
 
+@app.route("/add_preferences", methods=["POST"])
+def add_preferences():
+
+    employee_id = request.json['id']
+    prefs = request.json['prefs']
+    day = request.json['day']
+    available = request.json['available']
+
+    all_prefs = {}
+    all_prefs[day] = prefs
+
+    db = get_db()
+
+    db.employees.update({'_id': employee_id},
+                        {"$set":
+                            {"prefs": all_prefs,
+                             "available": available}
+                         })
+
+
 # defines the homepage
 @app.route("/")
 def base():
@@ -77,6 +97,9 @@ def base():
     today = datetime.date.today()
     monday = today - datetime.timedelta(today.weekday())
 
+    # get the date of the subsequent monday
+    next_monday = monday + datetime.timedelta(7)
+
     # list employees from collection
     employees = list(db.employees.find())
 
@@ -86,6 +109,7 @@ def base():
             employees = employees,
             seniority_levels = seniority_levels,
             date_ordinal = monday.toordinal(),
+            next_week_date_ordinal = next_monday.toordinal()
             )
 
 
