@@ -8,23 +8,21 @@
 {% block containedcontent %}
 <div class="container-fluid" style="height: 50px; display: flex; align-items:center">
     <select class="custom-select" id="view-select">
-        <option value="avail-setup" selected="true">Availability Setup</option>
+        <option value="avail-setup" selected="selected">Availability Setup</option>
         <option value="emp-setup">Employee Setup</option>
         <option value="schedule-viewer">Schedule Viewer</option>
     </select>
-    <div class="container">
-        <div class="btn-group" id="action-bar"></div>
+    <div class="container-fluid">
+        <div class="btn-group" id="action-bar" style="display: none"></div>
+        <div class="btn-group float-right">
+            <button type="button" class="btn btn-xs btn-outline-dark" id="first_week" disabled>&laquo;</button>
+            <button type="button" class="btn btn-xs btn-outline-dark" id="second_week">&raquo;</button>
+        </div>
     </div>
-    <div class="btn-group float-right">
-    <button type="button" class="btn btn-xs btn-outline-dark" id="first_week" disabled>&laquo;</button>
-    <button type="button" class="btn btn-xs btn-outline-dark" id="second_week">&raquo;</button>
-    </div>
+
 </div>
 
-
-
-
-<table class="table table-bordered table-striped" id="pref-table-shell">
+<table class="table table-bordered table-striped viewframe" id="pref-table-shell">
     <thead>
         <tr>
             <th> Employee Name </th>
@@ -37,6 +35,9 @@
     <tbody id="pref-table-body">
     </tbody>
 </table>
+
+<div class="container-fluid viewframe" id="emp-setup-shell" style="background-color: red; height: 500px; display:none"></div>
+<div class="container-fluid viewframe" id="schedule-viewer-shell" style="background-color: blue; height: 500px; display: none"></div>
 
 <!-- Preference modal -->
 <div class="modal fade" id="preference-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -106,9 +107,6 @@
     </div>
   </div>
 </div>
-
-
-<button class="btn btn-primary" data-toggle="modal" id="add-employee-button" data-target="#add-employee-modal">Add Employee</button>
 
 {% endblock containedcontent %}
 
