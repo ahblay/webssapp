@@ -7,9 +7,13 @@
 
 {% block containedcontent %}
 <div class="container-fluid" style="height: 50px; display: flex; align-items:center">
-    <button type="button" class="btn btn-outline-dark float-left" id="employee-setup-button">Employee Setup</button>
+    <select class="custom-select" id="view-select">
+        <option value="avail-setup" selected="true">Availability Setup</option>
+        <option value="emp-setup">Employee Setup</option>
+        <option value="schedule-viewer">Schedule Viewer</option>
+    </select>
     <div class="container">
-        <div class="btn-grp" id="action-bar"></div>
+        <div class="btn-group" id="action-bar"></div>
     </div>
     <div class="btn-group float-right">
     <button type="button" class="btn btn-xs btn-outline-dark" id="first_week" disabled>&laquo;</button>
