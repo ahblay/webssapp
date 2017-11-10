@@ -249,12 +249,6 @@ function create_availability_row(pref) {
     $("#preference-table").append(pref_row);
 }
 
-$('#second_week').on('click', function() {
-    $('#pref_table_body').empty();
-    refresh_table(next_week_initial_day);
-    $(this).prop('disabled', true);
-    $('#first_week').prop('disabled', false);
-})
 $("#employee-setup-button").on("click", function() {
 
     $('#add-employee-button').fadeOut()
@@ -298,4 +292,11 @@ $('#first_week').on('click', function() {
     refresh_table(initial_day);
     $(this).prop('disabled', true);
     $('#second_week').prop('disabled', false);
+})
+
+$('#second_week').on('click', function() {
+    $('#pref_table_body').empty();
+    refresh_table(next_week_initial_day);
+    $(this).prop('disabled', true);
+    $('#first_week').prop('disabled', false);
 })
