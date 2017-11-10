@@ -237,4 +237,41 @@ function create_availability_row(pref) {
     $("#preference-table").append(pref_row);
 }
 
+$("#employee-setup-button").on("click", function() {
+
+    $('#add-employee-button').fadeOut()
+    $('#pref-table-shell').fadeOut()
+
+})
+
+function render_emp_setup_bar(){
+    let action_bar = $("#action-bar")
+
+    let save = document.createElement("button")
+    let cancel = document.createElement("button")
+
+    action_bar.fadeOut()
+    action_bar.empty()
+
+    $(save).addClass("btn btn-info")
+        .text("< Back")
+        .on("click", function () {
+            $("#pref-table-shell").fadeIn();
+        });
+
+    action_bar.append(save)
+
+    $(cancel).addClass("btn btn-danger")
+        .text("Cancel")
+        .on("click", function () {
+            console.log("Cancelled!");
+        });
+
+    action_bar.append(cancel)
+    action_bar.fadeIn()
+}
+
+function render_index_bar(){
+
+}
 

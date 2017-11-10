@@ -125,6 +125,5 @@ def get_preferences(date_ordinal=None):
 
     return json_util.dumps(return_data, default=json_util.default)
 
-
 if __name__ == '__main__':
     app.run(debug=True)

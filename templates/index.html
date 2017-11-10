@@ -5,15 +5,19 @@
 {% endblock %}
 
 {% block containedcontent %}
-
-<button type="button" class="btn btn-outline-dark float-left">Employee Setup</button>
-
-<div class="btn-group float-right">
-    <button type="button" class="btn btn-xs btn-outline-dark">&laquo;</button>
-    <button type="button" class="btn btn-xs btn-outline-dark">&raquo;</button>
+<div class="container-fluid" style="height: 50px; display: flex; align-items:center">
+    <button type="button" class="btn btn-outline-dark float-left" id="employee-setup-button">Employee Setup</button>
+    <div class="container">
+        <div class="btn-grp" id="action-bar"></div>
+    </div>
+    <div class="btn-group float-right">
+        <button type="button" class="btn btn-xs btn-outline-dark">&laquo;</button>
+        <button type="button" class="btn btn-xs btn-outline-dark">&raquo;</button>
+    </div>
 </div>
 
-<table class="table table-bordered table-striped">
+
+<table class="table table-bordered table-striped" id="pref-table-shell">
     <thead>
         <tr>
             <th> Employee Name </th>
@@ -97,7 +101,7 @@
 </div>
 
 
-<button class="btn btn-primary" data-toggle="modal" data-target="#add-employee-modal">Add Employee</button>
+<button class="btn btn-primary" data-toggle="modal" id="add-employee-button" data-target="#add-employee-modal">Add Employee</button>
 
 {% endblock containedcontent %}
 
