@@ -51,7 +51,7 @@ $("#add-employee-submit").on("click", function() {
 // takes a list of dates and adds them as column headers in the employees preference table
 function set_dates(dates) {
     for (d = 0; d < 7; d++) {
-        $("#date-" + d).text(dates[d]);
+        $("#date-" + d).text(dates[d][0]);
     }
 }
 
@@ -107,6 +107,9 @@ function hour_to_str(h) {
 // renders an updated preference table
 // arguments: dict, list, dict
 function render_pref_table(pref_table, dates, employees) {
+    console.log(pref_table);
+    console.log("DATE")
+    console.log(dates)
     // clears all entries in pref_table
     $("#pref-table-body").empty();
 
@@ -127,7 +130,10 @@ function render_pref_table(pref_table, dates, employees) {
             text: employees[employee_id].name,
         })[0]);
 
-        for (let [day, shift] of pref_table[employee_id].entries()) {
+        for (i in pref_table[employee_id]) {
+            // indexes monday at 0
+            let [day, shift] = [i, pref_table[employee_id][i]]
+            console.log((i - 1) % 7)
             let td = $("<td/>");
             emp_row.append(td[0]);
 
@@ -160,7 +166,8 @@ function render_pref_table(pref_table, dates, employees) {
         let employee_data = pref_table[employee_id][day];
         let available = employee_data.available;
 
-        $("#preference-modal-title").html("<strong>" + employees[employee_id].name + "</strong>: " + dates[day]);
+        $("#preference-modal-title").html("<strong>" + employees[employee_id].name
+                                          + "</strong>: " + dates[(day - 1) % 7][0]);
 
         $("#available-dropdown").text(available ? "Available" : "Unavailable")
             .data("available", available);
@@ -192,10 +199,14 @@ function render_pref_table(pref_table, dates, employees) {
                 available: available
             }
 
+            var data = {'id': employee_id, 'day': day, 'prefs': new_pref, 'available': available, 'date': dates[0][1]}
+            console.log(data)
+
             $.ajax({
                 type: "POST",
                 url: "/add_preferences",
-                data: {'id': employee_id, 'day': day, 'prefs': new_pref, 'available': available},
+                data: JSON.stringify(data),
+                contentType: 'application/json;charset=UTF-8',
                 success: function(json_response) {
                     console.log(json_response);
                 }
