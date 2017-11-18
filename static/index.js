@@ -22,6 +22,7 @@ function refresh_table(date) {
 
 render_action_bar(build_index_bar());
 refresh_table();
+refresh_emp_setup_table();
 
 
 // when you click on a option in the "Available/Unavailable" dropdown, the dropdown button changes accordingly
@@ -206,6 +207,87 @@ function render_pref_table(pref_table, dates, employees) {
     }
 }
 
+// Builds employee setup table body
+
+function render_emp_setup_table(options, employees) {
+    console.log("Rendering emp-setup-table")
+    $("#emp-setup-table").empty()
+
+    for (let employee_id in options){
+
+        console.log(employee_id)
+
+        let option_row = document.createElement("tr");
+        $("#emp-setup-table").append(option_row);
+
+        let emp_name = $("<th/>", {scope: "row"});
+        option_row.append(emp_name[0]);
+        emp_name.append($("<button/>", {
+            type: "button",
+            class: "btn btn-primary",
+            text: employees[employee_id].name,
+        })[0]);
+
+        for (let week in [0,1]){
+            Object.keys(options[employee_id][week]).forEach(function (key){
+                let td = $("<td/>")
+                let input_field = $("<input>", {
+                    type: "number",
+                    name: employee_id + "-" + key + "-" + week,
+                    value: options[employee_id][week][key],
+                    class: "form-control"
+                });
+                td.append(input_field);
+                option_row.append(td[0]);
+            })
+        }
+
+        let sen_td = $("<td/>");
+        sen_td.addClass("align-middle")
+
+        let sen_options = [.25, .5, .75, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10];
+        let sen_select = document.createElement("select");
+        sen_select.name = employee_id + "-seniority";
+        sen_select.className += " form-control sen-select";
+
+        for (let i=0; i < sen_options.length; i++){
+            let option = document.createElement("option");
+            option.value = sen_options[i];
+            option.text = sen_options[i];
+            sen_select.appendChild(option);
+        };
+        option_row.append(sen_select);
+
+        let rp_td = $("<td/>");
+
+        let rp_options = ['None']
+        let rp_select = $("<select>", {
+            name: employee_id + "-roompref",
+            class: "form-control rp-select"
+        })
+
+        for (let i=0; i < rp_options.length; i++){
+            let option = document.createElement("option");
+            option.value = rp_options[i];
+            option.text = rp_options[i];
+            rp_select.append(option)
+        }
+        rp_td.append(rp_select)
+        option_row.append(rp_td[0]);
+    }
+}
+
+function refresh_emp_setup_table(){
+
+    console.log("Refreshing emp-setup-table")
+    fetch("/_get_emp_options")
+        .then(response => response.json())
+        .then((json_options) => {
+            console.log(json_options);
+            render_emp_setup_table(json_options.option_data, json_options.employees);
+        })
+}
+
 $("#add-availability-button").on("click", function() {
     create_availability_row([0, 1]);
 });
@@ -281,6 +363,8 @@ function change_view(selected_option) {
 
 //Show view scripts
 
+// TODO: Make a helper function for these
+
 function show_avail_setup(){
     let action_bar = $("#action-bar");
     let active_view = $(".viewframe:visible");
@@ -322,25 +406,43 @@ function render_action_bar(action_bar){
 }
 
 function build_emp_setup_bar(){
-    let emp_setup_bar = $("#action-bar")
+    let emp_setup_bar = $("#action-bar");
 
-    let save = document.createElement("button")
-    let cancel = document.createElement("button")
+    let save_data = document.createElement("button");
+    let choose_template = document.createElement("button");
+    let save_template = document.createElement("button");
 
-    $(save).addClass("btn btn-outline-dark")
-        .text("Choose Template")
+    $(save_data).addClass("btn btn-outline-dark")
+        .text("Save Data")
         .on("click", function () {
-            console.log("Opening template chooser!")
+            console.log("Save data clicked!")
+            let table_data = {serialized_data: $("input, .sen-select, .rp-select").serialize()}
+            console.log($("input, .sen-select, .rp-select"))
+            console.log(table_data)
+            $.ajax({
+                type: "POST",
+                url: "/_save_emp_data",
+                data: JSON.stringify(table_data),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+            })
     });
 
-    $(cancel).addClass("btn btn-outline-dark")
+    $(choose_template).addClass("btn btn-outline-dark")
+        .text("Choose Template")
+        .on("click", function () {
+            console.log("Opening template chooser!");
+    });
+
+    $(save_template).addClass("btn btn-outline-dark")
         .text("Save as Template")
         .on("click", function () {
             console.log("Opening save template modal!");
     });
 
-    emp_setup_bar.append(save)
-    emp_setup_bar.append(cancel)
+    emp_setup_bar.append(save_data);
+    emp_setup_bar.append(choose_template);
+    emp_setup_bar.append(save_template);
 
     return emp_setup_bar
 }

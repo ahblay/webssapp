@@ -22,6 +22,7 @@
 
 </div>
 
+<!-- Availability setup table -->
 <table class="table table-bordered table-striped viewframe" id="pref-table-shell">
     <thead>
         <tr>
@@ -36,7 +37,29 @@
     </tbody>
 </table>
 
-<div class="container-fluid viewframe" id="emp-setup-shell" style="background-color: red; height: 500px; display:none"></div>
+<!-- Employee setup table -->
+<table class="table table-bordered table-striped viewframe" id="emp-setup-shell" style="display:none">
+    <thead>
+        <tr>
+            <th rowspan="2">Employee Name</th>
+            <th class="text-center" colspan="3">Week 1</th>
+            <th class="text-center" colspan="3">Week 2</th>
+            <th class="text-center" rowspan="2">Seniority</th>
+            <th class="text-center" rowspan="2">Room Pref</th>
+        </tr>
+        <tr>
+            {% for _ in range(2) %}
+            <th class="text-center">Shift Length</th>
+            <th class="text-center">Max Hours</th>
+            <th class="text-center">Max Days</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody id="emp-setup-table">
+    </tbody>
+</table>
+
+<!-- Schedule viewer table -->
 <div class="container-fluid viewframe" id="schedule-viewer-shell" style="background-color: blue; height: 500px; display: none"></div>
 
 <!-- Preference modal -->
