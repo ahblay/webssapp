@@ -332,14 +332,6 @@ function create_availability_row(pref) {
     $("#preference-table").append(pref_row);
 }
 
-$("#employee-setup-button").on("click", function() {
-
-    render_emp_setup_bar();
-
-    $('#pref-table-shell').fadeOut();
-
-});
-
 //View selector scripts
 
 $("#view-select").on("change", function() {
@@ -361,53 +353,45 @@ function change_view(selected_option) {
     }
 }
 
+function get_active_view(){
+    return $(".viewframe:visible");
+}
+
 //Show view scripts
 
-// TODO: Make a helper function for these
-
-function show_avail_setup(){
-    let action_bar = $("#action-bar");
-    let active_view = $(".viewframe:visible");
-    active_view.add(action_bar);
-    active_view.fadeOut(function (){
-        action_bar.empty();
-        let new_view = $("#pref-table-shell", build_index_bar);
+function show_view(view_id, action_bar_elems){
+    let old_view = $(".viewframe:visible, #action-bar");
+    console.log(old_view);
+    old_view.fadeOut().promise().done(function (){
+        console.log("In the fade out callback!");
+        $("#action-bar").empty();
+        $("#action-bar").append(action_bar_elems);
+        let new_view = $(view_id + ", #action-bar");
         new_view.fadeIn();
     });
+}
+
+function show_avail_setup(){
+    show_view("#pref-table-shell", build_index_bar());
 }
 
 function show_emp_setup(){
-    let action_bar = $("#action-bar");
-    let active_view = $(".viewframe:visible");
-    active_view.add(action_bar);
-    active_view.fadeOut(function (){
-        action_bar.empty();
-        let new_view = $("#emp-setup-shell").add(build_emp_setup_bar());
-        new_view.fadeIn();
-    });
-
+    show_view("#emp-setup-shell", build_emp_setup_bar());
 }
 
 function show_schedule_viewer(){
-    let action_bar = $("#action-bar");
-    let active_view = $(".viewframe:visible");
-    active_view.add(action_bar);
-    active_view.fadeOut(function (){
-        action_bar.empty();
-        let new_view = $("#schedule-viewer-shell").add(build_schedule_viewer_bar());
-        new_view.fadeIn();
-    });
-
+    show_view("#schedule-viewer-shell", build_schedule_viewer_bar());
 }
 
 //Action bar scripts
-function render_action_bar(action_bar){
+function render_action_bar(action_bar_elems){
+    let action_bar = $("#action-bar");
+    action_bar.append(action_bar_elems);
     action_bar.show()
 }
 
 function build_emp_setup_bar(){
-    let emp_setup_bar = $("#action-bar");
-
+    let emp_setup_bar_elems = [];
     let save_data = document.createElement("button");
     let choose_template = document.createElement("button");
     let save_template = document.createElement("button");
@@ -425,7 +409,7 @@ function build_emp_setup_bar(){
                 data: JSON.stringify(table_data),
                 contentType: 'application/json;charset=UTF-8',
                 dataType: "json",
-            })
+            });
     });
 
     $(choose_template).addClass("btn btn-outline-dark")
@@ -440,18 +424,17 @@ function build_emp_setup_bar(){
             console.log("Opening save template modal!");
     });
 
-    emp_setup_bar.append(save_data);
-    emp_setup_bar.append(choose_template);
-    emp_setup_bar.append(save_template);
+    emp_setup_bar_elems.push(save_data);
+    emp_setup_bar_elems.push(choose_template);
+    emp_setup_bar_elems.push(save_template);
 
-    return emp_setup_bar
+    return emp_setup_bar_elems;
 }
 
 function build_index_bar(){
-    let index_bar = $("#action-bar")
-
-    let add_emp = document.createElement("button")
-    let optimize = document.createElement("button")
+    let index_bar_elems = [];
+    let add_emp = document.createElement("button");
+    let optimize = document.createElement("button");
 
     $(add_emp).addClass("btn btn-outline-dark")
         .text("Add Employee")
@@ -465,15 +448,14 @@ function build_index_bar(){
             console.log("Optimizing schedule!")
         })
 
-    index_bar.append(add_emp)
-    index_bar.append(optimize)
+    index_bar_elems.push(add_emp)
+    index_bar_elems.push(optimize)
 
-    return index_bar
+    return index_bar_elems;
 }
 
 function build_schedule_viewer_bar(){
-    let sv_bar = $("#action-bar")
-
+    let sv_bar_elems = [];
     let notify = document.createElement("button")
 
     $(notify).addClass("btn btn-outline-dark")
@@ -482,11 +464,14 @@ function build_schedule_viewer_bar(){
             console.log("Opening notification modal!")
         })
 
-    sv_bar.append(notify)
+    sv_bar_elems.push(notify)
 
-    return sv_bar
+    return sv_bar_elems;
 }
 
+function template_dropdown(active_view){
+
+}
 $('#first_week').on('click', function() {
     $('#pref_table_body').empty();
     refresh_table(initial_day);
