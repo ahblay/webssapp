@@ -159,7 +159,7 @@ def get_preferences(date_ordinal=None):
 
     # make sure we're starting from monday
     date_ordinal -= datetime.date.fromordinal(date_ordinal).weekday()
-    
+
     pref_table = {}
     employees = get_employees()
 
@@ -186,6 +186,68 @@ def get_preferences(date_ordinal=None):
         }
 
     return json_util.dumps(return_data, default=json_util.default)
+
+
+@app.route("/_get_emp_options")
+def get_emp_options():
+
+    db = get_db()
+
+    options = {}
+    employees = get_employees()
+
+    for emp in employees:
+        emp_data = db.employees.find_one({'_id': emp['_id']})
+
+        if 'option_entries' in emp_data.keys():
+            option_entries = emp_data['option_entries']
+        else:
+            # return defaults
+            option_entries = {week: {
+                "shift_length": 8,
+                "max_hours": 40,
+                "max_days": 5
+            } for week in [0, 1]}
+
+            option_entries['seniority'] = .25
+            option_entries['room_preferences'] = []
+
+        options[str(emp['_id'])] = option_entries
+
+    return_data = {
+        "option_data": options,
+        "employees": get_employees_dict()
+    }
+
+    return json_util.dumps(return_data, default=json_util.default)
+
+
+@app.route("/_save_emp_data", methods=['POST'])
+def save_emp_data():
+
+    db = get_db()
+
+    data = request.json['serialized_data']
+
+    vals = data.split("&")
+
+    for val in vals:
+        data = val.split("-")
+
+        if len(data) == 3:
+            _id, field, week = data
+            week, value = week.split("=")
+            db.employees.update({"_id": ObjectId(_id)}, {"$set": {"option_entries." + week + "." + field: value}})
+
+        if len(data) == 2:
+            _id, field = data
+            field, value = field.split("=")
+            db.employees.update({"_id": ObjectId(_id)}, {"$set": {"option_entries." + field: value}})
+
+    print(list(db.employees.find()))
+
+    return jsonify({"success": True, "message": "Data saved successfully"})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

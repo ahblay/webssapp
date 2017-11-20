@@ -20,8 +20,9 @@ function refresh_table(date) {
     });
 }
 
-render_index_bar();
+render_action_bar(build_index_bar());
 refresh_table();
+refresh_emp_setup_table();
 
 
 // when you click on a option in the "Available/Unavailable" dropdown, the dropdown button changes accordingly
@@ -217,6 +218,87 @@ function render_pref_table(pref_table, dates, employees) {
     }
 }
 
+// Builds employee setup table body
+
+function render_emp_setup_table(options, employees) {
+    console.log("Rendering emp-setup-table")
+    $("#emp-setup-table").empty()
+
+    for (let employee_id in options){
+
+        console.log(employee_id)
+
+        let option_row = document.createElement("tr");
+        $("#emp-setup-table").append(option_row);
+
+        let emp_name = $("<th/>", {scope: "row"});
+        option_row.append(emp_name[0]);
+        emp_name.append($("<button/>", {
+            type: "button",
+            class: "btn btn-primary",
+            text: employees[employee_id].name,
+        })[0]);
+
+        for (let week in [0,1]){
+            Object.keys(options[employee_id][week]).forEach(function (key){
+                let td = $("<td/>")
+                let input_field = $("<input>", {
+                    type: "number",
+                    name: employee_id + "-" + key + "-" + week,
+                    value: options[employee_id][week][key],
+                    class: "form-control"
+                });
+                td.append(input_field);
+                option_row.append(td[0]);
+            })
+        }
+
+        let sen_td = $("<td/>");
+        sen_td.addClass("align-middle")
+
+        let sen_options = [.25, .5, .75, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10];
+        let sen_select = document.createElement("select");
+        sen_select.name = employee_id + "-seniority";
+        sen_select.className += " form-control sen-select";
+
+        for (let i=0; i < sen_options.length; i++){
+            let option = document.createElement("option");
+            option.value = sen_options[i];
+            option.text = sen_options[i];
+            sen_select.appendChild(option);
+        };
+        option_row.append(sen_select);
+
+        let rp_td = $("<td/>");
+
+        let rp_options = ['None']
+        let rp_select = $("<select>", {
+            name: employee_id + "-roompref",
+            class: "form-control rp-select"
+        })
+
+        for (let i=0; i < rp_options.length; i++){
+            let option = document.createElement("option");
+            option.value = rp_options[i];
+            option.text = rp_options[i];
+            rp_select.append(option)
+        }
+        rp_td.append(rp_select)
+        option_row.append(rp_td[0]);
+    }
+}
+
+function refresh_emp_setup_table(){
+
+    console.log("Refreshing emp-setup-table")
+    fetch("/_get_emp_options")
+        .then(response => response.json())
+        .then((json_options) => {
+            console.log(json_options);
+            render_emp_setup_table(json_options.option_data, json_options.employees);
+        })
+}
+
 $("#add-availability-button").on("click", function() {
     create_availability_row([0, 1]);
 });
@@ -261,15 +343,6 @@ function create_availability_row(pref) {
     $("#preference-table").append(pref_row);
 }
 
-$("#employee-setup-button").on("click", function() {
-
-    render_emp_setup_bar();
-
-    $('#add-employee-button').fadeOut();
-    $('#pref-table-shell').fadeOut();
-
-});
-
 //View selector scripts
 
 $("#view-select").on("change", function() {
@@ -277,69 +350,139 @@ $("#view-select").on("change", function() {
         .attr("selected", true).siblings()
         .removeAttr("selected");
 
-
+    change_view($(this).val())
 });
 
 function change_view(selected_option) {
 
+    if (selected_option == "avail-setup"){
+        show_avail_setup()
+    } else if (selected_option == "emp-setup") {
+        show_emp_setup()
+    } else if (selected_option == "schedule-viewer") {
+        show_schedule_viewer()
+    }
+}
 
+function get_active_view(){
+    return $(".viewframe:visible");
+}
+
+//Show view scripts
+
+function show_view(view_id, action_bar_elems){
+    let old_view = $(".viewframe:visible, #action-bar");
+    console.log(old_view);
+    old_view.fadeOut().promise().done(function (){
+        console.log("In the fade out callback!");
+        $("#action-bar").empty();
+        $("#action-bar").append(action_bar_elems);
+        let new_view = $(view_id + ", #action-bar");
+        new_view.fadeIn();
+    });
+}
+
+function show_avail_setup(){
+    show_view("#pref-table-shell", build_index_bar());
+}
+
+function show_emp_setup(){
+    show_view("#emp-setup-shell", build_emp_setup_bar());
+}
+
+function show_schedule_viewer(){
+    show_view("#schedule-viewer-shell", build_schedule_viewer_bar());
 }
 
 //Action bar scripts
-
-function render_emp_setup_bar(){
-    let action_bar = $("#action-bar")
-
-    let save = document.createElement("button")
-    let cancel = document.createElement("button")
-
-    action_bar.fadeOut(function(){
-        action_bar.empty()
-
-        $(save).addClass("btn btn-info")
-            .text("< Back")
-            .on("click", function () {
-                $("#pref-table-shell").fadeIn();
-            });
-
-        action_bar.append(save)
-
-        $(cancel).addClass("btn btn-danger")
-            .text("Cancel")
-            .on("click", function () {
-                console.log("Cancelled!");
-        });
-
-        action_bar.append(cancel)
-        action_bar.fadeIn()
-     })
+function render_action_bar(action_bar_elems){
+    let action_bar = $("#action-bar");
+    action_bar.append(action_bar_elems);
+    action_bar.show()
 }
 
-function render_index_bar(){
-    let action_bar = $("#action-bar")
+function build_emp_setup_bar(){
+    let emp_setup_bar_elems = [];
+    let save_data = document.createElement("button");
+    let choose_template = document.createElement("button");
+    let save_template = document.createElement("button");
 
-    let add_emp = document.createElement("button")
-    let optimize = document.createElement("button")
+    $(save_data).addClass("btn btn-outline-dark")
+        .text("Save Data")
+        .on("click", function () {
+            console.log("Save data clicked!")
+            let table_data = {serialized_data: $("input, .sen-select, .rp-select").serialize()}
+            console.log($("input, .sen-select, .rp-select"))
+            console.log(table_data)
+            $.ajax({
+                type: "POST",
+                url: "/_save_emp_data",
+                data: JSON.stringify(table_data),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+            });
+    });
 
-    action_bar.fadeOut(function(){
-        $(add_emp).addClass("btn btn-outline-dark")
-            .text("Add Employee")
-            .on("click", function(){
-                console.log("Added employee!")
-        });
+    $(choose_template).addClass("btn btn-outline-dark")
+        .text("Choose Template")
+        .on("click", function () {
+            console.log("Opening template chooser!");
+    });
 
-        $(optimize).addClass("btn btn-outline-dark")
-            .text("Optimize!")
-            .on("click", function(){
-                console.log("Optimizing schedule!")
+    $(save_template).addClass("btn btn-outline-dark")
+        .text("Save as Template")
+        .on("click", function () {
+            console.log("Opening save template modal!");
+    });
+
+    emp_setup_bar_elems.push(save_data);
+    emp_setup_bar_elems.push(choose_template);
+    emp_setup_bar_elems.push(save_template);
+
+    return emp_setup_bar_elems;
+}
+
+function build_index_bar(){
+    let index_bar_elems = [];
+    let add_emp = document.createElement("button");
+    let optimize = document.createElement("button");
+
+    $(add_emp).addClass("btn btn-outline-dark")
+        .text("Add Employee")
+        .attr("id", "add-employee-button")
+        .attr("data-toggle", "modal")
+        .attr("data-target", "#add-employee-modal");
+
+    $(optimize).addClass("btn btn-outline-dark")
+        .text("Optimize!")
+        .on("click", function(){
+            console.log("Optimizing schedule!")
         })
 
-        action_bar.append(add_emp)
-        action_bar.append(optimize)
-        action_bar.fadeIn()
-    })
+    index_bar_elems.push(add_emp)
+    index_bar_elems.push(optimize)
+
+    return index_bar_elems;
 }
 
+function build_schedule_viewer_bar(){
+    let sv_bar_elems = [];
+    let notify = document.createElement("button")
+
+    $(notify).addClass("btn btn-outline-dark")
+        .text("Notifications")
+        .on("click", function(){
+            console.log("Opening notification modal!")
+        })
+
+    sv_bar_elems.push(notify)
+
+    return sv_bar_elems;
+}
+
+function template_dropdown(active_view){
+
+}
 $('#first_week').on('click', function() {
     $('#pref_table_body').empty();
     refresh_table(initial_day);
