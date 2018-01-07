@@ -44,6 +44,7 @@ $("#add-employee-submit").on("click", function() {
         data: {name: $("#add-employee-name-input").val()},
         success: function(json_response) {
             console.log(json_response);
+            refresh_emp_setup_table();
             refresh_table();
         }
     });
@@ -270,7 +271,6 @@ function render_emp_setup_table(options, employees) {
         option_row.append(sen_select);
 
         let rp_td = $("<td/>");
-
         let rp_options = ['None']
         let rp_select = $("<select>", {
             name: employee_id + "-roompref",
@@ -406,6 +406,13 @@ function build_emp_setup_bar(){
     let save_data = document.createElement("button");
     let choose_template = document.createElement("button");
     let save_template = document.createElement("button");
+    let add_emp = document.createElement("button");
+
+    $(add_emp).addClass("btn btn-outline-dark")
+        .text("Add Employee")
+        .attr("id", "add-employee-button")
+        .attr("data-toggle", "modal")
+        .attr("data-target", "#add-employee-modal");
 
     $(save_data).addClass("btn btn-outline-dark")
         .text("Save Data")
@@ -435,6 +442,7 @@ function build_emp_setup_bar(){
             console.log("Opening save template modal!");
     });
 
+    emp_setup_bar_elems.push(add_emp);
     emp_setup_bar_elems.push(save_data);
     emp_setup_bar_elems.push(choose_template);
     emp_setup_bar_elems.push(save_template);
@@ -444,55 +452,64 @@ function build_emp_setup_bar(){
 
 function build_index_bar(){
     let index_bar_elems = [];
-    let add_emp = document.createElement("button");
-    let optimize = document.createElement("button");
+    let page_left = document.createElement("button");
+    let page_right = document.createElement("button");
 
-    $(add_emp).addClass("btn btn-outline-dark")
-        .text("Add Employee")
-        .attr("id", "add-employee-button")
-        .attr("data-toggle", "modal")
-        .attr("data-target", "#add-employee-modal");
-
-    $(optimize).addClass("btn btn-outline-dark")
-        .text("Optimize!")
+   $(page_left).addClass("btn btn-outline-dark")
+        .html("&laquo;")
+        .prop("disabled", true)
+        .attr("id", "page-left")
         .on("click", function(){
-            console.log("Optimizing schedule!")
-        })
+            $('#pref_table_body').empty();
+            refresh_table(initial_day);
+            $(this).prop('disabled', true);
+            $('#page-right').prop('disabled', false);
+        });
 
-    index_bar_elems.push(add_emp)
-    index_bar_elems.push(optimize)
+   $(page_right).addClass("btn btn-outline-dark")
+        .html("&raquo;")
+        .attr("id", "page-right")
+        .on("click", function(){
+            $('#pref_table_body').empty();
+            refresh_table(next_week_initial_day);
+            $(this).prop('disabled', true);
+            $('#page-left').prop('disabled', false);
+        });
+
+    let page_select = document.createElement("div");
+    $(page_select).addClass("btn-group float-right")
+        .attr("id", "page-select");
+
+    $(page_select).append([page_left, page_right]);
+
+    index_bar_elems.push(page_select);
 
     return index_bar_elems;
 }
 
 function build_schedule_viewer_bar(){
     let sv_bar_elems = [];
-    let notify = document.createElement("button")
+    let notify = document.createElement("button");
+    let optimize = document.createElement("button");
 
     $(notify).addClass("btn btn-outline-dark")
         .text("Notifications")
         .on("click", function(){
             console.log("Opening notification modal!")
-        })
+        });
+
+    $(optimize).addClass("btn btn-outline-dark")
+        .text("Optimize!")
+        .on("click", function(){
+            console.log("Optimizing schedule!")
+        });
 
     sv_bar_elems.push(notify)
-
+    sv_bar_elems.push(optimize)
     return sv_bar_elems;
 }
 
 function template_dropdown(active_view){
 
 }
-$('#first_week').on('click', function() {
-    $('#pref_table_body').empty();
-    refresh_table(initial_day);
-    $(this).prop('disabled', true);
-    $('#second_week').prop('disabled', false);
-})
 
-$('#second_week').on('click', function() {
-    $('#pref_table_body').empty();
-    refresh_table(next_week_initial_day);
-    $(this).prop('disabled', true);
-    $('#first_week').prop('disabled', false);
-})
