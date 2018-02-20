@@ -1,10 +1,14 @@
-from flask import Flask, render_template, jsonify, g, request
+from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError
 from bson import json_util, ObjectId
 import json
 
 app = Flask(__name__)
+app.secret_key = "Peter, that bulge in your pants is causing a tidal wave."
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -13,6 +17,108 @@ seniority_levels = list(range(10))
 
 today = datetime.date.today()
 monday = today - datetime.timedelta(today.weekday())
+
+# instantiates and initializes a login_manager object from the LoginManager class
+# more info at https://flask-login.readthedocs.io/en/latest/
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+class User():
+
+    def __init__(self, username):
+        self.username = username
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.username
+
+    @staticmethod
+    def validate_login(password_hash, password):
+        return check_password_hash(password_hash, password)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+
+    db = get_db()
+
+    user = db.users.find_one({"_id": user_id})
+    if not user:
+        return None
+
+    return User(user['_id'])
+
+
+@app.route("/new_user")
+def render_new_user():
+    return render_template("new_user.html")
+
+
+@app.route("/create_account", methods=['GET', 'POST'])
+def create_account():
+
+    db = get_db()
+    users = db.users
+
+    #db.users.delete_many({})
+    print(list(db.users.find()))
+
+    username = request.form.get("username", None)
+    email = request.form.get('email', None)
+    password = request.form.get('password', None)
+    print(password)
+    print(username)
+    print(email)
+    pass_hash = generate_password_hash(password, method='pbkdf2:sha256')
+    print(pass_hash)
+
+    try:
+        users.insert({"_id": username, "email": email, "pwd": pass_hash, "schedules": {}})
+        print("user created")
+        return jsonify({"success": True, "message": "User added successfully"})
+    except DuplicateKeyError:
+        print("user already created")
+        return jsonify({"success": False, "message": "User already created"})
+
+
+@app.route("/login_page")
+def render_login_page():
+    return render_template("login.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    db = get_db()
+
+    username = request.form.get("username", None)
+    password = request.form.get('password', None)
+
+    user = db.users.find_one({"_id": username})
+    print(user)
+    if user and User.validate_login(user['pwd'], password):
+        user_obj = User(user['_id'])
+        login_user(user_obj)
+        flash("Logged in successfully", category='success')
+        print("logged in")
+        return jsonify({"success": True, "message": "Logged in successfully."})
+    else:
+        flash("Wrong username or password", category='error')
+        return jsonify({"success": False, "message": "Incorrect username or password."})
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('open_landing_page'))
 
 
 # opens/makes a connection to the database
@@ -124,6 +230,7 @@ def add_preferences():
 
 # defines the homepage
 @app.route("/")
+@login_required
 def base():
 
     # open db collection
@@ -247,6 +354,34 @@ def save_emp_data():
     print(list(db.employees.find()))
 
     return jsonify({"success": True, "message": "Data saved successfully"})
+
+
+@app.route("/landing_page")
+def open_landing_page():
+    return render_template("landing_page.html")
+
+
+@app.route("/new_prefs")
+def open_new_prefs():
+    db = get_db()
+    print(current_user.username)
+
+    user = db.users.find({"_id": current_user.username})
+    print(user)
+    return render_template("employer_prefs.html")
+
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
+
+@app.route('/clear_database')
+def clear():
+    db = get_db()
+    db.employees.delete_many({})
+    db.users.delete_many({})
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
