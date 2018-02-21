@@ -366,9 +366,11 @@ def open_new_prefs():
     db = get_db()
     print(current_user.username)
 
-    user = db.users.find({"_id": current_user.username})
-    print(user)
-    return render_template("employer_prefs.html")
+    user = db.users.find_one({"_id": current_user.username})
+    schedules = user["schedules"]
+    print(schedules)
+    return render_template("employer_prefs.html",
+                           schedules=schedules)
 
 
 @app.route('/test')
