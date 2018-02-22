@@ -373,9 +373,78 @@ def open_new_prefs():
                            schedules=schedules)
 
 
-@app.route('/test')
+@app.route("/data_entry")
+def add_data():
+    return render_template("data.html")
+
+
+@app.route('/data_to_database', methods=["POST"])
 def test():
-    return render_template('test.html')
+    employees = {}
+    days = []
+    shifts = {}
+    roles = []
+
+    # temporary variables because I can't be bothered to do this in a smarter way
+    names = []
+    min_shifts = []
+    max_shifts = []
+    training = []
+    shift_names = []
+    shift_info = []
+
+    employee_data = request.json["employee_data"]
+    duration_data = request.json["duration_data"]
+    shifts_data = request.json["shifts_data"]
+    roles_data = request.json["roles_data"]
+    name_data = request.json["name_data"]
+
+    employee_values = list(item.split("=") for item in employee_data.split("&"))
+    duration_values = list(item.split("=") for item in duration_data.split("&"))
+    shifts_values = list(item.split("=") for item in shifts_data.split("&"))
+    roles_values = list(item.split("=") for item in roles_data.split("&"))
+    name_value = list(item.split("=") for item in name_data.split("&"))
+
+    for item in employee_values:
+        if item[0] == 'name':
+            names.append(item[1])
+        if item[0] == 'min_shifts':
+            min_shifts.append(item[1])
+        if item[0] == 'max_shifts':
+            max_shifts.append(item[1])
+        if item[0] == 'training':
+            training.append(item[1])
+
+    for item in duration_values:
+        days.append(item[1])
+
+    for item in shifts_values:
+        if item[0] == "name":
+            shift_names.append(item[1])
+        if item[0] == "info":
+            shift_info.append(item[1])
+
+    for item in roles_values:
+        roles.append(item[1])
+
+    name = name_value[0][1]
+
+    for i in range(len(names)):
+        employees[names[i]] = {"min_shifts": min_shifts[i],
+                               "max_shifts": max_shifts[i],
+                               "training": training[i]}
+
+    for i in range(len(shift_names)):
+        shifts[shift_names[i]] = shift_info[i]
+
+    print(employees)
+    print(days)
+    print(shifts)
+    print(roles)
+    print(name)
+
+    return jsonify({"success": True, "message": "Data saved successfully"})
+
 
 
 @app.route('/clear_database')
