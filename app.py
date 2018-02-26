@@ -5,6 +5,8 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 from bson import json_util, ObjectId
+from collections import defaultdict
+from Schedule import ScheduleProcessor
 import json
 
 app = Flask(__name__)
@@ -386,6 +388,9 @@ def test():
     roles = []
 
     # temporary variables because I can't be bothered to do this in a smarter way
+    seniority_list = []
+    seniority = {}
+    prefs = defaultdict(lambda: defaultdict(lambda: {}))
     names = []
     min_shifts = []
     max_shifts = []
@@ -398,12 +403,24 @@ def test():
     shifts_data = request.json["shifts_data"]
     roles_data = request.json["roles_data"]
     name_data = request.json["name_data"]
+    employee_prefs_data = request.json["employee_prefs_data"]
+    seniority_data = request.json["seniority_data"]
 
     employee_values = list(item.split("=") for item in employee_data.split("&"))
     duration_values = list(item.split("=") for item in duration_data.split("&"))
     shifts_values = list(item.split("=") for item in shifts_data.split("&"))
     roles_values = list(item.split("=") for item in roles_data.split("&"))
     name_value = list(item.split("=") for item in name_data.split("&"))
+    employee_prefs_values = list(item.split("=") for item in employee_prefs_data.split("&"))
+    seniority_values = list(item.split("=") for item in seniority_data.split("&"))
+
+    for i in seniority_values:
+        i[0] = tuple(i[0].split("_"))
+
+    print(seniority_values)
+
+    for i in employee_prefs_values:
+        i[0] = tuple(i[0].split("_"))
 
     for item in employee_values:
         if item[0] == 'name':
@@ -427,21 +444,46 @@ def test():
     for item in roles_values:
         roles.append(item[1])
 
+    for i in range(len(shift_names)):
+        shifts[shift_names[i]] = shift_info[i]
+
+    for item in seniority_values:
+        info = item[0]
+        employee = int(info[0])
+        seniority[names[employee]] = [sen[1] for sen in seniority_values if int(sen[0][0]) == employee]
+
+    for item in employee_prefs_values:
+        info = item[0]
+        employee = int(info[0])
+        day = int(info[1])
+        shift = int(info[2])
+        prefs[names[employee]][days[day]][shift_names[shift]] = item[1]
+
+    # silly code to convert from defaultdict back to dict
+    # might not be necessary but don't want to have an obscure undiagnosable error in the future
+    prefs = dict(prefs)
+    for name in names:
+        prefs[name] = dict(prefs[name])
+
     name = name_value[0][1]
 
     for i in range(len(names)):
         employees[names[i]] = {"min_shifts": min_shifts[i],
                                "max_shifts": max_shifts[i],
-                               "training": training[i]}
+                               #"training": training[i],
+                               "training": [False for _ in roles],
+                               "shift_pref": prefs[names[i]],
+                               "seniority": seniority[names[i]]}
 
-    for i in range(len(shift_names)):
-        shifts[shift_names[i]] = shift_info[i]
-
+    print(seniority)
     print(employees)
     print(days)
     print(shifts)
     print(roles)
     print(name)
+
+    schedule_test = ScheduleProcessor(name, employees, shifts, days, roles)
+    schedule_test.build_schedule()
 
     return jsonify({"success": True, "message": "Data saved successfully"})
 
