@@ -450,14 +450,14 @@ def test():
     for item in seniority_values:
         info = item[0]
         employee = int(info[0])
-        seniority[names[employee]] = [sen[1] for sen in seniority_values if int(sen[0][0]) == employee]
+        seniority[names[employee]] = [int(sen[1]) for sen in seniority_values if int(sen[0][0]) == employee]
 
     for item in employee_prefs_values:
         info = item[0]
         employee = int(info[0])
         day = int(info[1])
         shift = int(info[2])
-        prefs[names[employee]][days[day]][shift_names[shift]] = item[1]
+        prefs[names[employee]][days[day]][shift_names[shift]] = int(item[1])
 
     # silly code to convert from defaultdict back to dict
     # might not be necessary but don't want to have an obscure undiagnosable error in the future
@@ -468,8 +468,8 @@ def test():
     name = name_value[0][1]
 
     for i in range(len(names)):
-        employees[names[i]] = {"min_shifts": min_shifts[i],
-                               "max_shifts": max_shifts[i],
+        employees[names[i]] = {"min_shifts": int(min_shifts[i]),
+                               "max_shifts": int(max_shifts[i]),
                                #"training": training[i],
                                "training": [False for _ in roles],
                                "shift_pref": prefs[names[i]],

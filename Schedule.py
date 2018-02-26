@@ -45,6 +45,7 @@ class ScheduleProcessor:
         self.training = [[employees[employee]["training"][role]
                           for role in range(self.num_roles)]
                          for employee in employees]
+        print(self.employee_info)
 
     def build_schedule(self):
         s = algorithm.Schedule(self.num_employees,
