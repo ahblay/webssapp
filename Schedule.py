@@ -1,6 +1,7 @@
-#from pymongo import MongoClient
+from pymongo import MongoClient
 from flask import g
 import zephyr_build_schedule as algorithm
+from bson import ObjectId
 
 
 class ScheduleProcessor:
@@ -73,19 +74,18 @@ class ScheduleProcessor:
             g.db_connection = MongoClient("localhost", 27017)["test"]
         return g.db_connection
 
-    def save_schedule_data(self):
+    def save_schedule_data(self, username):
         db = self.get_db()
-        schedules = db.schedules
 
-        schedules.insert({"name": self.name,
-                          "start": self.start_date,
-                          "end": self.end_date,
-                          "status": self.status,
-                          "user": self.user,
-                          "data": {"employer_setup": self.build_employer_setup_dict(),
-                                   "employee_setup": self.build_employee_setup_dict(),
-                                   "availability": self.build_availability_dict()
-                                  }})
+        db.users.update({"_id": username},
+                        {"$addToSet": {"schedules": {"_id": ObjectId(),
+                                                     "name": self.name,
+                                                     "employees": self.employees,
+                                                     "shifts": self.shifts,
+                                                     "days": self.days,
+                                                     "roles": self.roles}}})
+
+        print("Saved schedule data to database.")
 
     def get_schedule_data(self):
         db = self.get_db()

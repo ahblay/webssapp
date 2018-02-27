@@ -26,9 +26,10 @@
                  alt="Card image"
                  style="width:40%">
             <div class="card-body">
-              <h4 class="card-title">{{ schedule }}</h4>
+              <h4 class="card-title">{{ schedule['name'] }}</h4>
               <p class="card-text">This is a schedule thumbnail.</p>
-              <a href="#" class="btn btn-primary" id="open_schedule">Open Schedule</a>
+              <a href="/view_schedule/{{ schedule['_id'] }}" class="btn btn-primary"
+                 data-schedule-id="{{ schedule['_id'] }}">Open Schedule</a>
             </div>
           </div>
         </div>
@@ -42,4 +43,8 @@
 </div>
 
 </body>
+{% endblock %}
+
+{% block js %}
+<script src="/static/new_user.js" type="text/javascript"></script>
 {% endblock %}

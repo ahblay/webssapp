@@ -84,7 +84,7 @@ def create_account():
     print(pass_hash)
 
     try:
-        users.insert({"_id": username, "email": email, "pwd": pass_hash, "schedules": {}})
+        users.insert({"_id": username, "email": email, "pwd": pass_hash, "schedules": []})
         print("user created")
         return jsonify({"success": True, "message": "User added successfully"})
     except DuplicateKeyError:
@@ -375,6 +375,18 @@ def open_new_prefs():
                            schedules=schedules)
 
 
+@app.route("/view_schedule/<_id>")
+def view_schedule(_id=None):
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id associated with button."})
+    db = get_db()
+    user = db.users.find_one({"_id": current_user.username})
+    for schedule in user["schedules"]:
+        if schedule["_id"] == ObjectId(_id):
+            return render_template("view_schedule.html", schedule=schedule)
+    return jsonify({"success": False, "message": "Schedule id is not in database."})
+
+
 @app.route("/data_entry")
 def add_data():
     return render_template("data.html")
@@ -388,7 +400,6 @@ def test():
     roles = []
 
     # temporary variables because I can't be bothered to do this in a smarter way
-    seniority_list = []
     seniority = {}
     prefs = defaultdict(lambda: defaultdict(lambda: {}))
     names = []
@@ -475,15 +486,9 @@ def test():
                                "shift_pref": prefs[names[i]],
                                "seniority": seniority[names[i]]}
 
-    print(seniority)
-    print(employees)
-    print(days)
-    print(shifts)
-    print(roles)
-    print(name)
-
     schedule_test = ScheduleProcessor(name, employees, shifts, days, roles)
     schedule_test.build_schedule()
+    schedule_test.save_schedule_data(current_user.username)
 
     return jsonify({"success": True, "message": "Data saved successfully"})
 

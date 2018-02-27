@@ -146,3 +146,9 @@ $("#submit_all").on("click", function() {
         dataType: "json",
     });
 });
+
+$("#open_schedule").on("click", function() {
+    console.log("Button was clicked titties galore")
+    var _id = ("#open_schedule").getAttribute("data-schedule-id");
+    $.get("/view_schedule" + _id)
+})
