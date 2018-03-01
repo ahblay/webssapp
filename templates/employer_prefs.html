@@ -1,49 +1,108 @@
 {% extends "base.html" %}
 
-{% block containedcontent %}
 <head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <meta name="user_schedules" content="{{ schedules }}">
+    {% block optionalmeta %}
+    <title>Schedules</title>
+
+    <meta name="user_schedules" content="{{ schedules }}">
+    <style>
+        .wrapper {
+            height: 100%;
+            display: flex;
+        }
+        .row.content {flex: 1}
+        .main {
+            padding-bottom: 100px;
+        }
+        .sidenav {
+            flex: 1;
+            padding-top: 20px;
+            padding-bottom: 100px;
+            background-color: #f1f1f1;
+            height: 100%;
+        }
+        .schedules-row {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+    </style>
+    {% endblock %}
 </head>
 
 <body>
 
-<div class="container">
-  <h2>Schedules</h2>
-    <div class="row">
+{% block containedcontent %}
 
-        {% for schedule in schedules %}
-        <div class="col-sm-6">
-          <div class="card" style="width:400px">
-            <img class="card-img-top"
-                 src='{{url_for("static", filename="document_icon.png")}}'
-                 alt="Card image"
-                 style="width:40%">
-            <div class="card-body">
-              <h4 class="card-title">{{ schedule['name'] }}</h4>
-              <p class="card-text">This is a schedule thumbnail.</p>
-              <a href="/view_schedule/{{ schedule['_id'] }}" class="btn btn-primary"
-                 data-schedule-id="{{ schedule['_id'] }}">Open Schedule</a>
-            </div>
-          </div>
+<div class="container-fluid text-center wrapper">
+    <div class="row content">
+
+        <!--side border-->
+        <div class="col-sm-2 sidenav">
         </div>
-        {% endfor %}
 
+        <!--center content-->
+        <div class="col-sm-8 main">
+            <p></p>
+            <h2 class="text-center">Schedules</h2>
+            <p></p>
+            <p class="text-left">Welcome to your schedules! Please select whichever schedule you would like to
+                modify or distribute. Schedules may be arranged by date created, date of use, or name. </p>
+            <p></p>
+
+            <!--buttons-->
+            <div class="row">
+                <div class="col text-left">
+                    <div class="btn-group btn-group-md float-left" role="group">
+                        <button type="button" class="btn btn-dark">Date Created</button>
+                        <button type="button" class="btn btn-dark">Date of Use</button>
+                        <button type="button" class="btn btn-dark">Name</button>
+                    </div>
+                </div>
+                <div class="col test-right">
+                    <a href="/data_entry" class="btn btn-dark float-right" id="new_schedule_button">Create New Schedule</a>
+                </div>
+            </div>
+            <p></p>
+
+            <!--schedule thumbnails-->
+            <div class="row text-center schedules-row">
+                <div class="card-deck">
+                {% for schedule in schedules %}
+                    <div class="card text-center mb-3" style="max-width:208px; min-width:208px;">
+                        <div class="card-header">
+                            <p></p>
+                            <h4 class="card-title">{{ schedule['name'] }}</h4>
+                        </div>
+                        <div class="text-center">
+                            <p></p>
+                            <img
+                                 src='{{url_for("static", filename="document_icon.png")}}'
+                                 alt="Card image"
+                                 style="width:40%">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">This is a schedule thumbnail.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/view_schedule/{{ schedule['_id'] }}" class="btn btn-dark"
+                               data-schedule-id="{{ schedule['_id'] }}">Open Schedule</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!--side border-->
+        <div class="col-sm-2 sidenav">
+        </div>
     </div>
 </div>
 
-<div class="container">
-    <a href="/data_entry" class="btn btn-primary" id="new_schedule_button">Create New Schedule</a>
-</div>
+{% endblock %}
 
 </body>
-{% endblock %}
 
 {% block js %}
 <script src="/static/new_user.js" type="text/javascript"></script>

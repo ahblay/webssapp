@@ -130,6 +130,7 @@ $("#add_seniority").on("click", function() {
 });
 
 $("#submit_all").on("click", function() {
+    console.log("Submit button clicked.")
     let info = {"employee_data": $("#employee_form").serialize(),
                 "duration_data": $("#duration_form").serialize(),
                 "shifts_data": $("#shifts_form").serialize(),
@@ -147,8 +148,3 @@ $("#submit_all").on("click", function() {
     });
 });
 
-$("#open_schedule").on("click", function() {
-    console.log("Button was clicked titties galore")
-    var _id = ("#open_schedule").getAttribute("data-schedule-id");
-    $.get("/view_schedule" + _id)
-})

@@ -486,9 +486,12 @@ def test():
                                "shift_pref": prefs[names[i]],
                                "seniority": seniority[names[i]]}
 
+    print(employees)
+
     schedule_test = ScheduleProcessor(name, employees, shifts, days, roles)
     schedule_test.build_schedule()
     schedule_test.save_schedule_data(current_user.username)
+    print("Schedule added to database.")
 
     return jsonify({"success": True, "message": "Data saved successfully"})
 

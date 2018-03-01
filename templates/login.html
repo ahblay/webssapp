@@ -1,25 +1,69 @@
 {% extends "base.html" %}
 
+{% block optionalmeta %}
+<title>Log In</title>
+<style>
+    .wrapper {
+        height: 100%;
+        display: flex;
+    }
+    .row.content {flex: 1}
+    .main {
+        padding-bottom: 100px;
+    }
+    .sidenav {
+        flex: 1;
+        padding-top: 20px;
+        padding-bottom: 100px;
+        background-color: #f1f1f1;
+        height: 90vh;
+    }
+    .login-card {
+        padding: 1em;
+    }
+    .main-content {
+        padding-top: 5em;
+    }
+</style>
+{% endblock %}
+
 {% block containedcontent %}
-<div class="container" id="rosytaint">
+<div class="container-fluid text-center wrapper">
+    <div class="row content">
 
-<form>
-    <div class="form-group">
-        <label for="login-username">Username:</label>
-        <input type="text" class="form-control" id="login-username">
-    </div>
-    <div class="form-group">
-        <label for="login-pwd">Password:</label>
-        <input type="password" class="form-control" id="login-pwd">
-    </div>
-    <div class="checkbox">
-        <label><input type="checkbox"> Remember me</label>
-    </div>
-    <button type="button" id="log-me-in" class="btn btn-default">Submit</button>
-</form>
+        <!--side border-->
+        <div class="col-sm-4 sidenav">
+        </div>
 
+        <!--main content-->
+        <div class="col-sm-4 main-content">
+            <br>
+            <h3>Log In</h3>
+            <br>
+            <div class="card bg-light login-card">
+                <form>
+                    <div class="form-group">
+                        <label for="login-username">Username:</label>
+                        <input type="text" class="form-control" id="login-username">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-pwd">Password:</label>
+                        <input type="password" class="form-control" id="login-pwd">
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox"> Remember me</label>
+                    </div>
+                    <br>
+                    <button type="button" id="log-me-in" class="btn btn-dark">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!--side border-->
+        <div class="col-sm-4 sidenav">
+        </div>
+    </div>
 </div>
-
 {% endblock %}
 
 {% block js %}
