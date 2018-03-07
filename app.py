@@ -167,22 +167,14 @@ def add_employee():
     db = get_db()
     db.employees.insert({
         "name": name,
-        "shift_length": 0,
+        "min_shifts": 0,
         "max_hours": 0,
         "seniority": 0,
         "total_prefs": {"week_one": {day: {"prefs": [], "available": False} for day in week_one_ordinal_list},
                         "week_two": {day: {"prefs": [], "available": False} for day in week_two_ordinal_list}}
         })
 
-    print(db.employees.find_one({'name': name}))
-
-    """
-    db.preferences.insert({
-        "employee_id": _id,
-        "available": False,
-        "prefs": [],
-        })
-        """
+    print(db.employees.find_one({'name': name}) + " has been added to the database.")
 
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
@@ -383,7 +375,8 @@ def view_schedule(_id=None):
     user = db.users.find_one({"_id": current_user.username})
     for schedule in user["schedules"]:
         if schedule["_id"] == ObjectId(_id):
-            return render_template("view_schedule.html", schedule=schedule)
+            print(schedule)
+            return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
     return jsonify({"success": False, "message": "Schedule id is not in database."})
 
 
@@ -409,13 +402,16 @@ def test():
     shift_names = []
     shift_info = []
 
-    employee_data = request.json["employee_data"]
-    duration_data = request.json["duration_data"]
-    shifts_data = request.json["shifts_data"]
-    roles_data = request.json["roles_data"]
-    name_data = request.json["name_data"]
-    employee_prefs_data = request.json["employee_prefs_data"]
-    seniority_data = request.json["seniority_data"]
+    def restore_whitespace(str):
+        return str.replace("%20", " ")
+
+    employee_data = restore_whitespace(request.json["employee_data"])
+    duration_data = restore_whitespace(request.json["duration_data"])
+    shifts_data = restore_whitespace(request.json["shifts_data"])
+    roles_data = restore_whitespace(request.json["roles_data"])
+    name_data = restore_whitespace(request.json["name_data"])
+    employee_prefs_data = restore_whitespace(request.json["employee_prefs_data"])
+    seniority_data = restore_whitespace(request.json["seniority_data"])
 
     employee_values = list(item.split("=") for item in employee_data.split("&"))
     duration_values = list(item.split("=") for item in duration_data.split("&"))
@@ -444,6 +440,7 @@ def test():
             training.append(item[1])
 
     for item in duration_values:
+        print(item)
         days.append(item[1])
 
     for item in shifts_values:
@@ -476,7 +473,7 @@ def test():
     for name in names:
         prefs[name] = dict(prefs[name])
 
-    name = name_value[0][1]
+    name = name_value[0][1].replace("%20", " ")
 
     for i in range(len(names)):
         employees[names[i]] = {"min_shifts": int(min_shifts[i]),
@@ -494,6 +491,22 @@ def test():
     print("Schedule added to database.")
 
     return jsonify({"success": True, "message": "Data saved successfully"})
+
+
+@app.route('/load_html/<path:path_to_html>')
+def load_html(path_to_html=None):
+
+    if path_to_html is None:
+        return jsonify({"success": False, "message": "No path specified."})
+
+    print(path_to_html)
+
+    return render_template(path_to_html)
+
+@login_required
+@app.route('/employees')
+def employee_setup():
+    return render_template("employee_setup.html")
 
 
 

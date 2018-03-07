@@ -145,6 +145,10 @@ $("#submit_all").on("click", function() {
         data: JSON.stringify(info),
         contentType: 'application/json;charset=UTF-8',
         dataType: "json",
+    }).done(function(){
+        window.location.replace("/new_prefs")
+    }).fail(function(jqXHR, status, error){
+        alert(status + ": " + error);
     });
 });
 

@@ -10,7 +10,8 @@
               integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
               crossorigin="anonymous">
 
-
+        <!-- Font Awesome -->
+        <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 
         <style>
         html { height: 100%; }
@@ -47,13 +48,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home
-                                <span class="sr-only">(current)</span>
-                            </a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('open_new_prefs') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
+                            <a class="nav-link" href="{{ url_for('employee_setup') }}">Employees</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"
