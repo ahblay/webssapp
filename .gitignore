@@ -1,5 +1,6 @@
 *.py[cod]
 __pycache__/
+.idea/
 
 # using this folder for the mongo db, maybe other stuff
 data/
