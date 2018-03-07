@@ -496,6 +496,31 @@ def test():
     return jsonify({"success": True, "message": "Data saved successfully"})
 
 
+@app.route('/add_schedule', methods=["POST"])
+def add_schedule():
+    schedule_name = request.form.get("schedule_name", None)
+    start = request.form.get("start", None)
+    end = request.form.get("end", None)
+
+    schedule = ScheduleProcessor(schedule_name, start, end)
+    schedule.save_schedule_data(current_user.username)
+
+    return jsonify({"success": True, "message": "New schedule saved."})
+
+
+@app.route('/delete_schedule/<_id>', methods=["POST"])
+def delete_schedule(_id=None):
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id associated with button."})
+    db = get_db()
+    user = db.users.find_one({"_id": current_user.username})
+    schedules = user["schedules"]
+    for schedule in schedules:
+        if schedule["_id"] == ObjectId(_id):
+            db.users.update({"_id": current_user.username}, {"$pull": {"schedules": schedule}})
+            return render_template("employer_prefs.html", schedules=schedules)
+    return jsonify({"success": False, "message": "Schedule id is not in database."})
+
 
 @app.route('/clear_database')
 def clear():
