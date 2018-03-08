@@ -440,7 +440,6 @@ def test():
             training.append(item[1])
 
     for item in duration_values:
-        print(item)
         days.append(item[1])
 
     for item in shifts_values:
@@ -495,13 +494,39 @@ def test():
 
 @app.route('/load_html/<path:path_to_html>')
 def load_html(path_to_html=None):
-
+    
     if path_to_html is None:
         return jsonify({"success": False, "message": "No path specified."})
-
+    
     print(path_to_html)
 
     return render_template(path_to_html)
+
+@app.route('/add_schedule', methods=["POST"])
+def add_schedule():
+    schedule_name = request.form.get("schedule_name", None)
+    start = request.form.get("start", None)
+    end = request.form.get("end", None)
+
+    schedule = ScheduleProcessor(schedule_name, start, end)
+    schedule.save_schedule_data(current_user.username)
+
+    return jsonify({"success": True, "message": "New schedule saved."})
+
+
+@app.route('/delete_schedule/<_id>', methods=["POST"])
+def delete_schedule(_id=None):
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id associated with button."})
+    db = get_db()
+    user = db.users.find_one({"_id": current_user.username})
+    schedules = user["schedules"]
+    for schedule in schedules:
+        if schedule["_id"] == ObjectId(_id):
+            db.users.update({"_id": current_user.username}, {"$pull": {"schedules": schedule}})
+            return render_template("employer_prefs.html", schedules=schedules)
+    return jsonify({"success": False, "message": "Schedule id is not in database."})
+
 
 @login_required
 @app.route('/employees')

@@ -1,3 +1,8 @@
+$("#add-employee").on("click", function(){
+    console.log("Attempting to show add-employee modal.")
+    $("#add-employee-modal").show();
+});
+
 $("#add-employee-submit").on("click", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     $.ajax({

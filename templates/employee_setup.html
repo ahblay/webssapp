@@ -4,10 +4,14 @@
 <div class="row">
     <div class="col-md-1" style="background-color: #f1f1f1"></div>
     <div class="col-md-10">
+        <div class="alert alert-primary">The information on this page will be loaded when a new schedule is created.
+            If you wish to make changes that apply to only one schedule, go to the "Home" page and select the schedule
+            you wish to manage, then go to the "Employee Management" tab.</div>
         <div class="row">
             <div class="col-md-12">
-                <button type="button" class="btn btn-success">Add Employee</button>
-                <button type="button" class="btn btn-info">Save</button>
+                <button type="button" class="btn btn-success" id="add-employee" data-target="#add-employee-modal" data-toggle="modal">Add Employee</button>
+                <button type="button" class="btn btn-success" id="update-employees">Update Selected</button>
+                <button type="button" class="btn btn-info"><span class="far fa-save"></span> Save</button>
                 <button type="button" class="btn btn-danger float-right">Remove Selected</button>
             </div>
         </div>
@@ -45,8 +49,58 @@
           <div class="form-group">
               <label for="add-employee-name-input">Employee Name</label>
               <input type="text" class="form-control" id="add-employee-name-input" placeholder="Employee Name">
+              <div class="row">
+                  <div class="col-md-4">
+                      <label for="min-shifts-input">Minimum Shifts</label>
+                      <div class="input-group" id="min-shifts-input">
+                        <input type="text" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <label for="max-shifts-input">Maximum Shifts</label>
+                      <div class="input-group" id="max-shifts-input">
+                        <input type="text" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <label for="max-shifts-input">Seniority</label>
+                      <div class="input-group" id="seniority-input">
+                        <input type="text" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                      <label for="role-input">Eligible Roles (Not case sensitive. Separate with commas.)</label>
+                      <input type="text" class="form-control" placeholder="e.g Host, Waiter, Bartender" id="role-input">
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                      <p>Additional Options</p>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="training-flag" value="training">
+                          <label class="form-check-input" for="training-flag">Training</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="inactive-flag" value="inactive">
+                          <label class="form-check-input" for="inactive-flag">Inactive</label>
+                      </div>
+                  </div>
+              </div>
           </div>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -55,5 +109,9 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script src="/static/employee_setup.js" type="text/javascript"></script>
 {% endblock %}
 
