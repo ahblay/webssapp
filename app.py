@@ -502,6 +502,7 @@ def load_html(path_to_html=None):
 
     return render_template(path_to_html)
 
+
 @app.route('/add_schedule', methods=["POST"])
 def add_schedule():
     schedule_name = request.form.get("schedule_name", None)
@@ -533,6 +534,11 @@ def delete_schedule(_id=None):
 def employee_setup():
     return render_template("employee_setup.html")
 
+
+@login_required
+@app.route('/settings')
+def settings():
+    return render_template("settings.html")
 
 
 @app.route('/clear_database')

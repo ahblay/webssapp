@@ -42,7 +42,13 @@
                         <h5 style="text-align: center">Quick Info Panel</h5>
                         <!-- Assigned employees counter -->
                         <span title="Employees Assigned to Schedule" class="fas fa-users fa-3x"></span>
-                        <span style="font-size: 200%">{{ schedule["employees"]|length }}</span>
+                        <span style="font-size: 200%">
+                            {% if schedule["employees"] is none %}
+                            0
+                            {% else %}
+                            {{ schedule["employees"]|length }}
+                            {% endif %}
+                        </span>
 
                         <!-- Schedule duration -->
 
