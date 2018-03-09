@@ -7,7 +7,7 @@ from pymongo.errors import DuplicateKeyError
 from bson import json_util, ObjectId
 from collections import defaultdict
 from Schedule import ScheduleProcessor
-import json
+import pprint
 
 app = Flask(__name__)
 app.secret_key = "Peter, that bulge in your pants is causing a tidal wave."
@@ -133,7 +133,9 @@ def get_db():
 # goes into the db collection and returns a list of all existing employees
 def get_employees():
     db = get_db()
-    return list(db.employees.find())
+
+    employees = db.users.find_one({"_id": current_user.username})['employees']
+    return list(employees)
 
 
 # goes into collection and returns a dict {emp_id: employee}
@@ -145,36 +147,27 @@ def get_employees_dict():
 # adds employee to the database
 @app.route("/_add_employee", methods=["POST"])
 def add_employee():
-
     # gets name from form in add employee modal
-    name = request.form.get("name", None)
-
-    date_ordinal = monday.toordinal()
-
-    week_one_ordinal_list = []
-    for i in list(range(date_ordinal, date_ordinal + 7)):
-        week_one_ordinal_list.append(str(i))
-
-    week_two_ordinal_list = []
-    for i in list(range(date_ordinal + 7, date_ordinal + 14)):
-        week_two_ordinal_list.append(str(i))
+    print(request.json)
 
     # if form is empty, return jsonify object indicating failure
-    if name is None:
-        return jsonify({"success": False, "message": "No POST name"})
+    if request.json is None:
+        return jsonify({"success": False, "message": "No JSON received by the server."})
 
     # create new employee entry in collection with the name entered in the form and all other fields default
     db = get_db()
-    db.employees.insert({
-        "name": name,
-        "min_shifts": 0,
-        "max_hours": 0,
-        "seniority": 0,
-        "total_prefs": {"week_one": {day: {"prefs": [], "available": False} for day in week_one_ordinal_list},
-                        "week_two": {day: {"prefs": [], "available": False} for day in week_two_ordinal_list}}
-        })
+    db.users.update({"_id": current_user.username}, {"$addToSet": {"employees": {
+        "_id": ObjectId(),
+        "name": request.json['name'],
+        "min_shifts": request.json['min_shifts'],
+        "max_shifts": request.json['max_shifts'],
+        "seniority": request.json['seniority'],
+        "roles": request.json['roles'],
+        "training": request.json['training'],
+        "inactive": request.json['inactive']
+        }}})
 
-    print(db.employees.find_one({'name': name}) + " has been added to the database.")
+    print("{} has been added to the database.".format(request.json['name']))
 
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
@@ -531,8 +524,67 @@ def delete_schedule(_id=None):
 @login_required
 @app.route('/employees')
 def employee_setup():
-    return render_template("employee_setup.html")
+    employees = get_employees()
+    return render_template("employee_setup.html", employees=employees)
 
+@login_required
+@app.route('/_edit_employees', methods=['POST'])
+def edit_employees():
+    # gets name from form in add employee modal
+    print(request.json)
+    _ids = request.json['_ids']
+
+    # if form is empty, return jsonify object indicating failure
+    if request.json is None:
+        return jsonify({"success": False, "message": "No JSON received by the server."})
+
+    db = get_db()
+
+    filtered_dict = {}
+    no_change = request.json['no_change']
+    for key in request.json.keys():
+        if key == 'training' or key == "inactive":
+            if no_change:
+                continue
+            else:
+                filtered_dict[key] = request.json[key]
+                continue
+
+        if key == 'no_change' or key == '_ids':
+            continue
+
+        if request.json[key] != "":
+            if request.json[key][0] == "":
+                continue
+
+            filtered_dict[key] = request.json[key]
+
+    for key in filtered_dict:
+        for _id in _ids:
+            print("Key: {} | Value: {}".format(key, filtered_dict[key]))
+            db.users.update({"employees._id": ObjectId(_id)}, {"$set": {"employees.$."+key: filtered_dict[key]}})
+                            #{"$set": {"employees.$" + key: filtered_dict[key]}})
+
+    pprint.pprint(db.users.find_one({'_id': current_user.username}))
+    '''    
+    # create new employee entry in collection with the name entered in the form and all other fields default
+    db = get_db()
+    db.users.update({"_id": current_user.username}, {"$addToSet": {"employees": {
+        "_id": ObjectId(),
+        "name": request.json['name'],
+        "min_shifts": request.json['min_shifts'],
+        "max_shifts": request.json['max_shifts'],
+        "seniority": request.json['seniority'],
+        "roles": request.json['roles'],
+        "training": request.json['training'],
+        "inactive": request.json['inactive']
+    }}})
+
+    print("{} has been added to the database.".format(request.json['name']))
+    '''
+
+    # return a jsonify success object
+    return jsonify({"success": True, "message": "Employee added successfully"})
 
 
 @app.route('/clear_database')
