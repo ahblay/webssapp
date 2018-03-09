@@ -76,7 +76,7 @@
         </div>
     </div>
     <div class="row">
-        <div class='smgr-tab' id="shift-setup" style="height: 500px; background-color: green; min-width: 100%"></div>
+        <div class='smgr-tab' id="shift-setup" style="height: 500px; min-width: 100%"></div>
         <div class='smgr-tab' id="emp-management" style="display: none"></div>
         <div class='smgr-tab' id="emp-prefs" style="height: 500px; background-color: pink; min-width: 100%; display: none"></div>
         <div class='smgr-tab' id="schedule-options" style="height: 500px; background-color: orange; min-width: 100%; display: none"></div>
@@ -87,4 +87,6 @@
 
 {% block js %}
     <script src="/static/schedule_manager/schedule_manager_base.js" type="text/javascript"></script>
+    <!--async call necessary because script loads before referenced html file-->
+    <script src="/static/schedule_manager/shift_setup.js" type="text/javascript" async></script>
 {% endblock %}
