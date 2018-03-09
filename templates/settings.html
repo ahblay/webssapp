@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block optionalmeta %}
+<title>Settings</title>
+
+<style>
+    .card-content {
+        padding-left: 1em;
+        padding-bottom: 1em;
+        padding-top: 1em;
+    }
+</style>
+{% endblock %}
+
+{% block containedcontent %}
+<div class="container-fluid wrapper">
+    <div class="row">
+
+        <div class="col-sm-1">
+        </div>
+
+        <div class="col-sm-10">
+            <br>
+            <h2>Settings</h2>
+            <p>Update our algorithm to take into account your personal preferences on constraints, training shifts,
+            seniority and other options.</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="card bg-light">
+                        <div class="card-content">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="training">
+                                <label class="custom-control-label" for="training">Training</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="seniority">
+                                <label class="custom-control-label" for="seniority">Seniority</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="card bg-light">
+                        <div class="card-content">
+                            <h5 class="text-center">Constraint Settings</h5>
+                            <p class="text-center">Toggle switches to select your preferred constraints for your schedule.
+                            </p>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="constraint1">
+                                <label class="custom-control-label" for="constraint1">Constraint1</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="constraint2">
+                                <label class="custom-control-label" for="constraint2">Constraint2</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="constraint3">
+                                <label class="custom-control-label" for="constraint3">Constraint3</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="constraint4">
+                                <label class="custom-control-label" for="constraint4">Constraint4</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card bg-light">
+                        <div class="card-content">
+                            <h5 class="text-center">Data</h5>
+                            <ul>
+                                <li>Optimization Time: ******** minutes</li>
+                                <li>Number of Combinations: 2,555,645,321</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-1">
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{% endblock %}

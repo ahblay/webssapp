@@ -238,7 +238,6 @@ $(".close-schedule").on("click", function () {
 })
 
 var removeSchedule = $("[data-schedule-id='test']")
-console.log($(".close-schedule"))
 var removeScheduleModal = document.getElementById("confirm-delete-schedule")
 
 
@@ -247,4 +246,24 @@ $("#cancel-delete").on("click", function () {
     bd.remove();
 })
 
+function dateToString(date) {
+    var date_array = date.split("/");
+    date_array[0] = Number(date_array[0])
+    var month_array = ["January",
+                       "February",
+                       "March",
+                       "April",
+                       "May",
+                       "June",
+                       "July",
+                       "August",
+                       "September",
+                       "October",
+                       "November",
+                       "December"]
+    return month_array[date_array[0] - 1] + " " + date_array[1] + ", " + date_array[2]
+}
 
+$(".card-text").each(function(){
+    dates = $(this).data("dates").split(" ")
+    $(this).append("<b>Start: </b>" + dateToString(dates[0]) + "<br /><b>End: </b>" + dateToString(dates[1]))});

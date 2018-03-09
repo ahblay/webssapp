@@ -21,8 +21,8 @@
         .row.content {flex: 1}
         .sidenav {
             flex: 1;
-            padding-top: 20px;
-            padding-bottom: 100px;
+            padding-top: 0px;
+            padding-bottom: 0px;
             background-color: #f1f1f1;
             height: 100%;
         }
@@ -160,7 +160,9 @@
                                  style="width:40%">
                         </div>
                         <div class="card-body">
-                            <p class="card-text">This is a schedule thumbnail.</p>
+                            <p class="card-text"
+                               data-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}">
+                            </p>
                         </div>
                         <div class="card-footer">
                             <a href="/view_schedule/{{ schedule['_id'] }}" class="btn btn-dark">Open Schedule</a>
