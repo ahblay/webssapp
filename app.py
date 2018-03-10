@@ -53,11 +53,11 @@ def load_user(user_id):
 
     db = get_db()
 
-    user = db.users.find_one({"_id": user_id})
+    user = db.users.find_one({"username": user_id})
     if not user:
         return None
 
-    return User(user['_id'])
+    return User(user['username'])
 
 
 @app.route("/new_user")
@@ -84,7 +84,7 @@ def create_account():
     print(pass_hash)
 
     try:
-        users.insert({"_id": username, "email": email, "pwd": pass_hash, "schedules": []})
+        users.insert({"username": username, "email": email, "pwd": pass_hash})
         print("user created")
         return jsonify({"success": True, "message": "User added successfully"})
     except DuplicateKeyError:
@@ -104,10 +104,10 @@ def login():
     username = request.form.get("username", None)
     password = request.form.get('password', None)
 
-    user = db.users.find_one({"_id": username})
-    print(user)
+    user = db.users.find_one({"username": username})
+    print("Attempting to log " + user['username'] + " in.")
     if user and User.validate_login(user['pwd'], password):
-        user_obj = User(user['_id'])
+        user_obj = User(user['username'])
         login_user(user_obj)
         flash("Logged in successfully", category='success')
         print("logged in")
@@ -134,7 +134,7 @@ def get_db():
 def get_employees():
     db = get_db()
 
-    employees = db.users.find_one({"_id": current_user.username})['employees']
+    employees = db.employees.find()
     return list(employees)
 
 
@@ -156,8 +156,9 @@ def add_employee():
 
     # create new employee entry in collection with the name entered in the form and all other fields default
     db = get_db()
-    db.users.update({"_id": current_user.username}, {"$addToSet": {"employees": {
-        "_id": ObjectId(),
+    employees = db.employees
+    employees.insert({
+        "username": current_user.username,
         "name": request.json['name'],
         "min_shifts": request.json['min_shifts'],
         "max_shifts": request.json['max_shifts'],
@@ -165,11 +166,12 @@ def add_employee():
         "roles": request.json['roles'],
         "training": request.json['training'],
         "inactive": request.json['inactive']
-        }}})
+        })
 
     print("{} has been added to the database.".format(request.json['name']))
+    print(list(db.employees.find_one({"name": "Garbre"})))
 
-    # return a jsonify success object
+    # return a jsonify success object1
     return jsonify({"success": True, "message": "Employee added successfully"})
 
 
@@ -353,8 +355,7 @@ def open_new_prefs():
     db = get_db()
     print(current_user.username)
 
-    user = db.users.find_one({"_id": current_user.username})
-    schedules = user["schedules"]
+    schedules = db.schedules.find({"username": current_user.username})
     print(schedules)
     return render_template("employer_prefs.html",
                            schedules=schedules)
@@ -365,8 +366,9 @@ def view_schedule(_id=None):
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id associated with button."})
     db = get_db()
-    user = db.users.find_one({"_id": current_user.username})
-    for schedule in user["schedules"]:
+
+    schedules = db.schedules.find({"username": current_user.username})
+    for schedule in schedules:
         if schedule["_id"] == ObjectId(_id):
             print(schedule)
             return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
@@ -513,13 +515,10 @@ def delete_schedule(_id=None):
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id associated with button."})
     db = get_db()
-    user = db.users.find_one({"_id": current_user.username})
-    schedules = user["schedules"]
-    for schedule in schedules:
-        if schedule["_id"] == ObjectId(_id):
-            db.users.update({"_id": current_user.username}, {"$pull": {"schedules": schedule}})
-            return render_template("employer_prefs.html", schedules=schedules)
-    return jsonify({"success": False, "message": "Schedule id is not in database."})
+
+    db.schedules.remove({"_id": _id}, {"justOne": True})
+    schedules = db.schedules.find({"username": current_user.username})
+    return render_template("employer_prefs.html", schedules=schedules)
 
 
 @login_required
@@ -598,6 +597,7 @@ def clear():
     db = get_db()
     db.employees.delete_many({})
     db.users.delete_many({})
+    db.schedules.delete_many({})
     return render_template('index.html')
 
 

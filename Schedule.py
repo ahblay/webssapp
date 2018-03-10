@@ -104,15 +104,14 @@ class ScheduleProcessor:
     def save_schedule_data(self, username):
         db = self.get_db()
 
-        db.users.update({"_id": username},
-                        {"$addToSet": {"schedules": {"_id": ObjectId(),
-                                                     "name": self.name,
-                                                     "start_date": self.start_date,
-                                                     "end_date": self.end_date,
-                                                     "employees": self.employees,
-                                                     "shifts": self.shifts,
-                                                     "days": self.days,
-                                                     "roles": self.roles}}})
+        db.schedules.insert({"username": username,
+                             "name": self.name,
+                             "start_date": self.start_date,
+                             "end_date": self.end_date,
+                             "employees": self.employees,
+                             "shifts": self.shifts,
+                             "days": self.days,
+                             "roles": self.roles})
 
         print("Saved schedule data to database.")
 
