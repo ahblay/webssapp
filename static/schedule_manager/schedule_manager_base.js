@@ -34,3 +34,26 @@ function fetch_tab_bodies(){
         console.log("Loaded html from " + html_path + " to #" + tab_ids[i]);
     };
 };
+
+function dateToString(date) {
+    var date_array = date.split("/");
+    date_array[0] = Number(date_array[0])
+    var month_array = ["January",
+                       "February",
+                       "March",
+                       "April",
+                       "May",
+                       "June",
+                       "July",
+                       "August",
+                       "September",
+                       "October",
+                       "November",
+                       "December"]
+    return month_array[date_array[0] - 1] + " " + date_array[1] + ", " + date_array[2]
+}
+
+$(function () {
+    dates = $(".dates").data("dates").split(" ")
+    $(".dates").append(dateToString(dates[0]) + "<b> to </b>" + dateToString(dates[1]))});
+

@@ -11,7 +11,10 @@
                 <button class="btn btn-outline-dark" id="page-left" disabled>&laquo;</button>
                 <button class="btn btn-outline-dark" id="page-right">&raquo;</button>
         </div>
-        <button class="btn btn-outline-dark float-right" id="add-shift" style="padding-right: 1em;">Add Shift</button>
+        <div class="btn-group float-right">
+            <button class="btn btn-outline-dark float-right" id="add-shift">Add Shift</button>
+            <button class="btn btn-outline-dark float-right" id="save-shifts">Save Shifts</button>
+        </div>
     </div>
 </div>
 
@@ -23,10 +26,11 @@
 
     <!--main content-->
     <div class="col-sm-10">
-        <div class="row shift-table">
-            <table class="table table-bordered">
+        <div class="row">
+            <table class="table table-bordered shift-table">
                 <thead>
                     <tr>
+                        <th scope="col">Name</th>
                         <th scope="col">Start Time</th>
                         <th scope="col">End Time</th>
                         <th scope="col">Length</th>
@@ -34,8 +38,7 @@
                         <th scope="col">Role</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
@@ -46,3 +49,4 @@
 </div>
 
 <!--script file path because it doesn't run when placed in schedule_manager_base.html-->
+<!--this should not be here because it sticks the script call directly in the middle of the html block-->

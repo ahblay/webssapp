@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-4" style="background: red">
                     <h2>{{ schedule["name"] }}</h2>
-                    <h5>Start Date - End Date</h5>
+                    <h5 class="dates" data-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"></h5>
                 </div>
                 <div class="col-8" style="background: blue">
                     <div id="quick-info-panel">
@@ -68,7 +68,13 @@
             <button type="button" class="btn-secondary">
                 <span class="fas fa-angle-left fa-3x"></span>
             </button>
-            <button type="button" class="btn-secondary active" data-view-id="shift-setup" style="flex: 1">Shift Setup</button>
+            <button type="button"
+                    class="btn-secondary active"
+                    id="shift-setup-tab"
+                    data-view-id="shift-setup"
+                    data-schedule-id="{{ schedule['_id'] }}"
+                    data-schedule-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"
+                    style="flex: 1">Shift Setup</button>
             <button type="button" class="btn-secondary" data-view-id="emp-management" style="flex: 1">Manage Employees</button>
             <button type="button" class="btn-secondary" data-view-id="emp-prefs" style="flex: 1">Employee Preferences</button>
             <button type="button" class="btn-secondary" data-view-id="schedule-options" style="flex: 1">Schedule Options</button>
@@ -89,4 +95,5 @@
     <script src="/static/schedule_manager/schedule_manager_base.js" type="text/javascript"></script>
     <!--async call necessary because script loads before referenced html file-->
     <script src="/static/schedule_manager/shift_setup.js" type="text/javascript" async></script>
+
 {% endblock %}

@@ -1,26 +1,81 @@
 console.log("shift_setup.js is running.")
 
-$("#page-right").on("click", function(){
-    console.log("Page right clicked.")
-    //$(this).prop('disabled', true);
-    $('#page-left').prop('disabled', false);
-});
+var schedule_id = "default assignment";
+var schedule_dates = "default assignment";
 
-function create_row(attribute){
+$(function () {
+    schedule_id = $("#shift-setup-tab").data("schedule-id")
+    schedule_dates = $("#shift-setup-tab").data("schedule-dates")
+    $.getJSON("/api/get_shift_data/" + schedule_id, renderShiftTable)
+})
+
+function renderShiftTable(data) {
+    console.log(data)
+    for (let i = 0; i < Object.keys(data).length; i++) {
+        create_row("tbody", Object.keys(data)[i], data[Object.keys(data)[i]])
+    }
+}
+
+function createDates(dates) {
+    var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var month_array = ["January",
+                       "February",
+                       "March",
+                       "April",
+                       "May",
+                       "June",
+                       "July",
+                       "August",
+                       "September",
+                       "October",
+                       "November",
+                       "December"]
+    list = dates.split(" ")
+    var allDates = new Array();
+    var start = new Date(list[0])
+    var end = new Date(list[1])
+    var currentDate = start;
+
+    console.log(allDates)
+    console.log(weekday[start.getDay()])
+
+}
+
+/*
+$(function () {
+    createDates(schedule_dates)
+})
+*/
+
+function create_row(attribute, name, shift){
+    if (typeof(name) === 'undefined') name = "";
+    if (typeof(shift) === "undefined") shift = {"start": "", "end": "", "num_employees": "", "role": ""};
+
     let row = document.createElement("tr");
+
+    //shift name
+    let nameCell = document.createElement("td");
+    let nameField = document.createElement("input");
+    if (name != "") {
+        $(nameField).attr("value", name);
+    }
+    nameCell.append(nameField);
+    row.append(nameCell);
 
     //manage start time dropdown
     let startTime = document.createElement("td");
-    console.log(startTime);
     $(startTime).addClass("text-center")
-    let startOptions = [10, 11, 12, 1, 2, 3, 4, 5];
+    let startHourOptions = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5];
     let startSelect = document.createElement("select");
 
 
-    for (let i=0; i < startOptions.length; i++) {
+    for (let i=0; i < startHourOptions.length; i++) {
         let option = document.createElement("option");
-        option.value = startOptions[i];
-        option.text = startOptions[i];
+        option.value = startHourOptions[i];
+        option.text = startHourOptions[i];
+        if (startHourOptions[i] == shift["start"]) {
+            $(option).prop("selected", true)
+        }
         startSelect.appendChild(option);
     };
 
@@ -29,7 +84,6 @@ function create_row(attribute){
 
     //manage end time dropdown
     let endTime = document.createElement("td");
-    console.log(endTime);
     $(endTime).addClass("text-center")
     let endOptions = [10, 11, 12, 1, 2, 3, 4, 5];
     let endSelect = document.createElement("select");
@@ -38,6 +92,9 @@ function create_row(attribute){
         let option = document.createElement("option");
         option.value = endOptions[i];
         option.text = endOptions[i];
+        if (endOptions[i] == shift["end"]) {
+            $(option).prop("selected", true)
+        }
         endSelect.appendChild(option);
     };
 
@@ -69,6 +126,9 @@ function create_row(attribute){
         let option = document.createElement("option");
         option.value = numEmpsOptions[i];
         option.text = numEmpsOptions[i];
+        if (numEmpsOptions[i] == shift["num_employees"]) {
+            $(option).prop("selected", true)
+        }
         numEmpsSelect.appendChild(option);
     };
 
@@ -87,6 +147,9 @@ function create_row(attribute){
         let option = document.createElement("option");
         option.value = roleOptions[i];
         option.text = roleOptions[i];
+        if (roleOptions[i] == shift["role"]) {
+            $(option).prop("selected", true)
+        }
         roleSelect.appendChild(option);
     };
 
@@ -94,6 +157,47 @@ function create_row(attribute){
     $(attribute).append(row);
 }
 
+var counter = 1
+
+function collectShiftData () {
+    var shift_data = [];
+    $("tbody tr").each(function () {
+        var shift = []
+        $(this).children().each(function () {
+            if ($(this).find("input").length > 0) {
+                shift.push($(this).find("input").val())
+            }
+            if ($(this).find("select").length > 0) {
+                shift.push($(this).find("select").val())
+            }
+        })
+        shift_data.push(shift)
+    })
+    return shift_data;
+}
+
 $("#add-shift").on("click", function () {
     create_row("tbody")
 })
+
+$("#save-shifts").on("click", function () {
+    shift_data = {"_id": schedule_id, "shift_data": collectShiftData()}
+    console.log(shift_data)
+    $.ajax({
+        type: "POST",
+        url: "/save_shift_data",
+        data: JSON.stringify(shift_data),
+        contentType: 'application/json;charset=UTF-8',
+        dataType: "json",
+    }).done(function(){
+        console.log("Sent to server.")
+    }).fail(function(jqXHR, status, error){
+        alert(status + ": " + error);
+    });
+});
+
+$("#page-right").on("click", function(){
+    console.log("Page right clicked.")
+    //$(this).prop('disabled', true);
+    $('#page-left').prop('disabled', false);
+});
