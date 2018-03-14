@@ -4,48 +4,66 @@ var schedule_id = "default assignment";
 var schedule_dates = "default assignment";
 
 $(function () {
+    Date.prototype.addDays = function(days)
+        {
+            var dat = new Date(this.valueOf());
+            dat.setDate(dat.getDate() + days);
+            return dat;
+        }
+})
+
+$(function () {
     schedule_id = $("#shift-setup-tab").data("schedule-id")
-    schedule_dates = $("#shift-setup-tab").data("schedule-dates")
-    $.getJSON("/api/get_shift_data/" + schedule_id, renderShiftTable)
+    schedule_dates = $("#shift-setup-tab").data("schedule-dates").split(" ")
+    //the code below runs, although pycharm interprets it as being commented out
+    $.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
 })
 
 function renderShiftTable(data) {
     console.log(data)
-    for (let i = 0; i < Object.keys(data).length; i++) {
-        create_row("tbody", Object.keys(data)[i], data[Object.keys(data)[i]])
+    //if statement because jsonify error message is used as data to create a row
+    if (Object.keys(data)[0] !== "jsonify") {
+        for (let i = 0; i < Object.keys(data).length; i++) {
+            create_row("tbody", Object.keys(data)[i], data[Object.keys(data)[i]])
+        }
     }
 }
 
-function createDates(dates) {
+function createDates(list) {
     var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var month_array = ["January",
-                       "February",
-                       "March",
-                       "April",
-                       "May",
-                       "June",
-                       "July",
-                       "August",
-                       "September",
-                       "October",
-                       "November",
-                       "December"]
-    list = dates.split(" ")
+    var month = ["January",
+                 "February",
+                 "March",
+                 "April",
+                 "May",
+                 "June",
+                 "July",
+                 "August",
+                 "September",
+                 "October",
+                 "November",
+                 "December"]
     var allDates = new Array();
     var start = new Date(list[0])
     var end = new Date(list[1])
     var currentDate = start;
-
-    console.log(allDates)
-    console.log(weekday[start.getDay()])
-
+    while (currentDate <= end) {
+        dateString = weekday[currentDate.getDay()] + ", " + month[currentDate.getMonth()] + " " + currentDate.getDate();
+        dateNumber = ("0" + (currentDate.getMonth() + 1)).slice(-2)
+                    + "/" + ("0" + currentDate.getDate()).slice(-2)
+                    + "/" + currentDate.getFullYear()
+        both = [dateString, dateNumber]
+        allDates.push(both);
+        currentDate = currentDate.addDays(1);
+    }
+    return allDates
 }
 
-/*
 $(function () {
-    createDates(schedule_dates)
+    allDates = createDates(schedule_dates)
+    $("#date").attr("style", "vertical-align: middle;")
+    $("#date").append("<b>" + allDates[0][0] + "</b>")
 })
-*/
 
 function create_row(attribute, name, shift){
     if (typeof(name) === 'undefined') name = "";
@@ -181,7 +199,12 @@ $("#add-shift").on("click", function () {
 })
 
 $("#save-shifts").on("click", function () {
-    shift_data = {"_id": schedule_id, "shift_data": collectShiftData()}
+    var allDates = createDates(schedule_dates)
+    var current = $("#date").text()
+    var i = getIndexOf(allDates, current)
+    date = allDates[i][1]
+    console.log(date)
+    shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
     console.log(shift_data)
     $.ajax({
         type: "POST",
@@ -196,8 +219,36 @@ $("#save-shifts").on("click", function () {
     });
 });
 
+function getIndexOf(arr, k) {
+    for (var i = 0; i < arr.length; i++) {
+        var index = arr[i].indexOf(k);
+        if (index > -1) {
+          return i;
+        }
+    }
+}
+
 $("#page-right").on("click", function(){
-    console.log("Page right clicked.")
-    //$(this).prop('disabled', true);
     $('#page-left').prop('disabled', false);
+    var allDates = createDates(schedule_dates)
+    var current = $("#date").text()
+    var i = getIndexOf(allDates, current)
+    $("#date").empty().append("<b>" + allDates[i + 1][0] + "</b>")
+    if (i == allDates.length - 2) {
+        $(this).prop('disabled', true);
+    }
+    $("tbody").empty()
+    $.getJSON("/api/get_shift_data/" + allDates[i + 1][1].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+});
+
+$("#page-left").on("click", function(){
+    var allDates = createDates(schedule_dates)
+    var current = $("#date").text()
+    var i = getIndexOf(allDates, current)
+    $("#date").empty().append("<b>" + allDates[i - 1][0] + "</b>")
+    if (i == 1) {
+        $(this).prop('disabled', true);
+    }
+    $("tbody").empty()
+    $.getJSON("/api/get_shift_data/" + allDates[i - 1][1].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
 });

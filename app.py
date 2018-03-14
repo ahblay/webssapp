@@ -514,8 +514,7 @@ def delete_schedule(_id=None):
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id associated with button."})
     db = get_db()
-
-    db.schedules.remove({"_id": _id}, {"justOne": True})
+    db.schedules.remove({"_id": ObjectId(_id)}, {"justOne": True})
     schedules = db.schedules.find({"username": current_user.username})
     return render_template("employer_prefs.html", schedules=schedules)
 
@@ -587,25 +586,35 @@ def edit_employees():
     return jsonify({"success": True, "message": "Employee added successfully"})
 
 
-@app.route('/api/get_shift_data/<_id>')
-def get_shift_data(_id=None):
+@app.route('/api/get_shift_data/<date>/<_id>')
+def get_shift_data(date=None, _id=None):
+    if date is None:
+        return jsonify({"success": False, "message": "No date field."})
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id."})
+    date = date[0:2] + "/" + date[2:4] + "/" + date[4:8]
     db = get_db()
     shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
     print(shifts)
-    return jsonify(shifts)
+    for i in shifts.keys():
+        if i == date:
+            return jsonify(shifts[i])
+    return jsonify({"jsonify": {"success": False, "message": "Could not find shift for " + date}})
 
 
 @app.route('/save_shift_data', methods=["POST"])
 def save_shift_data():
     shift_data = request.json["shift_data"]
     id = request.json["_id"]
-    shifts = {shift[0]: {"start": int(shift[1]), "end": int(shift[2]), "num_employees": int(shift[3]), "role": shift[4]}
+    date = request.json["date"]
+    shifts = {shift[0]: {"start": int(shift[1]),
+                         "end": int(shift[2]),
+                         "num_employees": int(shift[3]),
+                         "role": shift[4]}
               for shift in shift_data}
     db = get_db()
     db.schedules.update({"_id": ObjectId(id)},
-                        {"$set": {"shifts": shifts}})
+                        {"$set": {"shifts." + date: shifts}})
     dbshifts = db.schedules.find_one({"_id": ObjectId(id)})
     pprint.pprint(dbshifts)
     return jsonify({"success": True, "message": "Database updated with shifts."})

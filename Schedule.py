@@ -23,7 +23,7 @@ class ScheduleProcessor:
                  start_date=None,
                  end_date=None,
                  employees=None,
-                 shifts=None,
+                 shifts={},
                  days=None,
                  roles=None):
         self.name = name
