@@ -24,7 +24,7 @@ function renderShiftTable(data) {
     //if statement because jsonify error message is used as data to create a row
     if (Object.keys(data)[0] !== "jsonify") {
         for (let i = 0; i < Object.keys(data).length; i++) {
-            create_row("tbody", Object.keys(data)[i], data[Object.keys(data)[i]])
+            create_row(".shift-table-body", Object.keys(data)[i], data[Object.keys(data)[i]])
         }
     }
 }
@@ -179,7 +179,7 @@ var counter = 1
 
 function collectShiftData () {
     var shift_data = [];
-    $("tbody tr").each(function () {
+    $(".shift-table-body tr").each(function () {
         var shift = []
         $(this).children().each(function () {
             if ($(this).find("input").length > 0) {
@@ -195,7 +195,7 @@ function collectShiftData () {
 }
 
 $("#add-shift").on("click", function () {
-    create_row("tbody")
+    create_row(".shift-table-body")
 })
 
 $("#save-shifts").on("click", function () {
@@ -237,7 +237,7 @@ $("#page-right").on("click", function(){
     if (i == allDates.length - 2) {
         $(this).prop('disabled', true);
     }
-    $("tbody").empty()
+    $(".shift-table-body").empty()
     $.getJSON("/api/get_shift_data/" + allDates[i + 1][1].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
 });
 
@@ -249,6 +249,6 @@ $("#page-left").on("click", function(){
     if (i == 1) {
         $(this).prop('disabled', true);
     }
-    $("tbody").empty()
+    $(".shift-table-body").empty()
     $.getJSON("/api/get_shift_data/" + allDates[i - 1][1].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
 });

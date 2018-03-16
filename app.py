@@ -71,7 +71,6 @@ def create_account():
     db = get_db()
     users = db.users
 
-    #db.users.delete_many({})
     print(list(db.users.find()))
 
     username = request.form.get("username", None)
@@ -588,18 +587,39 @@ def edit_employees():
 
 @app.route('/api/get_shift_data/<date>/<_id>')
 def get_shift_data(date=None, _id=None):
+    db = get_db()
     if date is None:
-        return jsonify({"success": False, "message": "No date field."})
+        shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+        return jsonify(shifts)
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id."})
     date = date[0:2] + "/" + date[2:4] + "/" + date[4:8]
-    db = get_db()
     shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
     print(shifts)
     for i in shifts.keys():
         if i == date:
             return jsonify(shifts[i])
     return jsonify({"jsonify": {"success": False, "message": "Could not find shift for " + date}})
+
+
+@app.route('/_api/get_shifts')
+def _get_shifts():
+    db = get_db()
+    shifts = db.schedules.find_one({"username": current_user.username})["shifts"]
+    employees = get_employees()
+    for emp in employees:
+        emp["_id"] = str(emp["_id"])
+    pprint.pprint(shifts)
+    return jsonify([shifts, employees])
+
+
+@app.route('/_api/get_employees')
+def _get_employees():
+    employees = get_employees()
+    for emp in employees:
+        emp["_id"] = str(emp["_id"])
+    pprint.pprint(employees)
+    return jsonify(employees)
 
 
 @app.route('/save_shift_data', methods=["POST"])
