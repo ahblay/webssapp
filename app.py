@@ -691,6 +691,20 @@ def remove_schedule_employees():
     return jsonify({"success": True, "message": "Request received by server."})
 
 
+@app.route('/_remove_employees', methods=['POST'])
+def remove_employees():
+
+    db = get_db()
+
+    post_data = request.get_json()
+
+    for _id in post_data['_ids']:
+        print("Removing {} from {}".format(_id, db.schedules.find_one({"_id": ObjectId(_id)})))
+        db.employees.remove({"_id": ObjectId(_id)})
+
+    return jsonify({"success": True, "message": "Request received by server."})
+
+
 @login_required
 @app.route('/_edit_schedule_employees', methods=['POST'])
 def edit_schedule_employees():
