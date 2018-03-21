@@ -48,6 +48,18 @@ function refresh_table_data(employees){
                 $(tr).append(td);
                 continue;
             };
+
+            if (db_keys[key] == "roles"){
+                for (role=0; role<employees[i][db_keys[key]].length; role++){
+                    employees[i][db_keys[key]][role] = employees[i][db_keys[key]][role] + "\n";
+                };
+                let html = employees[i][db_keys[key]].join()
+                $(td).css("white-space", "pre")
+                $(td).html(html.replace(/,/g, ""));
+                $(tr).append(td);
+                continue;
+            };
+
             $(td).append(employees[i][db_keys[key]]);
             $(tr).append(td);
         };
