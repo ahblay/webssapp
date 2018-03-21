@@ -1,15 +1,26 @@
 //On load
-$.getJSON("/api/get_employees", function(data){
-    refresh_table_data(data);
+let SCHEDULE_ID = window.location.pathname.split("/");
+SCHEDULE_ID = SCHEDULE_ID[SCHEDULE_ID.length-1]
+$.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
+   refresh_table_data(data['employees']);
 });
 
-// Main table functionality
+//Main table functions
 $("#check-all-employees").on("click", function(){
     $(".row-select-checkbox").not(this).prop("checked", this.checked)
+    console.log("Check-all selected, updating buttons.")
+    var num_boxes_selected = $(".row-select-checkbox:checked").length
+    if ( num_boxes_selected > 0) {
+        $("#edit-employees").removeAttr("disabled");
+        $("#remove-employees").removeAttr("disabled");
+    } else {
+        $("#edit-employees").attr("disabled", "disabled")
+        $("#remove-employees").attr("disabled", "disabled")
+    };
 });
 
 $(document).on("change", ".row-select-checkbox", function(){
-    console.log("Checkbox selected, updating #edit-employees button.")
+    console.log("Checkbox selected, updating buttons.")
     var num_boxes_selected = $(".row-select-checkbox:checked").length
     if ( num_boxes_selected > 0) {
         $("#edit-employees").removeAttr("disabled");
@@ -22,7 +33,10 @@ $(document).on("change", ".row-select-checkbox", function(){
 
 function refresh_table_data(employees){
 
-    console.log("Refreshing employee master table.")
+    console.log("Refreshing schedule employee table.");
+    console.log(employees);
+
+    $("#employee-table-body").empty();
 
     for (i=0; i < employees.length; i++){
         let tr = document.createElement("tr");
@@ -64,23 +78,70 @@ function render_boolean(value){
     };
 };
 
+// Add employee(s) modal functions
+$("#add-employees").on("click", function(){
+    $.getJSON("/_get_employee_delta/" + SCHEDULE_ID, function(data){
+        refresh_add_emps_table(data);
+    });
+});
 
-// Add employees modal functions
-$("#add-employee-submit").on("click", function() {
+function refresh_add_emps_table(available_emps){
+
+    $("#add-emps-tbody").empty();
+
+    for (i=0; i < available_emps.length; i++){
+        let tr = document.createElement("tr");
+
+        let checkbox_td = document.createElement("td");
+        let name_td = document.createElement("td");
+        let status_td = document.createElement("td");
+
+        let input = $(document.createElement("input"));
+        input.addClass("emp-select-checkbox");
+        input.attr("type", "checkbox");
+        input.attr("id", available_emps[i]["_id"]);
+        input.val("");
+
+        name_td.append(available_emps[i]['name']);
+        status_td.append(render_boolean(available_emps[i]['inactive']));
+
+        $(checkbox_td).append(input);
+        $(name_td).append();
+        $(status_td).append();
+
+        $(tr).append(checkbox_td);
+        $(tr).append(name_td);
+        $(tr).append(status_td);
+
+        $("#add-emps-tbody").append(tr)
+    };
+};
+
+$(document).on("change", ".emp-select-checkbox", function(){
+    console.log("Checkbox selected, updating buttons.")
+    var num_boxes_selected = $(".emp-select-checkbox:checked").length
+    if ( num_boxes_selected > 0) {
+        $("#add-emps-submit").removeAttr("disabled");
+    } else {
+        $("#add-emps-submit").attr("disabled", "disabled");
+    };
+});
+
+$(document).on("click", "#add-all-emps", function() {
+    $(".emp-select-checkbox").not(this).prop("checked", this.checked)
+});
+
+// Send list of employees to add to current schedule to /_add_emps_to_schedule
+$(document).on("click", "#add-emps-submit", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     var data = {
-                    name: $("#add-employee-name-input").val(),
-                    min_shifts: $("#min-shifts-input").val(),
-                    max_shifts: $("#max-shifts-input").val(),
-                    seniority: $("#seniority-input").val(),
-                    roles: $("#role-input").val().split(",").map(function(item){return item.trim()}),
-                    training: document.getElementById("training-flag").checked,
-                    inactive: document.getElementById("inactive-flag").checked,
+                    schedule_id: SCHEDULE_ID,
+                    _ids: $(".emp-select-checkbox:checked").map(function(){return this.id}).get(),
                };
     console.log(data);
     $.ajax({
         type: "POST",
-        url: "/_add_employee",
+        url: "/_add_emps_to_schedule",
         data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",
@@ -88,13 +149,14 @@ $("#add-employee-submit").on("click", function() {
         success: function(){
             $("#edit-employees").attr("disabled", "disabled");
             $("#remove-employees").attr("disabled", "disabled");
-            $("#employee-table-body").empty();
-            $.getJSON("/api/get_employees", function(data){
-                refresh_table_data(data);
+            $.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
+                employees = data['employees']
+                refresh_table_data(employees);
             });
         }
     });
 });
+
 
 // Edit employee(s) modal functions
 $("#edit-employees").on('click', function(){
@@ -108,6 +170,7 @@ $("#edit-employees").on('click', function(){
 $(document).on("click", "#edit-emps-submit", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     var data = {
+                    schedule_id: SCHEDULE_ID,
                     _ids: $(".row-select-checkbox:checked").map(function(){return this.id}).get(),
                     name: $("#edit-emps-name-input").val(),
                     min_shifts: $("#edit-emps-min-shifts-input").val(),
@@ -121,7 +184,7 @@ $(document).on("click", "#edit-emps-submit", function() {
     console.log(data);
     $.ajax({
         type: "POST",
-        url: "/_edit_employees",
+        url: "/_edit_schedule_employees",
         data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",
@@ -129,9 +192,9 @@ $(document).on("click", "#edit-emps-submit", function() {
         success: function(){
             $("#edit-employees").attr("disabled", "disabled");
             $("#remove-employees").attr("disabled", "disabled");
-            $("#employee-table-body").empty();
-            $.getJSON("/api/get_employees", function(data){
-                refresh_table_data(data);
+            $.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
+                employees = data['employees']
+                refresh_table_data(employees);
             });
         }
     });
@@ -152,15 +215,15 @@ $(document).on("click", "#remove-employees", function() {
         let success = function() {
                 $("#edit-employees").attr("disabled", "disabled");
                 $("#remove-employees").attr("disabled", "disabled");
-                $("#employee-table-body").empty();
-                $.getJSON("/api/get_employees", function(data){
-                    refresh_table_data(data);
+                $.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
+                    employees = data['employees'];
+                    refresh_table_data(employees);
                 });
         };
 
         $.ajax({
         type: "POST",
-        url: "/_remove_employees",
+        url: "/_remove_schedule_employees",
         data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",

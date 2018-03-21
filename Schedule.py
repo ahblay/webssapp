@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from flask import g
-import zephyr_build_schedule as algorithm
+import zephyr_build_schedule as scheduling_algorithm
 from bson import ObjectId
 
 
@@ -76,13 +76,13 @@ class ScheduleProcessor:
                              for employee in employees]
 
     def build_schedule(self):
-        s = algorithm.Schedule(self.num_employees,
-                               self.num_shifts,
-                               self.num_roles,
-                               self.num_days,
-                               self.employee_info,
-                               self.management_data,
-                               self.training)
+        s = scheduling_algorithm.Schedule(self.num_employees,
+                                    self.num_shifts,
+                                    self.num_roles,
+                                    self.num_days,
+                                    self.employee_info,
+                                    self.management_data,
+                                    self.training)
         return s.get_schedule()
 
     def build_employer_setup_dict(self):

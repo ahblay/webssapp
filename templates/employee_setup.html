@@ -11,7 +11,7 @@
             <div class="col-md-12">
                 <button type="button" class="btn btn-success" id="add-employee" data-target="#add-employee-modal" data-toggle="modal">Add Employee</button>
                 <button type="button" class="btn btn-success" id="edit-employees" data-target="#edit-emps-modal" data-toggle="modal" disabled>Edit Selected</button>
-                <button type="button" class="btn btn-danger float-right">Remove Selected</button>
+                <button type="button" class="btn btn-danger float-right" id="remove-employees">Remove Selected</button>
             </div>
         </div>
         <div class="row">
@@ -19,39 +19,16 @@
                 <table class="table" id="emp-info">
                     <thead>
                         <tr>
-                            <th scope="col"><input type="checkbox" value="" id="check-all-employees"></th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Training</th>
-                            <th scope="col">Min. Shifts</th>
-                            <th scope="col">Max. Shifts</th>
-                            <th scope="col">Seniority</th>
-                            <th scope="col">Inactive</th>
+                            <th data-dbkey="checkbox" scope="col"><input type="checkbox" value="" id="check-all-employees"></th>
+                            <th data-dbkey="name" scope="col">Name</th>
+                            <th data-dbkey="training" scope="col">Training</th>
+                            <th data-dbkey="min_shifts" scope="col">Min. Shifts</th>
+                            <th data-dbkey="max_shifts" scope="col">Max. Shifts</th>
+                            <th data-dbkey="seniority" scope="col">Seniority</th>
+                            <th data-dbkey="inactive" scope="col">Inactive</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    {% for employee in employees %}
-                        <tr>
-                            <td><input class="row-select-checkbox" type="checkbox" value="" id="{{ employee['_id'] }}"></td>
-                            <td>{{ employee['name'] }}</td>
-                            <td>
-                                {% if employee['training'] %}
-                                    <strong>YES</strong>
-                                {% else %}
-                                    No
-                                {% endif %}
-                            </td>
-                            <td>{{ employee['min_shifts'] }}</td>
-                            <td>{{ employee['max_shifts'] }}</td>
-                            <td>{{ employee['seniority'] }}</td>
-                            <td>
-                                {% if employee['inactive'] %}
-                                    <strong>YES</strong>
-                                {% else %}
-                                    No
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
+                    <tbody id="employee-table-body">
                     </tbody>
                 </table>
             </div>

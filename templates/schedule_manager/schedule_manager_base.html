@@ -4,7 +4,7 @@
 {% block optionalmeta %}
 <title>Schedules</title>
 
-<meta name="user_schedules" content="{{ schedules }}">
+<meta name="user_schedule" content="{{ schedule }}">
 <style>
     .wrapper {
         height: 100%;
@@ -76,17 +76,24 @@
         </div>
     </div>
     <div class="row">
-        <div class='smgr-tab' id="shift-setup" style="height: 500px; min-width: 100%"></div>
-        <div class='smgr-tab' id="emp-management" style="display: none"></div>
-        <div class='smgr-tab' id="emp-prefs" style="height: 500px; background-color: pink; min-width: 100%; display: none"></div>
-        <div class='smgr-tab' id="schedule-options" style="height: 500px; background-color: orange; min-width: 100%; display: none"></div>
-        <div class='smgr-tab' id="view-schedule" style="height: 500px; background-color: cyan; min-width: 100%; display: none"></div>
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class='smgr-tab' id="shift-setup" style="height: 500px; min-width: 100%"></div>
+            <div id="emp-management" style="display: none">
+                {% include "/schedule_manager/emp_management.html" %}
+            </div>
+            <div class='smgr-tab' id="emp-prefs" style="height: 500px; background-color: pink; min-width: 100%; display: none"></div>
+            <div class='smgr-tab' id="schedule-options" style="height: 500px; background-color: orange; min-width: 100%; display: none"></div>
+            <div class='smgr-tab' id="view-schedule" style="height: 500px; background-color: cyan; min-width: 100%; display: none"></div>
+        </div>
+        <div class="col-md-1"></div>
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
     <script src="/static/schedule_manager/schedule_manager_base.js" type="text/javascript"></script>
+    <script src="/static/schedule_manager/emp_management.js" type="text/javascript"></script>
     <!--async call necessary because script loads before referenced html file-->
     <script src="/static/schedule_manager/shift_setup.js" type="text/javascript" async></script>
 {% endblock %}
