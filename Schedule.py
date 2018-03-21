@@ -23,9 +23,10 @@ class ScheduleProcessor:
                  start_date=None,
                  end_date=None,
                  employees=None,
-                 shifts=None,
+                 shifts={},
                  days=None,
-                 roles=None):
+                 roles=None,
+                 prefs={}):
         self.name = name
         self.employees = employees
         self.shifts = shifts
@@ -33,6 +34,7 @@ class ScheduleProcessor:
         self.roles = roles
         self.start_date = start_date
         self.end_date = end_date
+        self.prefs = prefs
 
         self.num_employees = self.get_length(employees)
         self.num_shifts = self.get_length(shifts)
@@ -111,7 +113,8 @@ class ScheduleProcessor:
                              "employees": self.employees,
                              "shifts": self.shifts,
                              "days": self.days,
-                             "roles": self.roles})
+                             "roles": self.roles,
+                             "prefs": self.prefs})
 
         print("Saved schedule data to database.")
 

@@ -173,7 +173,6 @@ def add_employee():
         })
 
     print("{} has been added to the database.".format(request.json['name']))
-    print(list(db.employees.find_one({"name": request.json['name']})))
 
     # return a jsonify success object1
     return jsonify({"success": True, "message": "Employee added successfully"})
@@ -528,8 +527,7 @@ def delete_schedule(_id=None):
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id associated with button."})
     db = get_db()
-
-    db.schedules.remove({"_id": _id}, {"justOne": True})
+    db.schedules.remove({"_id": ObjectId(_id)}, {"justOne": True})
     schedules = db.schedules.find({"username": current_user.username})
     return render_template("employer_prefs.html", schedules=schedules)
 
@@ -582,6 +580,86 @@ def edit_employees():
 
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
+
+
+@app.route('/api/get_shift_data/<date>/<_id>')
+def get_shift_data(date=None, _id=None):
+    db = get_db()
+    if date is None:
+        shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+        return jsonify(shifts)
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id."})
+    date = date[0:2] + "/" + date[2:4] + "/" + date[4:8]
+    shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+    print(shifts)
+    for i in shifts.keys():
+        if i == date:
+            return jsonify(shifts[i])
+    return jsonify({"jsonify": {"success": False, "message": "Could not find shift for " + date}})
+
+
+@app.route("/_api/get_prefs/<_id>")
+def _get_prefs(_id=None):
+    db = get_db()
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id."})
+    prefs = db.schedules.find_one({"_id": ObjectId(_id)})["prefs"]
+    return jsonify(prefs)
+
+
+@app.route('/_api/get_shifts/<_id>')
+def _get_shifts(_id=None):
+    db = get_db()
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id."})
+    shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+    employees = get_employees()
+    for emp in employees:
+        emp["_id"] = str(emp["_id"])
+    pprint.pprint(shifts)
+    return jsonify([shifts, employees])
+
+
+@app.route('/_api/get_employees')
+def _get_employees():
+    employees = get_employees()
+    for emp in employees:
+        emp["_id"] = str(emp["_id"])
+    pprint.pprint(employees)
+    return jsonify(employees)
+
+
+@app.route('/save_shift_data', methods=["POST"])
+def save_shift_data():
+    shift_data = request.json["shift_data"]
+    id = request.json["_id"]
+    date = request.json["date"]
+    shifts = {shift[0]: {"_id": str(ObjectId()),
+                         "start": int(shift[1]),
+                         "end": int(shift[2]),
+                         "num_employees": int(shift[3]),
+                         "role": shift[4]}
+              for shift in shift_data}
+    db = get_db()
+    db.schedules.update({"_id": ObjectId(id)},
+                        {"$set": {"shifts." + date: shifts}})
+    dbshifts = db.schedules.find_one({"_id": ObjectId(id)})
+    pprint.pprint(dbshifts)
+    return jsonify({"success": True, "message": "Database updated with shifts."})
+
+
+@app.route('/save_pref_data', methods=['POST'])
+def save_pref_data():
+    pref_data = request.json["pref_data"]
+    employee = request.json["employee"]
+    id = request.json["_id"]
+    db = get_db()
+    db.schedules.update({"_id": ObjectId(id)},
+                        {"$set": {"prefs." + employee: pref_data[employee]}})
+    pprint.pprint(db.schedules.find_one({"_id": ObjectId(id)}))
+    return "blah"
+
 
 @login_required
 @app.route('/settings')

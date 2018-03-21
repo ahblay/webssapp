@@ -1,0 +1,17 @@
+.rounded-table-basic {
+    border: solid 1px;
+    border-collapse: separate;
+    border-radius: 5px;
+    border-spacing: 0px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.rounded-table-basic thead th {
+    font-weight: normal;
+    background: #343a40;
+    color: #ffffff;
+    border-radius: 5px 5px 0 0;
+    border-top: 0;
+    border-bottom: 0;
+}
