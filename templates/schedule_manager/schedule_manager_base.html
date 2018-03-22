@@ -95,7 +95,9 @@
             </div>
             <div class='smgr-tab' id="emp-prefs" style="display: none"></div>
             <div class='smgr-tab' id="schedule-options" style="height: 500px; background-color: orange; min-width: 100%; display: none"></div>
-            <div class='smgr-tab' id="view-schedule" style="height: 500px; background-color: cyan; min-width: 100%; display: none"></div>
+            <div class='smgr-tab' id="view-schedule" style="display: none">
+                {% include "/schedule_manager/view_schedule.html" %}
+            </div>
         </div>
         <div class="col-md-1"></div>
     </div>
