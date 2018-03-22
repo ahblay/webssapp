@@ -101,6 +101,12 @@ function refresh_add_emps_table(available_emps){
 
     $("#add-emps-tbody").empty();
 
+    if (available_emps.length == 0){
+        $("#all-emps-added-alert").show()
+    }else{
+        $("#all-emps-added-alert").hide()
+    };
+
     for (i=0; i < available_emps.length; i++){
         let tr = document.createElement("tr");
 

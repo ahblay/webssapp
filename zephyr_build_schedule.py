@@ -2,7 +2,7 @@ import sys, os
 from pulp import *
 from pulp import solvers
 from itertools import product
-#from sanity_checks import *
+from sanity_checks import *
 
 
 class InfeasibleProblem(Exception):
