@@ -44,9 +44,9 @@
                         <span title="Employees Assigned to Schedule" class="fas fa-users fa-3x"></span>
                         <span style="font-size: 200%">
                             {% if schedule["employees"] is none %}
-                            0
+                                0
                             {% else %}
-                            {{ schedule["employees"]|length }}
+                                {{ schedule["employees"]|length }}
                             {% endif %}
                         </span>
 
@@ -89,11 +89,11 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <div class='smgr-tab' id="shift-setup" style="height: 500px; min-width: 100%"></div>
+            <div class='smgr-tab' id="shift-setup"></div>
             <div id="emp-management" style="display: none">
                 {% include "/schedule_manager/emp_management.html" %}
             </div>
-            <div class='smgr-tab' id="emp-prefs" style="height: 500px; background-color: pink; min-width: 100%; display: none"></div>
+            <div class='smgr-tab' id="emp-prefs" style="display: none"></div>
             <div class='smgr-tab' id="schedule-options" style="height: 500px; background-color: orange; min-width: 100%; display: none"></div>
             <div class='smgr-tab' id="view-schedule" style="height: 500px; background-color: cyan; min-width: 100%; display: none"></div>
         </div>
