@@ -42,11 +42,11 @@ class Schedule:
 
         self.prob = prob = LpProblem("Schedule", LpMaximize)
 
-        self.num_shifts = 2
         # correct number of employees in each shift
         for day, shift, role in product_range(num_days, num_shifts, num_roles):
             print('Role: {} | Day: {} | Shift: {}'.format(role, day, shift))
-            prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
+            if shift < len(self.management_data[role][day]["num_employees"]):
+                prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
                     == self.management_data[role][day]["num_employees"][shift], ""
 
         # min/max shifts

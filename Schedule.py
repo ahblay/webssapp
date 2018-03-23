@@ -26,8 +26,10 @@ class ScheduleProcessor:
         self.name = schedule['name'] if 'name' in schedule.keys() else None
         self.employees = schedule['employees'] if 'employees' in schedule.keys() else None
         self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else {}
-
+        print(schedule['start_date'])
+        print(schedule['end_date'])
         self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
+        print(self.days)
         if 'shifts' in schedule.keys():
             roles = list(set([schedule['shifts'][day][name]['role']
                               for day in schedule['shifts']
@@ -41,7 +43,8 @@ class ScheduleProcessor:
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
 
         self.num_employees = self.get_length(self.employees)
-        self.num_shifts = self.get_length([shift for day in self.shifts.keys() for shift in self.shifts[day].keys()])
+        self.num_shifts = len(max([[shift for shift in self.shifts[day].keys()] for day in self.shifts.keys()]))
+        #self.max_shifts_per_day = self.get_length([[shift for shift in self.shifts[day].keys] for day in self.shifts.keys()])
         self.num_roles = self.get_length(self.roles)
         self.num_days = self.get_length(self.days)
 
@@ -61,7 +64,7 @@ class ScheduleProcessor:
         delta = end_date - start_date
 
         dates = []
-        for i in range(delta.days + 2):
+        for i in range(delta.days + 1):
             dates.append(start_date + timedelta(days=i))
 
         return dates
@@ -70,13 +73,16 @@ class ScheduleProcessor:
         print("Building management data.")
         management_data = []
         day_index = 0
-        print("Num shifts: {}".format(self.num_shifts))
-        for day in self.shifts.keys():
-            day_dict = {day_index: {
-                "num_employees": [self.shifts[day][name]['num_employees'] for name in self.shifts[day].keys()],
-                "shift_times": ['Not Used' for _ in range(len(self.shifts[day].keys()))]}}
-            management_data.append(day_dict)
-            day_index += 1
+        print("Num shifts: {} | Num roles: {}".format(self.num_shifts, self.num_roles))
+        for role in self.roles:
+            role_dict = {}
+            for day in self.shifts.keys():
+                day_dict = {
+                    "num_employees": [self.shifts[day][name]['num_employees'] for name in self.shifts[day].keys()],
+                    "shift_times": ['Not Used' for _ in range(len(self.shifts[day].keys()))]}
+                role_dict[day_index] = day_dict
+                day_index += 1
+        management_data.append(role_dict)
         print(management_data)
         return management_data
 
