@@ -20,6 +20,8 @@ function renderEmpTable(data) {
 function renderShiftPrefsTable(data) {
     shifts = data[0]
     employees = data[1]
+
+    console.log(shifts)
     for (i = 0; i < Object.keys(shifts).length; i++) {
         createDayShiftPrefs(".emp-shift-prefs", shifts[Object.keys(shifts)[i]], Object.keys(shifts)[i], employees)
     }

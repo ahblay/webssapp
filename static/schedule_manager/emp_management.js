@@ -2,7 +2,7 @@
 let SCHEDULE_ID = window.location.pathname.split("/");
 SCHEDULE_ID = SCHEDULE_ID[SCHEDULE_ID.length-1]
 $.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
-   refresh_table_data(data['employees']);
+    //refresh_table_data(data['employees']);
 });
 
 //Main table functions

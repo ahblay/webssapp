@@ -57,13 +57,15 @@ function createDates(list) {
         currentDate = currentDate.addDays(1);
     }
     return allDates
-}
+};
 
 $(function () {
-    allDates = createDates(schedule_dates)
-    $("#date").attr("style", "vertical-align: middle;")
-    $("#date").append("<b>" + allDates[0][0] + "</b>")
-})
+    allDates = createDates(schedule_dates);
+    console.log(allDates[0][0]);
+    $("#date").attr("style", "vertical-align: middle;");
+    $("#date").html("<b>" + allDates[0][0] + "</b>");
+    console.log($("#date").text());
+});
 
 function create_row(attribute, name, shift){
     if (typeof(name) === 'undefined') name = "";
@@ -92,7 +94,7 @@ function create_row(attribute, name, shift){
         option.value = startHourOptions[i];
         option.text = startHourOptions[i];
         if (startHourOptions[i] == shift["start"]) {
-            $(option).prop("selected", true)
+            $(option).prop("selected", true);
         }
         startSelect.appendChild(option);
     };
@@ -173,7 +175,7 @@ function create_row(attribute, name, shift){
 
     roles.append(roleSelect);
     $(attribute).append(row);
-}
+};
 
 var counter = 1
 
@@ -194,14 +196,18 @@ function collectShiftData () {
     return shift_data;
 }
 
-$("#add-shift").on("click", function () {
+$(document).on("click", "#add-shift", function () {
+    console.log('Adding shift.')
     create_row(".shift-table-body")
-})
+});
 
-$("#save-shifts").on("click", function () {
+$(document).on("click", "#save-shifts", function () {
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
     var i = getIndexOf(allDates, current)
+    console.log(allDates)
+    console.log(i)
+    console.log(current)
     date = allDates[i][1]
     console.log(date)
     shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
@@ -228,7 +234,7 @@ function getIndexOf(arr, k) {
     }
 }
 
-$("#page-right").on("click", function(){
+$(document).on("click", "#page-right", function(){
     $('#page-left').prop('disabled', false);
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
@@ -241,7 +247,7 @@ $("#page-right").on("click", function(){
     $.getJSON("/api/get_shift_data/" + allDates[i + 1][1].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
 });
 
-$("#page-left").on("click", function(){
+$(document).on("click", "#page-left", function(){
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
     var i = getIndexOf(allDates, current)

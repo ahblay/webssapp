@@ -358,8 +358,12 @@ def open_new_prefs():
     db = get_db()
     print(current_user.username)
 
-    schedules = db.schedules.find({"username": current_user.username})
-    print(schedules)
+    schedules = list(db.schedules.find({"username": current_user.username}))
+
+    for schedule in schedules:
+        schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
+        schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+
     return render_template("employer_prefs.html",
                            schedules=schedules)
 
@@ -373,7 +377,9 @@ def view_schedule(_id=None):
     schedules = db.schedules.find({"username": current_user.username})
     for schedule in schedules:
         if schedule["_id"] == ObjectId(_id):
-            print(schedule)
+            schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
+            schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+            print(schedule['start_date'])
             return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
     return jsonify({"success": False, "message": "Schedule id is not in database."})
 
@@ -503,9 +509,11 @@ def load_html(path_to_html=None):
 
 @app.route('/add_schedule', methods=["POST"])
 def add_schedule():
-    schedule_name = request.form.get("schedule_name", None)
-    start = request.form.get("start", None)
-    end = request.form.get("end", None)
+    schedule = {}
+
+    schedule['name'] = request.form.get("schedule_name", None)
+    schedule['start_date'] = datetime.datetime.strptime(request.form.get("start", None), '%m/%d/%Y')
+    schedule['end_date'] = datetime.datetime.strptime(request.form.get("end", None), '%m/%d/%Y')
 
     db = get_db()
     employee_master = list(db.employees.find({"username": current_user.username, "inactive": False}))
@@ -516,7 +524,10 @@ def add_schedule():
         emp['_id'] = ObjectId()
 
     print(employee_master)
-    schedule = ScheduleProcessor(schedule_name, start, end, employee_master)
+
+    schedule['employees'] = employee_master
+
+    schedule = ScheduleProcessor(schedule)
     schedule.save_schedule_data(current_user.username)
 
     return jsonify({"success": True, "message": "New schedule saved."})
@@ -590,13 +601,14 @@ def get_shift_data(date=None, _id=None):
         return jsonify(shifts)
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id."})
-    date = date[0:2] + "/" + date[2:4] + "/" + date[4:8]
+    date = datetime.datetime.strptime(date, '%m%d%Y')
+    print(date)
     shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
-    print(shifts)
+    print(shifts.keys())
     for i in shifts.keys():
-        if i == date:
+        if i == date.strftime('%m/%d/%Y'):
             return jsonify(shifts[i])
-    return jsonify({"jsonify": {"success": False, "message": "Could not find shift for " + date}})
+    return jsonify({"jsonify": {"success": False, "message": "Could not find shift for " + date.strftime('%m/%d/%Y')}})
 
 
 @app.route("/_api/get_prefs/<_id>")
@@ -829,6 +841,28 @@ def get_schedule_json(schedule_id=None):
                 emp[key] = str(emp[key])
 
     return jsonify(schedule)
+
+
+@app.route('/api/create_schedule/<schedule_id>')
+def create_schedule(schedule_id=None):
+
+    print("Creating schedule.")
+
+    if schedule_id is None:
+        return jsonify({"success": False, "message": "You must provide a schedule id to get the associated employees."})
+
+    db = get_db()
+    schedule = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
+
+    print(schedule)
+
+    schedule = ScheduleProcessor(schedule)
+
+    return jsonify({"success": True, "message": "Employee added successfully"})
+
+    #Populate schedule object
+
+
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from flask import g
 import zephyr_build_schedule as scheduling_algorithm
+from datetime import date, timedelta, datetime
+
 from bson import ObjectId
 
 
@@ -18,28 +20,22 @@ class ScheduleProcessor:
     #             "training": {role: boolean},
     #             "roles": roles}, ...}
 
-    def __init__(self,
-                 name=None,
-                 start_date=None,
-                 end_date=None,
-                 employees=None,
-                 shifts={},
-                 days=None,
-                 roles=None,
-                 prefs={}):
-        self.name = name
-        self.employees = employees
-        self.shifts = shifts
-        self.days = days
-        self.roles = roles
-        self.start_date = start_date
-        self.end_date = end_date
-        self.prefs = prefs
+    def __init__(self, schedule):
 
-        self.num_employees = self.get_length(employees)
-        self.num_shifts = self.get_length(shifts)
-        self.num_roles = self.get_length(roles)
-        self.num_days = self.get_length(days)
+        self.name = schedule['name'] if 'name' in schedule.keys() else None
+        self.employees = schedule['employees'] if 'employees' in schedule.keys() else None
+        self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else {}
+
+        self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
+        self.roles = None
+        self.start_date = schedule['start_date'] if 'start_date' in schedule.keys() else None
+        self.end_date = schedule['end_date']if 'end_date' in schedule.keys() else None
+        self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
+
+        self.num_employees = self.get_length(self.employees)
+        self.num_shifts = self.get_length(self.shifts)
+        self.num_roles = self.get_length(self.roles)
+        self.num_days = self.get_length(self.days)
 
         self.management_data = None
         self.employee_info = None
@@ -52,6 +48,16 @@ class ScheduleProcessor:
             return len(item)
         else:
             return 0
+
+    def get_days(self, start_date, end_date):
+
+        delta = end_date - start_date
+
+        dates = []
+        for i in range(delta.days + 2):
+            dates.append(start_date + timedelta(days=i))
+
+        return dates
 
     def create_variables(self, employees, days, shifts, roles):
         if employees is not None and \

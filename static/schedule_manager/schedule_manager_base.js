@@ -1,8 +1,6 @@
 //Path from root/templates/
 let SCHEDULE_MANAGER_TEMPLATE_DIR_PATH = "schedule_manager/"
 
-fetch_tab_bodies();
-
 $('#tab-select .btn-secondary').on('click', function(){
 
     if ($(this).hasClass('active')){
