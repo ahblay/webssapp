@@ -43,7 +43,7 @@ class ScheduleProcessor:
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
 
         self.num_employees = self.get_length(self.employees)
-        self.num_shifts = len(max([[shift for shift in self.shifts[day].keys()] for day in self.shifts.keys()]))
+        self.num_shifts = self.build_num_shifts()
         #self.max_shifts_per_day = self.get_length([[shift for shift in self.shifts[day].keys] for day in self.shifts.keys()])
         self.num_roles = self.get_length(self.roles)
         self.num_days = self.get_length(self.days)
@@ -69,6 +69,18 @@ class ScheduleProcessor:
 
         return dates
 
+    def build_num_shifts(self):
+
+        if self.shifts == {}:
+            return None
+
+        len(max([[shift for shift in self.shifts[day].keys()] for day in self.shifts.keys()]))
+        daily_shifts = []
+        for day in self.shifts.keys():
+            daily_shifts.append(len(self.shifts.keys()))
+
+        return max(daily_shifts)
+
     def build_management_data(self):
         print("Building management data.")
         management_data = []
@@ -82,7 +94,7 @@ class ScheduleProcessor:
                     "shift_times": ['Not Used' for _ in range(len(self.shifts[day].keys()))]}
                 role_dict[day_index] = day_dict
                 day_index += 1
-        management_data.append(role_dict)
+            management_data.append(role_dict)
         print(management_data)
         return management_data
 
