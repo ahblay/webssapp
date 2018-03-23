@@ -248,6 +248,7 @@ $(document).on("click", "#page-right", function(){
 });
 
 $(document).on("click", "#page-left", function(){
+    $('#page-right').prop('disabled', false);
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
     var i = getIndexOf(allDates, current)
