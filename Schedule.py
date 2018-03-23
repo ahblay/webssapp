@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from flask import g
 import zephyr_build_schedule as scheduling_algorithm
 from datetime import date, timedelta, datetime
+import pprint
 
 from bson import ObjectId
 
@@ -27,21 +28,27 @@ class ScheduleProcessor:
         self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else {}
 
         self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
-        self.roles = None
+        if 'shifts' in schedule.keys():
+            roles = list(set([schedule['shifts'][day][name]['role']
+                              for day in schedule['shifts']
+                              for name in schedule['shifts'][day].keys()]))
+        else:
+            roles = []
+        print(roles)
+        self.roles = {role: None for role in roles}
         self.start_date = schedule['start_date'] if 'start_date' in schedule.keys() else None
         self.end_date = schedule['end_date']if 'end_date' in schedule.keys() else None
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
 
         self.num_employees = self.get_length(self.employees)
-        self.num_shifts = self.get_length(self.shifts)
+        self.num_shifts = self.get_length([shift for day in self.shifts.keys() for shift in self.shifts[day].keys()])
         self.num_roles = self.get_length(self.roles)
         self.num_days = self.get_length(self.days)
 
-        self.management_data = None
-        self.employee_info = None
-        self.training = None
+        self.management_data = self.build_management_data()
+        self.employee_info = self.build_employee_info()
+        self.training = self.build_training()
 
-        self.create_variables(self.employees, self.days, self.shifts, self.roles)
 
     def get_length(self, item):
         if item is not None:
@@ -58,6 +65,57 @@ class ScheduleProcessor:
             dates.append(start_date + timedelta(days=i))
 
         return dates
+
+    def build_management_data(self):
+        print("Building management data.")
+        management_data = []
+        day_index = 0
+        print("Num shifts: {}".format(self.num_shifts))
+        for day in self.shifts.keys():
+            day_dict = {day_index: {
+                "num_employees": [self.shifts[day][name]['num_employees'] for name in self.shifts[day].keys()],
+                "shift_times": ['Not Used' for _ in range(len(self.shifts[day].keys()))]}}
+            management_data.append(day_dict)
+            day_index += 1
+        print(management_data)
+        return management_data
+
+    def build_employee_info(self):
+
+        employee_info = []
+
+        for employee in self.employees:
+            emp = {
+                'min_shifts': employee['min_shifts'],
+                'max_shifts': employee['max_shifts'],
+                'shift_pref': self._build_shift_prefs(employee),
+                'role_seniority': employee['seniority']
+            }
+            employee_info.append(emp)
+
+        return employee_info
+
+    def _build_shift_prefs(self, employee):
+
+        shift_prefs = []
+
+        for day in self.shifts.keys():
+            day_prefs = []
+            for shift in self.shifts[day].keys():
+                pref_val = self.prefs[str(employee['_id'])][shift]['_id'] \
+                    if str(employee['_id']) in self.prefs.keys() else -1000
+                pref = {'pref': pref_val, 'lock_in_role': None}
+                day_prefs.append(pref)
+            shift_prefs.append(day_prefs)
+
+        return shift_prefs
+
+    def build_training(self):
+        training = [[employee['training'] for _ in self.roles]
+                    for employee in self.employees]
+
+        return training
+
 
     def create_variables(self, employees, days, shifts, roles):
         if employees is not None and \

@@ -849,14 +849,16 @@ def create_schedule(schedule_id=None):
     print("Creating schedule.")
 
     if schedule_id is None:
-        return jsonify({"success": False, "message": "You must provide a schedule id to get the associated employees."})
+        return jsonify({"success": False, "message": "No schedule id in URL."})
 
     db = get_db()
     schedule = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
 
-    print(schedule)
-
     schedule = ScheduleProcessor(schedule)
+
+    output = schedule.build_schedule()
+
+    print(output)
 
     return jsonify({"success": True, "message": "Employee added successfully"})
 
