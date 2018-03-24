@@ -84,9 +84,9 @@ class ScheduleProcessor:
     def build_management_data(self):
         print("Building management data.")
         management_data = []
-        day_index = 0
         print("Num shifts: {} | Num roles: {}".format(self.num_shifts, self.num_roles))
         for role in self.roles:
+            day_index = 0
             role_dict = {}
             for day in self.shifts.keys():
                 day_dict = {
@@ -95,7 +95,7 @@ class ScheduleProcessor:
                 role_dict[day_index] = day_dict
                 day_index += 1
             management_data.append(role_dict)
-        print(management_data)
+        pprint.pprint(management_data)
         return management_data
 
     def build_employee_info(self):
@@ -116,12 +116,22 @@ class ScheduleProcessor:
     def _build_shift_prefs(self, employee):
 
         shift_prefs = []
+        pprint.pprint(self.shifts)
+        pprint.pprint(self.prefs)
+
 
         for day in self.shifts.keys():
             day_prefs = []
             for shift in self.shifts[day].keys():
                 pref_val = self.prefs[str(employee['_id'])][shift]['_id'] \
                     if str(employee['_id']) in self.prefs.keys() else -1000
+
+                pprint.pprint("emp id string: " + str(employee['_id']))
+                pprint.pprint("prefs keys: " + str(self.prefs.keys()))
+                if str(employee['_id']) in self.prefs.keys():
+                    pprint.pprint("pref val if true: " + self.prefs[str(employee['_id'])][shift]['_id'])
+                print("-----------------------------------")
+
                 pref = {'pref': pref_val, 'lock_in_role': None}
                 day_prefs.append(pref)
             shift_prefs.append(day_prefs)
