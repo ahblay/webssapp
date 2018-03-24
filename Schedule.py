@@ -85,7 +85,6 @@ class ScheduleProcessor:
         management_data = []
         print("Num shifts: {} | Num roles: {}".format(self.num_shifts, self.num_roles))
         for role in self.roles:
-            day_index = 0
             role_dict = {}
             day_index = 0
             for day in self.shifts.keys():
@@ -114,8 +113,6 @@ class ScheduleProcessor:
         return employee_info
 
     def _build_shift_prefs(self, employee):
-        print(self.prefs)
-        print(self.shifts)
 
         shift_prefs = []
         pprint.pprint(self.shifts)
