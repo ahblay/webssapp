@@ -115,9 +115,7 @@ class ScheduleProcessor:
     def _build_shift_prefs(self, employee):
 
         shift_prefs = []
-        pprint.pprint(self.shifts)
-        pprint.pprint(self.prefs)
-
+        pprint.pprint(str(employee['_id']))
 
         for day in self.shifts.keys():
             day_prefs = []
