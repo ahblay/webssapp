@@ -74,20 +74,24 @@ class ScheduleProcessor:
         if self.shifts == {}:
             return None
 
-        len(max([[shift for shift in self.shifts[day].keys()] for day in self.shifts.keys()]))
         daily_shifts = []
         for day in self.shifts.keys():
-            daily_shifts.append(len(self.shifts.keys()))
+            daily_shifts.append(len(self.shifts[day].keys()))
 
         return max(daily_shifts)
 
     def build_management_data(self):
         print("Building management data.")
         management_data = []
+<<<<<<< HEAD
+=======
+
+>>>>>>> 53840440c8ec94cb69dcef1fa46e65913da96fd3
         print("Num shifts: {} | Num roles: {}".format(self.num_shifts, self.num_roles))
         for role in self.roles:
             day_index = 0
             role_dict = {}
+            day_index = 0
             for day in self.shifts.keys():
                 day_dict = {
                     "num_employees": [self.shifts[day][name]['num_employees'] for name in self.shifts[day].keys()],
@@ -104,16 +108,18 @@ class ScheduleProcessor:
 
         for employee in self.employees:
             emp = {
-                'min_shifts': employee['min_shifts'],
-                'max_shifts': employee['max_shifts'],
+                'min_shifts': int(employee['min_shifts']),
+                'max_shifts': int(employee['max_shifts']),
                 'shift_pref': self._build_shift_prefs(employee),
-                'role_seniority': employee['seniority']
+                'role_seniority': [int(employee['seniority']) for _ in self.roles]
             }
             employee_info.append(emp)
 
         return employee_info
 
     def _build_shift_prefs(self, employee):
+        print(self.prefs)
+        print(self.shifts)
 
         shift_prefs = []
         pprint.pprint(self.shifts)
@@ -123,7 +129,7 @@ class ScheduleProcessor:
         for day in self.shifts.keys():
             day_prefs = []
             for shift in self.shifts[day].keys():
-                pref_val = self.prefs[str(employee['_id'])][shift]['_id'] \
+                pref_val = self.prefs[str(employee['_id'])][self.shifts[day][shift]['_id']]\
                     if str(employee['_id']) in self.prefs.keys() else -1000
 
                 pprint.pprint("emp id string: " + str(employee['_id']))
@@ -169,14 +175,15 @@ class ScheduleProcessor:
                               for role in range(self.num_roles)]
                              for employee in employees]
 
-    def build_schedule(self):
+    def build_schedule(self, schedule):
         s = scheduling_algorithm.Schedule(self.num_employees,
                                     self.num_shifts,
                                     self.num_roles,
                                     self.num_days,
                                     self.employee_info,
                                     self.management_data,
-                                    self.training)
+                                    self.training,
+                                    schedule)
         return s.get_schedule()
 
     def build_employer_setup_dict(self):

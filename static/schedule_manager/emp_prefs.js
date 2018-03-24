@@ -4,13 +4,23 @@ var employee_names = {}
 var shift_dict = {}
 var pref_dict = {}
 
+
 $(function () {
     schedule_id = $("#employee-prefs-tab").data("schedule-id")
-    $.getJSON("/_api/get_employees", renderEmpTable)
-    $.getJSON("/_api/get_shifts/" + schedule_id, renderShiftPrefsTable)
+    console.log(schedule_id)
+    $.getJSON("/api/get_schedule/" + schedule_id, success= function(data) {
+        console.log(data);
+        renderEmpTable(data)
+        renderShiftPrefsTable(data)
+    });
+
+    //$.getJSON("/api/get_schedule/" + schedule_id, renderEmpTable)
+    //$.getJSON("/_api/get_shifts/" + schedule_id, renderShiftPrefsTable)
 })
 
 function renderEmpTable(data) {
+    data = data['employees']
+    console.log(data)
     for (i = 0; i < data.length; i++) {
         createRow(".emp-prefs", data[i]["name"], data[i]["_id"])
         employee_names[data[i]["_id"]] = data[i]["name"]
@@ -18,10 +28,11 @@ function renderEmpTable(data) {
 }
 
 function renderShiftPrefsTable(data) {
-    shifts = data[0]
-    employees = data[1]
-
+    shifts = data['shifts']
+    employees = data['employees']
     console.log(shifts)
+    console.log(employees)
+
     for (i = 0; i < Object.keys(shifts).length; i++) {
         createDayShiftPrefs(".emp-shift-prefs", shifts[Object.keys(shifts)[i]], Object.keys(shifts)[i], employees)
     }

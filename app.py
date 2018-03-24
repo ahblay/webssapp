@@ -839,7 +839,7 @@ def get_schedule_json(schedule_id=None):
         for key in emp.keys():
             if "_id" in key:
                 emp[key] = str(emp[key])
-
+    print(schedule)
     return jsonify(schedule)
 
 
@@ -852,13 +852,13 @@ def create_schedule(schedule_id=None):
         return jsonify({"success": False, "message": "No schedule id in URL."})
 
     db = get_db()
-    schedule = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
+    schedule_dict = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
 
-    schedule = ScheduleProcessor(schedule)
+    schedule = ScheduleProcessor(schedule_dict)
 
-    output = schedule.build_schedule()
+    output = schedule.build_schedule(schedule)
 
-    print(output)
+    pprint.pprint(output)
 
     return jsonify({"success": True, "message": "Employee added successfully"})
 

@@ -3,6 +3,7 @@ from pulp import *
 from pulp import solvers
 from itertools import product
 from sanity_checks import *
+import pprint
 
 
 class InfeasibleProblem(Exception):
@@ -32,7 +33,7 @@ class VarMatrix:
 
 
 class Schedule:
-    def __init__(self, num_employees, num_shifts, num_roles, num_days, employee_info, management_data, training):
+    def __init__(self, num_employees, num_shifts, num_roles, num_days, employee_info, management_data, training, schedule):
         self.num_employees, self.num_shifts, self.num_roles, self.num_days = num_employees, \
                                                                              num_shifts, num_roles, num_days
         # x holds the main variables
@@ -45,18 +46,29 @@ class Schedule:
         # correct number of employees in each shift
         for day, shift, role in product_range(num_days, num_shifts, num_roles):
             print('Role: {} | Day: {} | Shift: {}'.format(role, day, shift))
-            if shift < len(self.management_data[role][day]["num_employees"]):
+            shifts = schedule.shifts
+            date = list(schedule.shifts.keys())[day]
+            name = list(shifts[date].keys())[shift]
+            print(shifts)
+            print(date)
+            print(name)
+            print(str(list(schedule.roles.keys()).index(shifts[date][name]['role'])))
+            print(self.management_data[role])
+            if shift < len(self.management_data[role][day]["num_employees"]) and \
+                role == list(schedule.roles.keys()).index(shifts[date][name]['role']):
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
-                    == self.management_data[role][day]["num_employees"][shift], ""
+                    == self.management_data[role][day]["num_employees"][shift]
+        pprint.pprint(employee_info)
 
         # min/max shifts
         for employee in range(num_employees):
-            prob += lpSum(x[employee][role][day][shift] 
-                            for role, day, shift in product_range(num_roles, num_days, num_shifts)) \
-                      <= employee_info[employee]["max_shifts"], ""
-            prob += lpSum(x[employee][role][day][shift] 
-                            for role, day, shift in product_range(num_roles, num_days, num_shifts)) \
-                      >= employee_info[employee]["min_shifts"], ""
+            prob += lpSum(x[employee][role][day][shift]
+                          for role, day, shift in product_range(num_roles, num_days, num_shifts)) \
+                    >= employee_info[employee]["min_shifts"]
+            prob += lpSum(x[employee][role][day][shift]
+                          for role, day, shift in product_range(num_roles, num_days, num_shifts)) \
+                    <= employee_info[employee]["max_shifts"]
+
 
         # one shift per day
         for employee, day in product_range(num_employees, num_days):
@@ -83,22 +95,28 @@ class Schedule:
             prob += lpSum(x[employee][role][day][shift] for day in range(num_days)) <= 2, ""
 
         def coeff(employee, role, day, shift):
-            if employee_info[employee]["shift_pref"][day][shift]["lock_in_role"] == role:
-                c = 1000
-            elif employee_info[employee]["shift_pref"][day][shift]["pref"] == 2:
-                c = 5
-            elif employee_info[employee]["shift_pref"][day][shift]["pref"] == 1:
-                c = 1
-            elif employee_info[employee]["shift_pref"][day][shift]["pref"] == 0:
-                c = -1000
+            print("Emp: {} | Role: {} | Day: {} | Shift: {}".format(employee, role, day, shift))
+            if shift < len(self.management_data[role][day]["num_employees"]) and \
+                            role == list(schedule.roles.keys()).index(shifts[date][name]['role']):
+                print(employee_info[employee]['shift_pref'][day][shift])
+                if employee_info[employee]["shift_pref"][day][shift]["lock_in_role"] == role:
+                    c = 1000
+                else:
+                    if employee_info[employee]["shift_pref"][day][shift]["pref"] == 5:
+                        c = 5
+                    elif employee_info[employee]["shift_pref"][day][shift]["pref"] == 1:
+                        c = 1
+                    elif employee_info[employee]["shift_pref"][day][shift]["pref"] == -1000:
+                        c = -1000
+                    else:
+                        raise ValueError("`employee_info` array had a bad pref value for employee", employee, "day", day, "shift", shift)
+                    c *= employee_info[employee]["role_seniority"][role]
+                return c
             else:
-                raise ValueError("`employee_info` array had a bad pref value for employee", employee, "day", day, "shift", shift)
-
-            c *= employee_info[employee]["role_seniority"][role]
-            return c
+                return -1000
 
         self.coeff = coeff
-
+        print(num_shifts)
         prob += lpSum(coeff(employee, role, day, shift)*x[employee][role][day][shift] 
                         for employee, role, day, shift in 
                           product_range(num_employees, num_roles, num_days, num_shifts))
@@ -131,7 +149,7 @@ class Schedule:
                 schedule[employee][day]["working"] = True
                 schedule[employee][day]["shift"] = self.management_data[role][day]['shift_times'][shift]
                 schedule[employee][day]["role"] = role
-                schedule[employee][day]['declined'] = self.retrieve_declined_requests(employee, role, day, shift)
+                schedule[employee][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
                 
         self.schedule = schedule
         return schedule
