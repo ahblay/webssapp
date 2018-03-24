@@ -122,8 +122,13 @@ class ScheduleProcessor:
         for day in self.shifts.keys():
             day_prefs = []
             for shift in self.shifts[day].keys():
-                pref_val = self.prefs[str(employee['_id'])][self.shifts[day][shift]['_id']]\
-                    if str(employee['_id']) in self.prefs.keys() else -1000
+                emp_prefs = self.prefs[str(employee['_id'])]
+                shift_id = self.shifts[day][shift]['_id']
+
+                pref_val = emp_prefs[shift_id]\
+                    if str(employee['_id']) in self.prefs.keys() \
+                       and shift_id in self.shifts[day][shift].keys() \
+                    else -1000
                 pref = {'pref': pref_val, 'lock_in_role': None}
                 day_prefs.append(pref)
             shift_prefs.append(day_prefs)
