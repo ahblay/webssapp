@@ -30,65 +30,93 @@
 
 {% block containedcontent %}
 <div class="container-fluid">
-    <div class="row">
-        <div class="card w-100" id="info-bar">
-            <div class="row">
-                <div class="col-4" style="background: red">
-                    <h2>{{ schedule["name"] }}</h2>
-                    <h5 class="dates" data-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"></h5>
-                </div>
-                <div class="col-8" style="background: blue">
-                    <div id="quick-info-panel">
-                        <h5 style="text-align: center">Quick Info Panel</h5>
-                        <!-- Assigned employees counter -->
-                        <span title="Employees Assigned to Schedule" class="fas fa-users fa-3x"></span>
-                        <span style="font-size: 200%">
-                            {% if schedule["employees"] is none %}
-                                0
-                            {% else %}
-                                {{ schedule["employees"]|length }}
-                            {% endif %}
-                        </span>
+    <div class="row" style="padding-top: 1em;">
+        <div class="col-md-12">
+            <div id="info-bar">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h2>{{ schedule["name"] }}</h2>
+                        <h5 class="dates" data-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"></h5>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="quick-info-panel">
+                            <h5 style="text-align: center">Quick Info Panel</h5>
+                            <!-- Assigned employees counter -->
+                            <span title="Employees Assigned to Schedule" class="fas fa-users fa-3x"></span>
+                            <span style="font-size: 200%">
+                                {% if schedule["employees"] is none %}
+                                    0
+                                {% else %}
+                                    {{ schedule["employees"]|length }}
+                                {% endif %}
+                            </span>
 
-                        <!-- Schedule duration -->
+                            <!-- Schedule duration -->
 
-                        <!-- Shifts created -->
+                            <!-- Shifts created -->
 
-                        <!-- # of employees who have reported availability -->
+                            <!-- # of employees who have reported availability -->
 
-                        <!-- Schedule status -->
-
+                            <!-- Schedule status -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="btn-group" id="tab-select" style="display: flex; flex: 1" role="group">
-            <button type="button" class="btn-secondary">
-                <span class="fas fa-angle-left fa-3x"></span>
-            </button>
-            <button type="button"
-                    class="btn-secondary active"
-                    id="shift-setup-tab"
-                    data-view-id="shift-setup"
-                    data-schedule-id="{{ schedule['_id'] }}"
-                    data-schedule-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"
-                    style="flex: 1">Shift Setup</button>
-            <button type="button" class="btn-secondary" data-view-id="emp-management" style="flex: 1">Manage Employees</button>
-            <button type="button"
-                    class="btn-secondary"
-                    id="employee-prefs-tab"
-                    data-view-id="emp-prefs"
-                    data-schedule-id="{{ schedule['_id'] }}"
-                    style="flex: 1">Employee Preferences</button>
-            <button type="button" class="btn-secondary" data-view-id="schedule-options" style="flex: 1">Schedule Options</button>
-            <button type="button" class="btn-secondary" data-view-id="view-schedule" style="flex: 1">View Schedule</button>
+        <div class="col-md-12 no-padding">
+            <div class="btn-group" id="tab-select" role="group" style="display: flex;">
+                <button type="button"
+                        class="btn-secondary">
+                    <span class="fas fa-angle-left fa-3x"></span>
+                </button>
+
+                <button type="button"
+                        class="btn-secondary active"
+                        id="shift-setup-tab"
+                        data-view-id="shift-setup"
+                        data-schedule-id="{{ schedule['_id'] }}"
+                        data-schedule-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"
+                        style="flex: 1">Shift Setup
+                    <span class="badge badge-notify" style="font-size:18px;">3</span>
+                </button>
+
+                <button type="button"
+                        class="btn-secondary"
+                        data-view-id="emp-management"
+                        style="flex: 1">Manage Employees
+                    <span class="badge badge-notify" style="font-size:18px;">3</span>
+                </button>
+
+                <button type="button"
+                        class="btn-secondary"
+                        id="employee-prefs-tab"
+                        data-view-id="emp-prefs"
+                        data-schedule-id="{{ schedule['_id'] }}"
+                        style="flex: 1">Employee Preferences
+                    <span class="badge badge-notify" style="font-size:18px;">3</span>
+                </button>
+
+                <button type="button"
+                        class="btn-secondary"
+                        data-view-id="schedule-options"
+                        style="flex: 1">Schedule Options
+                    <span class="badge badge-notify" style="font-size:18px;">3</span>
+                </button>
+
+                <button type="button"
+                        class="btn-secondary"
+                        data-view-id="view-schedule"
+                        style="flex: 1">View Schedule
+                    <span class="badge badge-notify" style="font-size:18px;">3</span>
+                </button>
+
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12 no-padding">
             <div class='smgr-tab' id="shift-setup">
                 {% include "/schedule_manager/shift_setup.html" %}
             </div>
@@ -105,7 +133,6 @@
                 {% include "/schedule_manager/view_schedule.html" %}
             </div>
         </div>
-        <div class="col-md-1"></div>
     </div>
 </div>
 {% endblock %}

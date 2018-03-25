@@ -1,19 +1,30 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="alert alert-primary">The information on this page applies to only the current schedule. To
-        make changes to the master Employees list, click on "Employees" in the navigation bar at the top of the
-        page.</div>
+        <div class="alert alert-primary w100" role="alert">
+            <p>The information on this page applies to only the current schedule. To
+                make changes to the master Employees list, click on "Employees" in the navigation bar at the top of the
+                page.
+            </p>
+        </div>
+    </div>
+</div>
 
+<div class="row">
+    <!-- border -->
+    <div class="col-md-1">
+    </div>
+
+    <div class="col-md-10">
         <div class="row">
             <div class="col-md-12" style="padding-bottom: 20px">
-                <button type="button" class="btn btn-success" id="add-employees" data-target="#add-emps-modal" data-toggle="modal">Add Employees</button>
-                <button type="button" class="btn btn-success" id="edit-employees" data-target="#edit-emps-modal" data-toggle="modal" disabled>Edit Selected</button>
-                <button type="button" class="btn btn-danger float-right" id="remove-employees" disabled>Remove Selected</button>
+                <button type="button" class="btn btn-outline-dark" id="add-employees" data-target="#add-emps-modal" data-toggle="modal">Add Employees</button>
+                <button type="button" class="btn btn-outline-dark" id="edit-employees" data-target="#edit-emps-modal" data-toggle="modal" disabled>Edit Selected</button>
+                <button type="button" class="btn btn-outline-danger float-right" id="remove-employees" disabled>Remove Selected</button>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table class="table" id="emp-info">
+                <table class="table table-hover rounded-table-basic" id="emp-info">
                     <thead>
                         <tr>
                             <th data-dbkey="checkbox" scope="col"><input type="checkbox" value="" id="check-all-employees"></th>
@@ -32,6 +43,11 @@
             </div>
         </div>
     </div>
+
+    <!-- border -->
+    <div class="col-md-1">
+    </div>
+
 </div>
 
 <!-- Add emps modal -->

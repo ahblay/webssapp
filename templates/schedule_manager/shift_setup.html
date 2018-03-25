@@ -1,17 +1,21 @@
-<div class="alert alert-primary w100" role="alert">
-    <p>
-        Shifts are organized by day. The day may be changed using the arrow buttons on the right. Shift tables are
-        separated and arranged by role.
-    </p>
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-primary w100" role="alert">
+            <p>
+                Shifts are organized by day. The day may be changed using the arrow buttons on the right. Shift tables are
+                separated and arranged by role.
+            </p>
+        </div>
+    </div>
 </div>
 
 <div class="row">
-    <!--left border-->
-    <div class="col-sm-1">
+    <!-- border -->
+    <div class="col-md-1">
     </div>
 
     <!--main content-->
-    <div class="col-sm-10">
+    <div class="col-md-10">
 
         <div class="row" style="padding-bottom: 1em;">
             <div class="col-sm-6">
@@ -31,25 +35,28 @@
         </div>
 
         <div class="row">
-            <table class="table rounded-table-basic shift-table">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Start Time</th>
-                        <th scope="col">End Time</th>
-                        <th scope="col">Length</th>
-                        <th scope="col">Number of Employees</th>
-                        <th scope="col">Role</th>
-                    </tr>
-                </thead>
-                <tbody class="shift-table-body"></tbody>
-            </table>
+            <div class="col-md-12">
+                <table class="table table-hover rounded-table-basic shift-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Start Time</th>
+                            <th scope="col">End Time</th>
+                            <th scope="col">Length</th>
+                            <th scope="col">Number of Employees</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                    </thead>
+                    <tbody class="shift-table-body"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!--right border-->
-    <div class="col-sm-1">
+    <!-- border -->
+    <div class="col-md-1">
     </div>
+
 </div>
 
 <!--script file path because it doesn't run when placed in schedule_manager_base.html-->
