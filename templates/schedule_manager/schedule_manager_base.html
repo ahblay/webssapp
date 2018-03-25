@@ -31,7 +31,8 @@
 {% block containedcontent %}
 <div class="container-fluid">
     <div class="row">
-        <div class="card w-100" id="info-bar">
+        <div class="col-12">
+        <div id="info-bar">
             <div class="row">
                 <div class="col-4" style="background: red">
                     <h2>{{ schedule["name"] }}</h2>
@@ -62,7 +63,9 @@
                 </div>
             </div>
         </div>
+            </div>
     </div>
+
     <div class="row">
         <div class="btn-group" id="tab-select" style="display: flex; flex: 1" role="group">
             <button type="button" class="btn-secondary">
