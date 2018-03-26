@@ -27,7 +27,13 @@
                 <table class="table table-hover rounded-table-basic" id="emp-info">
                     <thead>
                         <tr>
-                            <th data-dbkey="checkbox" scope="col"><input type="checkbox" value="" id="check-all-employees"></th>
+                            <th data-dbkey="checkbox" scope="col">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="" id="check-all-employees">
+                                    <span class="custom-checkbox" style="top: -12px !important;">
+                                    </span>
+                                </label>
+                            </th>
                             <th data-dbkey="name" scope="col">Name</th>
                             <th data-dbkey="training" scope="col">Training</th>
                             <th data-dbkey="roles" scope="col">Roles</th>
