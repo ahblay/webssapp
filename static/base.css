@@ -1,3 +1,4 @@
+/* rounded table style class */
 .rounded-table-basic {
     border: solid 1px;
     border-collapse: separate;
@@ -6,7 +7,6 @@
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-
 .rounded-table-basic thead th {
     font-weight: normal;
     background: #343a40;
@@ -16,35 +16,93 @@
     border-bottom: 0;
 }
 
+/* input field style */
 input {
     border: 1px solid;
     border-radius: 5px;
     padding: 0 0 0 5px;
+    background-color: #eee;
 }
 
+/* select dropdown style */
 select {
+    width: 150px;
+    padding: 0 0 0 5px;
+    font-size: 16px;
     border: 1px solid;
     border-radius: 5px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url("dropdown_arrow.png") 96% / 15% no-repeat #eee;
 }
 
-input [type=checkbox] {
-    color: #ffffff;
-}
-
+/* when added as a class, removes padding from row or col */
 .no-padding {
     padding-right: 0;
     padding-left: 0;
 }
 
+/* badges for schedules tabs */
 .badge-notify {
-    border: 1px solid;
-    border-radius: 50%;
+    border-radius: 15%;
     background: #dd4245;
     position: relative;
     top: -18px;
     left: -4px;
 }
 
+/* class for adding black borders */
 .outline {
     border: 1px solid #000000;
+}
+
+/* creates a stylized checkbox */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+}
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+.checkbox-container input:checked ~ .custom-checkbox {
+    background-color: #ffffff;
+}
+.custom-checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.checkbox-container input:checked ~ .custom-checkbox:after {
+    display: block;
+}
+.custom-checkbox {
+    position: absolute;
+    border: 1px solid;
+    border-radius: 5px;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+.checkbox-container .custom-checkbox:after {
+    color: #343a40;
+    font-family: "FontAwesome";
+    content: "\f00c";
+    font-size: 18px;
+    top: -1px;
+    left: 2px;
+}
+
+/* alert upper border */
+.alert-line {
+    border-top: 5px solid #4794de;
 }

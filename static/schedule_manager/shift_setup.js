@@ -86,7 +86,6 @@ function create_row(attribute, name, shift){
     //manage start time dropdown
     let startTime = document.createElement("td");
     $(startTime).css("border-top", "1px solid")
-    $(startTime).addClass("text-center")
     let startHourOptions = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5];
     let startSelect = document.createElement("select");
 
@@ -107,7 +106,6 @@ function create_row(attribute, name, shift){
     //manage end time dropdown
     let endTime = document.createElement("td");
     $(endTime).css("border-top", "1px solid")
-    $(endTime).addClass("text-center")
     let endOptions = [10, 11, 12, 1, 2, 3, 4, 5];
     let endSelect = document.createElement("select");
 
@@ -143,7 +141,6 @@ function create_row(attribute, name, shift){
     //select number of employees
     let numberEmps = document.createElement("td");
     $(numberEmps).css("border-top", "1px solid")
-    $(numberEmps).addClass("text-center")
     let numEmpsOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     let numEmpsSelect = document.createElement("select");
 
@@ -165,7 +162,6 @@ function create_row(attribute, name, shift){
     $(roles).css("border-top", "1px solid")
 
     row.append(roles);
-    $(roles).addClass("text-center")
     let roleOptions = ["Boiler", "Ovid", "Scandinavian", "Sauce Designer"];
     let roleSelect = document.createElement("select");
 
