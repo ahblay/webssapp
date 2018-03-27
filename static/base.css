@@ -102,3 +102,7 @@ select {
     left: 2px;
 }
 
+/* alert upper border */
+.alert-line {
+    border-top: 5px solid #4794de;
+}
