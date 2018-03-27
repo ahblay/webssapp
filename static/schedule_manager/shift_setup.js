@@ -75,6 +75,7 @@ function create_row(attribute, name, shift){
 
     //shift name
     let nameCell = document.createElement("td");
+    $(nameCell).css("border-top", "1px solid")
     let nameField = document.createElement("input");
     if (name != "") {
         $(nameField).attr("value", name);
@@ -84,6 +85,7 @@ function create_row(attribute, name, shift){
 
     //manage start time dropdown
     let startTime = document.createElement("td");
+    $(startTime).css("border-top", "1px solid")
     $(startTime).addClass("text-center")
     let startHourOptions = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5];
     let startSelect = document.createElement("select");
@@ -104,6 +106,7 @@ function create_row(attribute, name, shift){
 
     //manage end time dropdown
     let endTime = document.createElement("td");
+    $(endTime).css("border-top", "1px solid")
     $(endTime).addClass("text-center")
     let endOptions = [10, 11, 12, 1, 2, 3, 4, 5];
     let endSelect = document.createElement("select");
@@ -123,6 +126,7 @@ function create_row(attribute, name, shift){
 
     //determine length
     let length = document.createElement("td");
+    $(length).css("border-top", "1px solid")
     length.append($(startSelect).val() - $(endSelect).val())
     $(startSelect).on("change", function () {
         console.log($(startSelect).val())
@@ -138,6 +142,7 @@ function create_row(attribute, name, shift){
 
     //select number of employees
     let numberEmps = document.createElement("td");
+    $(numberEmps).css("border-top", "1px solid")
     $(numberEmps).addClass("text-center")
     let numEmpsOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     let numEmpsSelect = document.createElement("select");
@@ -157,6 +162,7 @@ function create_row(attribute, name, shift){
 
     //select role
     let roles = document.createElement("td");
+    $(roles).css("border-top", "1px solid")
 
     row.append(roles);
     $(roles).addClass("text-center")

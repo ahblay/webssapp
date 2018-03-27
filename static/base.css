@@ -11,7 +11,40 @@
     font-weight: normal;
     background: #343a40;
     color: #ffffff;
-    border-radius: 5px 5px 0 0;
+    border-radius: 0 0 0 0;
     border-top: 0;
     border-bottom: 0;
+}
+
+input {
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 0 0 0 5px;
+}
+
+select {
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+input [type=checkbox] {
+    color: #ffffff;
+}
+
+.no-padding {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.badge-notify {
+    border: 1px solid;
+    border-radius: 50%;
+    background: #dd4245;
+    position: relative;
+    top: -18px;
+    left: -4px;
+}
+
+.outline {
+    border: 1px solid #000000;
 }

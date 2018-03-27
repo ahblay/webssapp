@@ -44,6 +44,7 @@ function refresh_table_data(employees){
 
         for (key=0; key < db_keys.length; key++){
             let td = document.createElement("td");
+            $(td).css("border-top", "1px solid")
             if (db_keys[key] == "checkbox"){
                 let input = $(document.createElement("input"));
                 input.addClass("row-select-checkbox");

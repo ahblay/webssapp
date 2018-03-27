@@ -45,6 +45,10 @@ class Schedule:
 
         # correct number of employees in each shift
         for day, shift, role in product_range(num_days, num_shifts, num_roles):
+
+            if shift >= len(self.management_data[role][day]["num_employees"]):
+                continue
+
             shifts = schedule.shifts
             date = list(schedule.shifts.keys())[day]
             name = list(shifts[date].keys())[shift]
@@ -90,6 +94,9 @@ class Schedule:
         '''
         def coeff(employee, role, day, shift):
 
+            if shift >= len(self.management_data[role][day]["num_employees"]):
+                return -1000
+
             date = list(schedule.shifts.keys())[day]
             name = list(shifts[date].keys())[shift]
             if shift < len(self.management_data[role][day]["num_employees"]):
@@ -114,7 +121,7 @@ class Schedule:
                 else:
                     c = -1000
                 return c
-        print(num_employees, num_roles, num_days, num_shifts)
+
         self.coeff = coeff
 
         for employee, role, day, shift in product_range(num_employees, num_roles, num_days, num_shifts):
@@ -122,7 +129,6 @@ class Schedule:
             print(coeff(employee, role, day, shift))
             print(x[employee][role][day][shift])
             prob += lpSum(coeff(employee, role, day, shift)*x[employee][role][day][shift])
-
 
         prob.solve(solvers.PULP_CBC_CMD())
 
