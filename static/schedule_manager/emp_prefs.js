@@ -173,8 +173,6 @@ function preferenceSelect() {
     } else {
         pref_dict[selected_user_id] = shift_dict
     }
-
-    console.log(pref_dict)
 }
 
 function showEmployeeShifts(id) {
