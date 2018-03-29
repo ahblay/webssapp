@@ -15,52 +15,81 @@
 {% block containedcontent %}
 <div class="container-fluid wrapper">
     <div class="row">
+        <div class="col-md-4" style="padding-top: 1em; padding-bottom: .75em;">
+            <h2>Settings</h2>
+        </div>
+        <div class="col-md-8">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 no-padding alert-line">
+            <div class="alert alert-primary w100" role="alert">
+                <p>Update our algorithm to take into account your personal preferences on constraints, training shifts,
+                seniority and other options.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
 
         <div class="col-sm-1">
         </div>
 
         <div class="col-sm-10">
-            <br>
-            <h2>Settings</h2>
-            <p>Update our algorithm to take into account your personal preferences on constraints, training shifts,
-            seniority and other options.</p>
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="card bg-light">
+                    <div class="card bg-light outline">
                         <div class="card-content">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="training">
-                                <label class="custom-control-label" for="training">Training</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="seniority">
-                                <label class="custom-control-label" for="seniority">Seniority</label>
+                            <h5 class="text-center">Style Settings</h5>
+                            <p class="text-center">Toggle switches to select your preferred constraints for your schedule.
+                            </p>
+                            <div>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="default" name="style-settings" checked>
+                                    <span class="custom-checkbox"></span>
+                                    Default
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="active" name="style-settings">
+                                    <span class="custom-checkbox"></span>
+                                    Active
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="upcoming" name="style-settings">
+                                    <span class="custom-checkbox"></span>
+                                    Upcoming
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-8">
-                    <div class="card bg-light">
+                    <div class="card bg-light outline">
                         <div class="card-content">
                             <h5 class="text-center">Constraint Settings</h5>
                             <p class="text-center">Toggle switches to select your preferred constraints for your schedule.
                             </p>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="constraint1">
-                                <label class="custom-control-label" for="constraint1">Constraint1</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="constraint2">
-                                <label class="custom-control-label" for="constraint2">Constraint2</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="constraint3">
-                                <label class="custom-control-label" for="constraint3">Constraint3</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="constraint4">
-                                <label class="custom-control-label" for="constraint4">Constraint4</label>
-                            </div>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="Constraint1">
+                                <span class="custom-checkbox"></span>
+                                Constraint1
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="constraint2">
+                                <span class="custom-checkbox"></span>
+                                Constraint2
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="constraint3">
+                                <span class="custom-checkbox"></span>
+                                Constraint3
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="constraint4">
+                                <span class="custom-checkbox"></span>
+                                Constraint4
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -68,7 +97,7 @@
             <br>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="card bg-light">
+                    <div class="card bg-light outline">
                         <div class="card-content">
                             <h5 class="text-center">Data</h5>
                             <ul>

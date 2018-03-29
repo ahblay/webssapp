@@ -1,6 +1,20 @@
 //Path from root/templates/
 let SCHEDULE_MANAGER_TEMPLATE_DIR_PATH = "schedule_manager/"
 
+$(function () {
+    let status = $("#alert-line").data("status")
+    console.log(status)
+    if (status == "active") {
+        $('#alert-line').addClass("alert-line-active").addClass("alert-active")
+    }
+    else if (status == "upcoming") {
+        $('#alert-line').addClass("alert-line-upcoming").addClass("alert-upcoming")
+    }
+    else {
+        $('#alert-line').addClass("alert-line-default").addClass("alert-default")
+    }
+});
+
 $('#tab-select .btn-secondary').on('click', function(){
 
     if ($(this).hasClass('active')){
