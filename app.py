@@ -363,12 +363,13 @@ def open_new_prefs():
     for schedule in schedules:
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+        print(schedule['status'])
 
     return render_template("employer_prefs.html",
                            schedules=schedules)
 
 
-@app.route("/view_schedule/<_id>")
+@app.route("/view_schedule/<_id>", methods=['GET'])
 def view_schedule(_id=None):
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id associated with button."})
@@ -379,7 +380,6 @@ def view_schedule(_id=None):
         if schedule["_id"] == ObjectId(_id):
             schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
             schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
-            print(schedule['start_date'])
             return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
     return jsonify({"success": False, "message": "Schedule id is not in database."})
 
@@ -514,6 +514,13 @@ def add_schedule():
     schedule['name'] = request.form.get("schedule_name", None)
     schedule['start_date'] = datetime.datetime.strptime(request.form.get("start", None), '%m/%d/%Y')
     schedule['end_date'] = datetime.datetime.strptime(request.form.get("end", None), '%m/%d/%Y')
+
+    if schedule['start_date'].date() <= today <= schedule['end_date'].date():
+        schedule['status'] = 'active'
+    elif schedule['start_date'].date() >= today:
+        schedule['status'] = 'upcoming'
+    else:
+        schedule['status'] = 'default'
 
     db = get_db()
     employee_master = list(db.employees.find({"username": current_user.username, "inactive": False}))
@@ -715,6 +722,18 @@ def remove_employees():
         db.employees.remove({"_id": ObjectId(_id)})
 
     return jsonify({"success": True, "message": "Request received by server."})
+
+
+@app.route('/edit_schedule_status', methods=['POST'])
+def edit_schedule_status():
+    status = request.form.get("status", None)
+    id = request.form.get("_id", None)
+    db = get_db()
+    db.schedules.update({"_id": ObjectId(id)},
+                        {"$set": {
+                            "status": status
+                        }})
+    return jsonify({"success": True, "message": "Schedule status updated."})
 
 
 @login_required

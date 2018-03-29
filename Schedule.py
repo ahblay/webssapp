@@ -23,6 +23,7 @@ class ScheduleProcessor:
 
     def __init__(self, schedule):
 
+        self.status = schedule['status'] if 'status' in schedule.keys() else None
         self.name = schedule['name'] if 'name' in schedule.keys() else None
         self.employees = schedule['employees'] if 'employees' in schedule.keys() else None
         self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else {}
@@ -207,7 +208,8 @@ class ScheduleProcessor:
                              "shifts": self.shifts,
                              "days": self.days,
                              "roles": self.roles,
-                             "prefs": self.prefs})
+                             "prefs": self.prefs,
+                             "status": self.status})
 
         print("Saved schedule data to database.")
 

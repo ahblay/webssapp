@@ -150,6 +150,58 @@ $(".card-text").each(function(){
     dates = $(this).data("dates").split(" ")
     $(this).append("<b>Start: </b>" + dateToString(dates[0]) + "<br /><b>End: </b>" + dateToString(dates[1]))});
 
-$(".fa-folder-open").on("click", function () {
-    
+$(document).on("click", ".fa-folder-open", function () {
+    console.log("Clicked on new load schedule icon.")
+    var scheduleID = $(this).data("schedule-id")
+    window.location.href = "/view_schedule/" + scheduleID
+})
+
+//changes background color of schedule thumbnail
+$(document).on("click", ".d", function () {
+    var parent = $(this).closest($(".card"));
+    parent.removeClass("schedule-default schedule-upcoming schedule-active")
+    parent.addClass("schedule-default")
+    schedule_id = parent.data("id")
+    console.log(schedule_id)
+
+    $.ajax({
+        type: "POST",
+        url: "/edit_schedule_status",
+        data: {_id: schedule_id, status: "default"},
+        success: function(json_response) {
+            console.log(json_response);
+        }
+    });
+
+})
+
+$(document).on("click", ".a", function () {
+    console.log("clicked")
+    var parent = $(this).closest($(".card"));
+    parent.removeClass("schedule-default schedule-upcoming schedule-active")
+    parent.addClass("schedule-active")
+
+    $.ajax({
+        type: "POST",
+        url: "/edit_schedule_status",
+        data: {_id: schedule_id, status: "active"},
+        success: function(json_response) {
+            console.log(json_response);
+        }
+    });
+})
+
+$(document).on("click", ".u", function () {
+    var parent = $(this).closest($(".card"));
+    parent.removeClass("schedule-default schedule-upcoming schedule-active")
+    parent.addClass("schedule-upcoming")
+
+    $.ajax({
+        type: "POST",
+        url: "/edit_schedule_status",
+        data: {_id: schedule_id, status: "upcoming"},
+        success: function(json_response) {
+            console.log(json_response);
+        }
+    });
 })

@@ -64,7 +64,7 @@ select {
     padding-left: 35px;
     margin-bottom: 12px;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 16px;
     user-select: none;
 }
 .checkbox-container input {
@@ -103,6 +103,65 @@ select {
 }
 
 /* alert upper border */
-.alert-line {
+.alert-line-default {
     border-top: 5px solid #4794de;
+}
+.alert-line-active {
+    border-top: 5px solid #51a53d;
+}
+.alert-line-upcoming {
+    border-top: 5px solid #e6b829;
+}
+
+/*
+.alert-default #title-row {
+    background-color: #cde5fd;
+}
+.alert-active #title-row {
+    background-color: #92d782;
+}
+.alert-upcoming #title-row {
+    background-color: #fde294;
+}
+*/
+
+/*alert styling
+.alert-default .alert {
+    color: #004085;
+    background-color: #cde5fd;
+    border-bottom: 2px solid #4794de;
+    border-radius: 0px;
+}
+.alert-active .alert {
+    color: #31482b;
+    background-color: #92d782;
+    border-bottom: 2px solid #51a53d;
+    border-radius: 0px;
+}
+.alert-upcoming .alert {
+    color: #5a5132;
+    background-color: #fde294;
+    border-bottom: 2px solid #e6b829;
+    border-radius: 0px;
+}
+*/
+
+/* color-coding schemes for schedule thumbnails */
+.schedule-active > .card-header, .schedule-active > .card-footer {
+    background-color: #92d782;
+}
+.schedule-default > .card-header, .schedule-default > .card-footer {
+    background-color: #f7f7f7;
+}
+.schedule-upcoming > .card-header, .schedule-upcoming > .card-footer {
+    background-color: #fde294;
+}
+
+/* schedule options */
+.schedule-options {
+    color: #496c41;
+}
+.schedule-options :hover {
+    cursor: pointer;
+    color: #000000;
 }

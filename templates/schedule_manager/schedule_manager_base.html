@@ -29,8 +29,8 @@
 {% endblock %}
 
 {% block containedcontent %}
-<div class="container-fluid">
-    <div class="row" style="padding-top: 1em;">
+<div class="container-fluid" id="alert-line" data-status="{{ schedule['status'] }}">
+    <div class="row" style="padding-top: 1em;" id="title-row">
         <div class="col-md-12">
             <div id="info-bar">
                 <div class="row">
