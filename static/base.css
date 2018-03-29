@@ -103,25 +103,36 @@ select {
 }
 
 /* alert upper border */
-.alert-line-default {
+.line-default {
     border-top: 5px solid #4794de;
 }
-.alert-line-active {
+.line-active {
     border-top: 5px solid #51a53d;
 }
-.alert-line-upcoming {
+.line-upcoming {
     border-top: 5px solid #e6b829;
+}
+
+/* line lower border */
+.below-line-default {
+    border-bottom: 5px solid #4794de;
+}
+.below-line-active {
+    border-bottom: 5px solid #51a53d;
+}
+.below-line-upcoming {
+    border-bottom: 5px solid #e6b829;
 }
 
 /*
 .alert-default #title-row {
-    background-color: #cde5fd;
+    background-color: #f0f6fd;
 }
 .alert-active #title-row {
-    background-color: #92d782;
+    background-color: #f7fbf7;
 }
 .alert-upcoming #title-row {
-    background-color: #fde294;
+    background-color: #fdf6e1;
 }
 */
 
@@ -164,4 +175,20 @@ select {
 .schedule-options :hover {
     cursor: pointer;
     color: #000000;
+}
+
+/* modal styling */
+.modal .modal-header {
+    background-color: #f7f7f7;
+}
+.modal .modal-footer {
+    background-color: #f7f7f7;
+}
+
+/* change btn-outline class background from transparent to white */
+.btn-outline-danger {
+    background-color: white;
+}
+.btn-outline-dark {
+    background-color: white;
 }

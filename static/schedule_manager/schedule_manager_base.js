@@ -2,16 +2,19 @@
 let SCHEDULE_MANAGER_TEMPLATE_DIR_PATH = "schedule_manager/"
 
 $(function () {
-    let status = $("#alert-line").data("status")
+    let status = $("#navbar-line").data("status")
     console.log(status)
     if (status == "active") {
-        $('#alert-line').addClass("alert-line-active").addClass("alert-active")
+        $('#navbar-line').addClass("line-active").addClass("alert-active")
+        $('#schedule-tabs').addClass("below-line-active")
     }
     else if (status == "upcoming") {
-        $('#alert-line').addClass("alert-line-upcoming").addClass("alert-upcoming")
+        $('#navbar-line').addClass("line-upcoming").addClass("alert-upcoming")
+        $('#schedule-tabs').addClass("below-line-upcoming")
     }
     else {
-        $('#alert-line').addClass("alert-line-default").addClass("alert-default")
+        $('#navbar-line').addClass("line-default").addClass("alert-default")
+        $('#schedule-tabs').addClass("below-line-default")
     }
 });
 

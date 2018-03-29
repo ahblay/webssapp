@@ -2,6 +2,7 @@ console.log("shift_setup.js is running.")
 
 var schedule_id = "default assignment";
 var schedule_dates = "default assignment";
+var master_roles = []
 
 $(function () {
     Date.prototype.addDays = function(days)
@@ -17,7 +18,14 @@ $(function () {
     schedule_dates = $("#shift-setup-tab").data("schedule-dates").split(" ")
     //the code below runs, although pycharm interprets it as being commented out
     $.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+    $.getJSON("/_api/get_roles", getRoles)
 })
+
+function getRoles(data) {
+    for (i = 0; i < data.length; i++) {
+        master_roles.push(data[i]["name"])
+    }
+}
 
 function renderShiftTable(data) {
     console.log(data)
@@ -162,7 +170,7 @@ function create_row(attribute, name, shift){
     $(roles).css("border-top", "1px solid")
 
     row.append(roles);
-    let roleOptions = ["Boiler", "Ovid", "Scandinavian", "Sauce Designer"];
+    let roleOptions = master_roles;
     let roleSelect = document.createElement("select");
 
     for (let i=0; i < roleOptions.length; i++) {

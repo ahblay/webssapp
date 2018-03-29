@@ -180,6 +180,7 @@ $(document).on("click", ".a", function () {
     var parent = $(this).closest($(".card"));
     parent.removeClass("schedule-default schedule-upcoming schedule-active")
     parent.addClass("schedule-active")
+    schedule_id = parent.data("id")
 
     $.ajax({
         type: "POST",
@@ -195,6 +196,7 @@ $(document).on("click", ".u", function () {
     var parent = $(this).closest($(".card"));
     parent.removeClass("schedule-default schedule-upcoming schedule-active")
     parent.addClass("schedule-upcoming")
+    schedule_id = parent.data("id")
 
     $.ajax({
         type: "POST",
