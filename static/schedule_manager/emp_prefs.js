@@ -173,8 +173,6 @@ function preferenceSelect() {
     } else {
         pref_dict[selected_user_id] = shift_dict
     }
-
-    console.log(pref_dict)
 }
 
 function showEmployeeShifts(id) {
@@ -222,16 +220,12 @@ function assignPrefButtons (initial_prefs) {
         if (initial_prefs[selected_user_id] != undefined) {
             if (initial_prefs[selected_user_id][shift_id] == -1000 && $(buttons[i]).text() == "Unavailable") {
                 $(buttons[i]).addClass("active")
-                console.log(pref_dict)
             }
             if (initial_prefs[selected_user_id][shift_id] == 1 && $(buttons[i]).text() == "Available") {
                 $(buttons[i]).addClass("active")
-                console.log(pref_dict)
-
             }
             if (initial_prefs[selected_user_id][shift_id] == 5 && $(buttons[i]).text() == "Prefer") {
                 $(buttons[i]).addClass("active")
-                console.log(pref_dict)
             }
         }
     }
