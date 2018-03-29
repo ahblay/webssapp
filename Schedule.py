@@ -40,13 +40,14 @@ class ScheduleProcessor:
 
         self.num_employees = self.get_length(self.employees)
         self.num_shifts = self.build_num_shifts()
-        #self.max_shifts_per_day = self.get_length([[shift for shift in self.shifts[day].keys] for day in self.shifts.keys()])
         self.num_roles = self.get_length(self.roles)
         self.num_days = self.get_length(self.days)
 
         self.management_data = self.build_management_data()
         self.employee_info = self.build_employee_info()
         self.training = self.build_training()
+
+        self.output = None
 
     def get_length(self, item):
         if item is not None:
@@ -87,7 +88,7 @@ class ScheduleProcessor:
             for day in self.shifts.keys():
                 day_dict = {
                     "num_employees": [self.shifts[day][name]['num_employees'] for name in self.shifts[day].keys()],
-                    "shift_times": ['Not Used' for _ in range(len(self.shifts[day].keys()))]}
+                    "shift_times": ['{} - {}'.format(self.shifts[day][key]['start'], self.shifts[day][key]['end']) for key in self.shifts[day].keys()]}
                 role_dict[day_index] = day_dict
                 day_index += 1
             management_data.append(role_dict)
@@ -215,3 +216,32 @@ class ScheduleProcessor:
         schedules = db.schedules
 
         schedules.find_one({"name": self.name})
+
+    def to_dict(self):
+
+        schedule_dict = self.__dict__
+
+        schedule_dict['employees'] = self._emps_to_str()
+        schedule_dict['days'] = self._days_to_str()
+
+        return schedule_dict
+
+    def _days_to_str(self):
+        new_days = []
+
+        for day in self.days:
+            str_day = day.strftime('%m/%d/%Y')
+            new_days.append(str_day)
+
+        return new_days
+
+    def _emps_to_str(self):
+
+        emps = self.employees
+
+        for index, emp in enumerate(self.employees):
+            for key in emp.keys():
+                if '_id' in key:
+                    emps[index][key] = str(emp[key])
+
+        return emps

@@ -855,16 +855,13 @@ def create_schedule(schedule_id=None):
     schedule_dict = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
 
     schedule = ScheduleProcessor(schedule_dict)
-
     output = schedule.build_schedule(schedule)
-
-    pprint.pprint(output)
-
-    return jsonify({"success": True, "message": "Employee added successfully"})
+    schedule.output = output
+    schedule_dict = schedule.to_dict()
+    pprint.pprint(schedule_dict)
+    return jsonify(schedule_dict)
 
     #Populate schedule object
-
-
 
 
 if __name__ == '__main__':
