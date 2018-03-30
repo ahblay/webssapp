@@ -192,9 +192,10 @@ select {
 .btn-outline-dark {
     background-color: white;
 }
+
 /* View schedule */
 .declined-shift {
-    outline: 4px solid #ff0000;
+    background-color: #dd4245;
 }
 
 #schedule-output.items td{

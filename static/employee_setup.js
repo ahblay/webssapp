@@ -30,14 +30,21 @@ function refresh_table_data(employees){
 
         for (key=0; key < db_keys.length; key++){
             let td = document.createElement("td");
+            $(td).css("border-top", "1px solid")
             if (db_keys[key] == "checkbox"){
+            let label = document.createElement("label");
+                $(label).addClass("checkbox-container");
+                let span = document.createElement("span");
+                $(span).addClass("custom-checkbox");
                 let input = $(document.createElement("input"));
                 input.addClass("row-select-checkbox");
                 input.attr("type", "checkbox");
                 input.attr("id", employees[i]["_id"]);
                 input.val("");
                 console.log(input);
-                $(td).append(input);
+                $(label).append(input);
+                $(label).append(span);
+                $(td).append(label);
                 $(tr).append(td);
                 continue;
             };

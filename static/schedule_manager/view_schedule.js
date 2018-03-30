@@ -14,7 +14,6 @@ function render_schedule(schedule){
 
 };
 
-// WHY IS DURATION 7????
 function render_schedule_header(schedule, start_date_index, duration=7){
 
     $("#schedule-output-body").empty();
