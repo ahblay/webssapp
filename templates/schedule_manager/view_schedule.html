@@ -1,23 +1,32 @@
+
 <div class="row">
-    <div class="col-md-12">
-        <div class="row" id="view-schedule-button-bar">
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-10">
+        <div class="row">
             <div class="col-md-12">
-                <button type="button" class="btn btn-success" id="create-schedule">Create Schedule</button>
-                <div class="btn-group float-right" id="page-select" style="padding-left: 1em;">
-                    <button type="button" class="btn btn-outline-dark" id="page-left" disabled>&laquo;</button>
-                    <button type="button" class="btn btn-outline-dark" id="page-right">&raquo;</button>
+                <div class="row" id="view-schedule-button-bar">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-outline-dark" id="create-schedule">Create Schedule</button>
+                        <div class="btn-group float-right" id="page-select" style="padding-left: 1em;">
+                            <button type="button" class="btn btn-outline-dark" disabled>&laquo;</button>
+                            <button type="button" class="btn btn-outline-dark">&raquo;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table rounded-table-basic table-hover" id="schedule-output">
+                            <thead>
+                                <tr id="schedule-output-header"></tr>
+                            </thead>
+                            <tbody id="schedule-output-body"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table rounded-table-basic" id="schedule-output">
-                    <thead>
-                        <tr id="schedule-output-header"></tr>
-                    </thead>
-                    <tbody id="schedule-output-body"></tbody>
-                </table>
-            </div>
-        </div>
+    </div>
+    <div class="col-md-1">
     </div>
 </div>

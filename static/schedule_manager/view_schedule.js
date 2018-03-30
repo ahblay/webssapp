@@ -14,6 +14,7 @@ function render_schedule(schedule){
 
 };
 
+// WHY IS DURATION 7????
 function render_schedule_header(schedule, start_date_index, duration=7){
 
     $("#schedule-output-body").empty();
@@ -22,9 +23,9 @@ function render_schedule_header(schedule, start_date_index, duration=7){
 
     days = schedule["days"]
     if (days.length > duration){
-        max_days = days.length
-    } else {
         max_days = duration;
+    } else {
+        max_days = days.length
     };
 
     for (i=0; i<max_days; i++){
@@ -33,9 +34,10 @@ function render_schedule_header(schedule, start_date_index, duration=7){
 
     for (emp=0; emp<schedule["employees"].length; emp++){
         let row = document.createElement('tr');
-        $(row).append($('<th />', {text: schedule["employees"][emp]["name"]}));
+        $(row).append($('<th />', {text: schedule["employees"][emp]["name"]}).css("border-top", "1px solid"));
         for (day=0; day<schedule["days"].length; day++){
             let td = $('<td />')
+            $(td).css("border-top", "1px solid")
             emps_work_for_day = schedule.output[emp][day];
 
             if (emps_work_for_day["working"]) {
