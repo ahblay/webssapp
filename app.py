@@ -178,6 +178,23 @@ def add_employee():
     return jsonify({"success": True, "message": "Employee added successfully"})
 
 
+@app.route('/_add_role', methods=['POST'])
+def add_role():
+    if request.json is None:
+        return jsonify({"success": False, "message": "No JSON received by the server."})
+
+    db = get_db()
+    roles = db.roles
+    roles.insert({
+        "name": request.json['name']
+    })
+
+    print("Role {} has been added to the database.".format(request.json['name']))
+
+    # return a jsonify success object1
+    return jsonify({"success": True, "message": "Employee added successfully"})
+
+
 @app.route("/add_preferences", methods=["POST", "GET"])
 def add_preferences():
 
@@ -556,6 +573,11 @@ def employee_setup():
     employees = get_employees()
     return render_template("employee_setup.html", employees=employees)
 
+@login_required
+@app.route('/roles')
+def role_setup():
+    return render_template("role_setup.html")
+
 
 @login_required
 @app.route('/_edit_employees', methods=['POST'])
@@ -649,6 +671,16 @@ def _get_employees():
     return jsonify(employees)
 
 
+@app.route('/_api/get_roles')
+def _get_roles():
+    db = get_db()
+    roles = list(db.roles.find())
+    for role in roles:
+        role["_id"] = str(role["_id"])
+    pprint.pprint(roles)
+    return jsonify(roles)
+
+
 @app.route('/save_shift_data', methods=["POST"])
 def save_shift_data():
     shift_data = request.json["shift_data"]
@@ -720,6 +752,20 @@ def remove_employees():
     for _id in post_data['_ids']:
         print("Removing {} from {}".format(_id, db.schedules.find_one({"_id": ObjectId(_id)})))
         db.employees.remove({"_id": ObjectId(_id)})
+
+    return jsonify({"success": True, "message": "Request received by server."})
+
+
+@app.route('/_remove_roles', methods=['POST'])
+def remove_roles():
+
+    db = get_db()
+
+    post_data = request.get_json()
+
+    for _id in post_data['_ids']:
+        print("Removing {} from {}".format(_id, db.roles.find_one({"_id": ObjectId(_id)})))
+        db.roles.remove({"_id": ObjectId(_id)})
 
     return jsonify({"success": True, "message": "Request received by server."})
 

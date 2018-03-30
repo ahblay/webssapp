@@ -82,11 +82,11 @@ class Schedule:
                 # Becuase employee has seniority 0, it is assumed they are not able to
                 # work this role at all
                 prob += lpSum(x[employee][role][day][shift] for day, shift in product_range(num_days, num_shifts)) == 0, ""
-
+        '''
         # not evening then morning
         for employee, day in product_range(num_employees, num_days-1):
             prob += lpSum(x[employee][role][day][-1] + x[employee][role][day+1][0] for role in range(num_roles)) <= 1, ""
-
+        '''
         '''
         # Zephyr: not more than role/shift per week
         for employee, role, shift in product_range(num_employees, num_roles, num_shifts):

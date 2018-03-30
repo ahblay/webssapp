@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block containedcontent %}
-<div class="container-fluid" id="alert-line" data-status="{{ schedule['status'] }}">
+<div class="container-fluid" id="navbar-line" data-status="{{ schedule['status'] }}">
     <div class="row" style="padding-top: 1em;" id="title-row">
         <div class="col-md-12">
             <div id="info-bar">
@@ -65,7 +65,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12 no-padding">
+        <div class="col-md-12 no-padding" id="schedule-tabs">
             <div class="btn-group" id="tab-select" role="group" style="display: flex;">
                 <button type="button"
                         class="btn-secondary">
