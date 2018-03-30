@@ -206,3 +206,21 @@ select {
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+/* just for funsies */
+.ugly {
+    font-family: "Times New Roman", Times, serif;
+}
+
+.less-ugly {
+    font-family: "Courier New", monospace;
+}
+
+.pink {
+    background-color: #d126ff;
+    color: #5126ff;
+}
+
+.lit {
+    background-image: url('/static/lit.jpeg')
+}
