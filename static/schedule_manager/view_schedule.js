@@ -18,6 +18,8 @@ function render_schedule_header(schedule, start_date_index, duration=7){
 
     $("#schedule-output-body").empty();
 
+    $("#schedule-output-header").append($('<th />', {text: "Employees"}))
+
     days = schedule["days"]
     if (days.length > duration){
         max_days = days.length
@@ -29,10 +31,26 @@ function render_schedule_header(schedule, start_date_index, duration=7){
         $("#schedule-output-header").append( $('<th />', {text: days[i]}) );
     };
 
-    for (i=0; i<schedule["employees"].length; i++){
-        let row = document.createElement('tr')
-        let name_td = document.createElement('td')
+    for (emp=0; emp<schedule["employees"].length; emp++){
+        let row = document.createElement('tr');
+        $(row).append($('<th />', {text: schedule["employees"][emp]["name"]}));
+        for (day=0; day<schedule["days"].length; day++){
+            let td = $('<td />')
+            emps_work_for_day = schedule.output[emp][day];
 
+            if (emps_work_for_day["working"]) {
+                $(td).html(schedule['roles'][emps_work_for_day['role']] + "<br>" + emps_work_for_day['shift']);
 
+                if (emps_work_for_day["declined"]) {
+                    $(td).addClass("declined-shift");
+                };
+            } else {
+                $(td).text('OFF');
+            };
+
+            $(row).append(td);
+        };
+
+        $("#schedule-output-body").append(row);
     };
 };
