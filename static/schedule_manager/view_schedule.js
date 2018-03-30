@@ -35,9 +35,10 @@ function render_schedule_header(schedule, start_date_index, duration=7){
 
     for (emp=0; emp<schedule["employees"].length; emp++){
         let row = document.createElement('tr');
-        $(row).append($('<th />', {text: schedule["employees"][emp]["name"]}));
+        $(row).append($('<th />', {text: schedule["employees"][emp]["name"]}).css("border-top", "1px solid"));
         for (day=0; day<schedule["days"].length; day++){
             let td = $('<td />')
+            $(td).css("border-top", "1px solid")
             emps_work_for_day = schedule.output[emp][day];
 
             if (emps_work_for_day["working"]) {

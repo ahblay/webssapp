@@ -192,9 +192,10 @@ select {
 .btn-outline-dark {
     background-color: white;
 }
+
 /* View schedule */
 .declined-shift {
-    outline: 4px solid #ff0000;
+    background-color: #dd4245;
 }
 
 #schedule-output.items td{
@@ -204,4 +205,22 @@ select {
 #view-schedule-button-bar {
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+/* just for funsies */
+.ugly {
+    font-family: "Times New Roman", Times, serif;
+}
+
+.less-ugly {
+    font-family: "Courier New", monospace;
+}
+
+.pink {
+    background-color: #d126ff;
+    color: #5126ff;
+}
+
+.lit {
+    background-image: url('/static/lit.jpeg')
 }

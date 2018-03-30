@@ -1,41 +1,74 @@
 {% extends "base.html" %}
 
+{% block optionalmeta %}
+<title>Employees</title>
+{% endblock %}
+
 {% block containedcontent %}
-<div class="row">
-    <div class="col-md-1" style="background-color: #f1f1f1"></div>
-    <div class="col-md-10">
-        <div class="alert alert-primary">The information on this page will be loaded when a new schedule is created.
-            If you wish to make changes that apply to only one schedule, go to the "Home" page and select the schedule
-            you wish to manage, then go to the "Employee Management" tab.</div>
-        <div class="row">
-            <div class="col-md-12">
-                <button type="button" class="btn btn-success" id="add-employee" data-target="#add-employee-modal" data-toggle="modal">Add Employee</button>
-                <button type="button" class="btn btn-success" id="edit-employees" data-target="#edit-emps-modal" data-toggle="modal" disabled>Edit Selected</button>
-                <button type="button" class="btn btn-danger float-right" id="remove-employees" disabled>Remove Selected</button>
-            </div>
+<div class="container-fluid">
+
+    <div class="row line-default">
+        <div class="col-md-4" style="padding-top: 1em; padding-bottom: .75em;">
+            <h2>Employees</h2>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table" id="emp-info">
-                    <thead>
-                        <tr>
-                            <th data-dbkey="checkbox" scope="col"><input type="checkbox" value="" id="check-all-employees"></th>
-                            <th data-dbkey="name" scope="col">Name</th>
-                            <th data-dbkey="training" scope="col">Training</th>
-                            <th data-dbkey="roles" scope="col">Roles</th>
-                            <th data-dbkey="min_shifts" scope="col">Min. Shifts</th>
-                            <th data-dbkey="max_shifts" scope="col">Max. Shifts</th>
-                            <th data-dbkey="seniority" scope="col">Seniority</th>
-                            <th data-dbkey="inactive" scope="col">Inactive</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employee-table-body">
-                    </tbody>
-                </table>
+        <div class="col-md-8">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 no-padding alert-line">
+            <div class="alert alert-primary w100" role="alert">
+                <p>The information on this page will be loaded when a new schedule is created.
+                If you wish to make changes that apply to only one schedule, go to the "Home" page and select the schedule
+                you wish to manage, then go to the "Employee Management" tab.</p>
             </div>
         </div>
     </div>
-    <div class="col-md-1" style="background-color: #f1f1f1"></div>
+
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-12" style="padding-bottom: 1em;">
+                    <button type="button" class="btn btn-outline-dark" id="add-employee" data-target="#add-employee-modal" data-toggle="modal">Add Employee</button>
+                    <button type="button" class="btn btn-outline-dark" id="edit-employees" data-target="#edit-emps-modal" data-toggle="modal" disabled>Edit Selected</button>
+                    <button type="button" class="btn btn-outline-danger float-right" id="remove-employees" disabled>Remove Selected</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table rounded-table-basic table-hover" id="emp-info">
+                        <thead>
+                            <tr>
+                                <th data-dbkey="checkbox" scope="col">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" value="" id="check-all-employees">
+                                        <span class="custom-checkbox" style="top: -12px !important;">
+                                        </span>
+                                    </label>
+                                </th>
+                                <th data-dbkey="name" scope="col">Name</th>
+                                <th data-dbkey="training" scope="col">Training</th>
+                                <th data-dbkey="roles" scope="col">Roles</th>
+                                <th data-dbkey="min_shifts" scope="col">Min. Shifts</th>
+                                <th data-dbkey="max_shifts" scope="col">Max. Shifts</th>
+                                <th data-dbkey="seniority" scope="col">Seniority</th>
+                                <th data-dbkey="inactive" scope="col">Inactive</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employee-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-1">
+        </div>
+
+    </div>
 </div>
 
 <div class="modal fade" id="add-employee-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
