@@ -16,20 +16,22 @@ function render_schedule(schedule){
 
 function render_schedule_header(schedule, start_date_index, duration=7){
 
+    $("#schedule-output-header").empty();
     $("#schedule-output-body").empty();
-
-    $("#schedule-output-header").append($('<th />', {text: "Employees"}))
 
     days = schedule["days"]
     if (days.length > duration){
-        max_days = days.length
-    } else {
         max_days = duration;
+    } else {
+        max_days = days.length;
     };
 
+    let header_row = document.createElement("tr");
+    $(header_row).append($('<th />', {text: "Employees"}));
     for (i=0; i<max_days; i++){
-        $("#schedule-output-header").append( $('<th />', {text: days[i]}) );
+        $(header_row).append( $('<th />', {text: days[i]}) );
     };
+    $("#schedule-output-header").append(header_row);
 
     for (emp=0; emp<schedule["employees"].length; emp++){
         let row = document.createElement('tr');
@@ -39,7 +41,7 @@ function render_schedule_header(schedule, start_date_index, duration=7){
             emps_work_for_day = schedule.output[emp][day];
 
             if (emps_work_for_day["working"]) {
-                $(td).html(schedule['roles'][emps_work_for_day['role']] + "<br>" + emps_work_for_day['shift']);
+                $(td).html(schedule["roles"][emps_work_for_day["role"]] + "<br>" + emps_work_for_day["shift"]);
 
                 if (emps_work_for_day["declined"]) {
                     $(td).addClass("declined-shift");

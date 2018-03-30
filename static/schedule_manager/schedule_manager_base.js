@@ -70,5 +70,14 @@ function dateToString(date) {
 
 $(function () {
     dates = $(".dates").data("dates").split(" ")
-    $(".dates").append(dateToString(dates[0]) + "<b> to </b>" + dateToString(dates[1]))});
+    $(".dates").append(dateToString(dates[0]) + "<b> to </b>" + dateToString(dates[1]))
+});
+
+$("#back-to-home").on("click", function(){
+    window.location.assign("/new_prefs");
+});
+
+
+
+
 
