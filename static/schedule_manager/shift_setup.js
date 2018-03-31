@@ -349,4 +349,5 @@ $(document).on("click", "#remove-shifts", function() {
         success: success
         });
     };
+    $(".shift-select-checkbox:checked").parents("tr").empty()
 });
