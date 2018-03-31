@@ -686,11 +686,12 @@ def save_shift_data():
     shift_data = request.json["shift_data"]
     id = request.json["_id"]
     date = request.json["date"]
-    shifts = {shift[0]: {"_id": str(ObjectId()),
-                         "start": int(shift[1]),
-                         "end": int(shift[2]),
-                         "num_employees": int(shift[3]),
-                         "role": shift[4]}
+    print(shift_data)
+    shifts = {str(ObjectId()): {"name": shift[1],
+                                "start": int(shift[2]),
+                                "end": int(shift[3]),
+                                "num_employees": int(shift[4]),
+                                "role": shift[5]}
               for shift in shift_data}
     db = get_db()
     db.schedules.update({"_id": ObjectId(id)},
@@ -725,6 +726,25 @@ def clear():
     db.users.delete_many({})
     db.schedules.delete_many({})
     return render_template('index.html')
+
+
+@app.route('/_remove_schedule_shifts', methods=['POST'])
+def remove_schedule_shifts():
+    db = get_db()
+
+    post_data = request.get_json()
+
+    day = post_data["day"]
+
+    pprint.pprint(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))
+
+    for _id in post_data['_ids']:
+        print("Removing {} from {}".format(_id, db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])})))
+        db.schedules.update({"_id": ObjectId(post_data["schedule_id"])},
+                            {"$unset": {"shifts." + day + "." + _id: ""}})
+
+    pprint.pprint(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))
+    return jsonify({"success": True, "message": "Request received by server."})
 
 
 @app.route('/_remove_schedule_employees', methods=['POST'])

@@ -77,6 +77,17 @@ $("#back-to-home").on("click", function(){
     window.location.assign("/new_prefs");
 });
 
+// refresh emp prefs when tab is clicked
+$(document).on("click", "#employee-prefs-tab", function() {
+    $(".emp-shift-prefs").empty()
+    $(".emp-prefs").empty()
+    schedule_id = $(this).data("schedule-id")
+    $.getJSON("/api/get_schedule/" + schedule_id, success= function(data) {
+        console.log(data)
+        renderEmpTable(data)
+        renderShiftPrefsTable(data)
+    });
+})
 
 
 

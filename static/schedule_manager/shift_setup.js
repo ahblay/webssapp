@@ -3,6 +3,7 @@ console.log("shift_setup.js is running.")
 var schedule_id = "default assignment";
 var schedule_dates = "default assignment";
 var master_roles = []
+var day_index = 0;
 
 $(function () {
     Date.prototype.addDays = function(days)
@@ -32,7 +33,10 @@ function renderShiftTable(data) {
     //if statement because jsonify error message is used as data to create a row
     if (Object.keys(data)[0] !== "jsonify") {
         for (let i = 0; i < Object.keys(data).length; i++) {
-            create_row(".shift-table-body", Object.keys(data)[i], data[Object.keys(data)[i]])
+            shift_name = data[Object.keys(data)[i]]["name"]
+            shift_info = data[Object.keys(data)[i]]
+            shift_info["_id"] = Object.keys(data)[i]
+            create_row(".shift-table-body", shift_name, shift_info)
         }
     }
 }
@@ -80,6 +84,26 @@ function create_row(attribute, name, shift){
     if (typeof(shift) === "undefined") shift = {"start": "", "end": "", "num_employees": "", "role": ""};
 
     let row = document.createElement("tr");
+    console.log(shift)
+
+    //checkbox
+    let checkCell = document.createElement("td");
+    $(checkCell).css("border-top", "1px solid")
+    let label = document.createElement("label");
+    $(label).addClass("checkbox-container");
+    let span = document.createElement("span");
+    $(span).addClass("custom-checkbox");
+    let input = $(document.createElement("input"));
+    input.addClass("shift-select-checkbox");
+    input.attr("id", shift["_id"])
+
+    input.attr("type", "checkbox");
+    input.val("");
+    console.log(input);
+    $(label).append(input);
+    $(label).append(span);
+    $(checkCell).append(label);
+    $(row).append(checkCell);
 
     //shift name
     let nameCell = document.createElement("td");
@@ -245,6 +269,7 @@ function getIndexOf(arr, k) {
 }
 
 $(document).on("click", "#page-right", function(){
+    day_index++;
     $('#page-left').prop('disabled', false);
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
@@ -258,6 +283,7 @@ $(document).on("click", "#page-right", function(){
 });
 
 $(document).on("click", "#page-left", function(){
+    day_index--;
     $('#page-right').prop('disabled', false);
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
@@ -268,4 +294,59 @@ $(document).on("click", "#page-left", function(){
     }
     $(".shift-table-body").empty()
     $.getJSON("/api/get_shift_data/" + allDates[i - 1][1].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+});
+
+$("#check-all-shifts").on("click", function(){
+    $(".shift-select-checkbox").not(this).prop("checked", this.checked)
+    console.log("Check-all selected, updating buttons.")
+    var num_boxes_selected = $(".shift-select-checkbox:checked").length
+    if ( num_boxes_selected > 0) {
+        $("#remove-shifts").removeAttr("disabled");
+    } else {
+        $("#remove-shifts").attr("disabled", "disabled")
+    };
+});
+
+$(document).on("change", ".shift-select-checkbox", function(){
+    console.log("Checkbox selected, updating buttons.")
+    var num_boxes_selected = $(".shift-select-checkbox:checked").length
+    if ( num_boxes_selected > 0) {
+        $("#remove-shifts").removeAttr("disabled");
+    } else {
+        $("#remove-shifts").attr("disabled", "disabled")
+    };
+});
+
+$(document).on("click", "#remove-shifts", function() {
+    var message = "Are you sure that you wish to remove these shift from your schedule? All data associated" +
+     " with these shifts will be deleted."
+    var confirmed = confirm(message);
+    if (confirmed){
+
+        data = {
+            "_ids": $(".shift-select-checkbox:checked").map(function(){return this.id}).get(),
+            "schedule_id": schedule_id,
+            "day": schedule_dates[day_index],
+        };
+        console.log(data)
+        console.log("Attempting to remove the following shifts from schedule:")
+        console.log(data["_ids"])
+        let success = function() {
+                $("#remove-shifts").attr("disabled", "disabled");
+                $(".shift-table-body").empty();
+                $.getJSON("/api/get_shift_data/" + schedule_dates[day_index].replace(/\//g, "") + "/" + schedule_id,
+                    renderShiftTable
+                );
+        };
+
+        $.ajax({
+        type: "POST",
+        url: "/_remove_schedule_shifts",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        dataType: "json",
+        encode: "true",
+        success: success
+        });
+    };
 });

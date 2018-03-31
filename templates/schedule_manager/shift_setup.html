@@ -30,6 +30,7 @@
                 <div class="btn-group float-right">
                     <button type="button" class="btn btn-outline-dark float-right" id="add-shift">Add Shift</button>
                     <button type="button" class="btn btn-outline-dark float-right" id="save-shifts">Save Shifts</button>
+                    <button type="button" class="btn btn-outline-danger float-right" id="remove-shifts" disabled>Remove Selected</button>
                 </div>
             </div>
         </div>
@@ -39,6 +40,13 @@
                 <table class="table table-hover rounded-table-basic shift-table">
                     <thead>
                         <tr>
+                            <th data-dbkey="checkbox" scope="col">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="" id="check-all-shifts">
+                                    <span class="custom-checkbox" style="top: -12px !important;">
+                                    </span>
+                                </label>
+                            </th>
                             <th scope="col">Name</th>
                             <th scope="col">Start Time</th>
                             <th scope="col">End Time</th>

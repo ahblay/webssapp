@@ -4,7 +4,8 @@ var employee_names = {}
 var shift_dict = {}
 var pref_dict = {}
 
-
+// no longer necessary due to the fact that prefs table is generated when the prefs tab is selected
+/*
 $(function () {
     schedule_id = $("#employee-prefs-tab").data("schedule-id")
     console.log(schedule_id)
@@ -17,6 +18,7 @@ $(function () {
     //$.getJSON("/api/get_schedule/" + schedule_id, renderEmpTable)
     //$.getJSON("/_api/get_shifts/" + schedule_id, renderShiftPrefsTable)
 })
+*/
 
 function renderEmpTable(data) {
     data = data['employees']
