@@ -729,7 +729,7 @@ def settings():
 def clear():
     db = get_db()
     db.employees.delete_many({})
-    db.users.delete_many({})
+    #db.users.delete_many({})
     db.schedules.delete_many({})
     return render_template('index.html')
 

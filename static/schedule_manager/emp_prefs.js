@@ -83,7 +83,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         //shift name
         let shift_name = document.createElement("td");
         $(shift_name).css("border-top", "1px solid")
-        $(shift_name).append(Object.entries(shift)[j][0]);
+        $(shift_name).append(Object.entries(shift)[j][1]["name"]);
         $(shift_row).append(shift_name)
 
         //role
@@ -92,7 +92,6 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         $(shift_role).append(Object.entries(shift)[j][1]["role"])
         $(shift_row).append(shift_role)
 
-        console.log('THING:' + Object.entries(shift)[j][0])
         //unavailable button
         let unavailable = $('<input/>',
             {
@@ -256,7 +255,6 @@ $(document).on("click", "#back-button", function () {
 
 $(document).on("click", "#save-prefs", function () {
     prefs = {"_id": schedule_id, "pref_data": pref_dict, "employee": selected_user_id}
-    console.log(pref_dict)
     $.ajax({
         type: "POST",
         url: "/save_pref_data",
