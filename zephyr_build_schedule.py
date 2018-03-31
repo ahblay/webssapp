@@ -51,10 +51,10 @@ class Schedule:
 
             shifts = schedule.shifts
             date = list(schedule.shifts.keys())[day]
-            name = list(shifts[date].keys())[shift]
+            _id = list(shifts[date].keys())[shift]
 
             if shift < len(self.management_data[role][day]["num_employees"]) and \
-                schedule.roles[role] == shifts[date][name]['role']:
+                schedule.roles[role] == shifts[date][_id]['role']:
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
                     == self.management_data[role][day]["num_employees"][shift]
 
@@ -98,16 +98,20 @@ class Schedule:
                 return -1000
 
             date = list(schedule.shifts.keys())[day]
-            name = list(shifts[date].keys())[shift]
+            _id = list(shifts[date].keys())[shift]
+
+            print(date)
+            print(_id)
+
             if shift < len(self.management_data[role][day]["num_employees"]):
-                if schedule.roles[role] == schedule.shifts[date][name]['role']:
+                if schedule.roles[role] == schedule.shifts[date][_id]['role']:
                     if employee_info[employee]["shift_pref"][day][shift]["lock_in_role"] == role:
                         c = 1000
                     else:
                         if employee_info[employee]["shift_pref"][day][shift]["pref"] == 5:
                             print("Adding C=5 > Preferred || Role: {} Day: {} Shift: {}".format(role, day, shift))
                             print(employee_info[employee]['shift_pref'][day])
-                            print(shifts[date][name]['role'])
+                            print(shifts[date][_id]['role'])
                             c = 5
                         elif employee_info[employee]["shift_pref"][day][shift]["pref"] == 1:
                             c = 1

@@ -92,6 +92,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         $(shift_role).append(Object.entries(shift)[j][1]["role"])
         $(shift_row).append(shift_role)
 
+        console.log('THING:' + Object.entries(shift)[j][0])
         //unavailable button
         let unavailable = $('<input/>',
             {
@@ -100,7 +101,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         let unavailable_label = $('<label/>',
             {
                 class: "btn btn-outline-dark",
-                "data-shift-id": Object.entries(shift)[j][1]["_id"],
+                "data-shift-id": Object.entries(shift)[j][0],
                 click: preferenceSelect,
             });
         $(unavailable_label).append(unavailable);
@@ -114,7 +115,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         let available_label = $('<label/>',
             {
                 class: "btn btn-outline-dark",
-                "data-shift-id": Object.entries(shift)[j][1]["_id"],
+                "data-shift-id": Object.entries(shift)[j][0],
                 click: preferenceSelect,
             });
         $(available_label).append(available);
@@ -128,7 +129,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         let prefer_label = $('<label/>',
             {
                 class: "btn btn-outline-dark",
-                "data-shift-id": Object.entries(shift)[j][1]["_id"],
+                "data-shift-id": Object.entries(shift)[j][0],
                 click: preferenceSelect,
             });
         $(prefer_label).append(prefer);
@@ -150,7 +151,6 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         $(btn_group_cell).css("border-top", "1px solid")
         $(btn_group_cell).append(btn_group);
         $(shift_row).append(btn_group_cell);
-
 
         $(attribute).append(shift_row)
     }
@@ -256,6 +256,7 @@ $(document).on("click", "#back-button", function () {
 
 $(document).on("click", "#save-prefs", function () {
     prefs = {"_id": schedule_id, "pref_data": pref_dict, "employee": selected_user_id}
+    console.log(pref_dict)
     $.ajax({
         type: "POST",
         url: "/save_pref_data",
