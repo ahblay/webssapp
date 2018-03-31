@@ -119,7 +119,7 @@ class ScheduleProcessor:
 
             emp_id = str(employee['_id'])
             emp_prefs = self.prefs[emp_id]
-            shift_id = self.shifts[day][shift]['_id']
+            shift_id = self.shifts[day][shift]
 
             pref_val = -1000
 
@@ -145,30 +145,6 @@ class ScheduleProcessor:
                     for employee in self.employees]
 
         return training
-
-    def create_variables(self, employees, days, shifts, roles):
-        if employees is not None and \
-            days is not None and \
-            shifts is not None and \
-            roles is not None:
-
-            self.management_data = [
-                {day:
-                     {"num_employees": [1 for shift in range(self.num_shifts)],
-                      "shift_times": ["don't matter" for _ in range(self.num_shifts)]}
-                 for day in range(self.num_days)}
-                for role in range(self.num_roles)]
-            self.employee_info = [{"min_shifts": employees[employee]["min_shifts"],
-                                   "max_shifts": employees[employee]["max_shifts"],
-                                   "shift_pref": [
-                                       [{"pref": employees[employee]["shift_pref"][day][shift], "lock_in_role": None}
-                                        for shift in shifts]
-                                       for day in days],
-                                   "role_seniority": employees[employee]["seniority"]}
-                                  for employee in employees]
-            self.training = [[employees[employee]["training"][role]
-                              for role in range(self.num_roles)]
-                             for employee in employees]
 
     def build_schedule(self, schedule):
         s = scheduling_algorithm.Schedule(self.num_employees,

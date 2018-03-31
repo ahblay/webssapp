@@ -1,20 +1,13 @@
+
+
 $(document).on("click", "#create-schedule", function(){
     $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
-        start_index = 0
-        render_schedule_header(data, start_index);
+        render_schedule(data, start_index=0);
     });
 });
 
-function render_schedule(schedule){
 
-    //Render table header (dates)
-    let
-
-    //Render rows
-
-};
-
-function render_schedule_header(schedule, start_date_index, duration=7){
+function render_schedule(schedule, start_date_index, duration=7){
 
     $("#schedule-output-header").empty();
     $("#schedule-output-body").empty();
@@ -42,7 +35,8 @@ function render_schedule_header(schedule, start_date_index, duration=7){
             emps_work_for_day = schedule.output[emp][day];
 
             if (emps_work_for_day["working"]) {
-                $(td).html(schedule["roles"][emps_work_for_day["role"]] + "<br>" + emps_work_for_day["shift"]);
+                $(td).html("<strong>" + schedule["roles"][emps_work_for_day["role"]] + "<br>" +
+                emps_work_for_day["shift"] + "<strong>");
 
                 if (emps_work_for_day["declined"]) {
                     $(td).addClass("declined-shift");
