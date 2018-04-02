@@ -109,6 +109,7 @@ function create_row(attribute, name, shift){
     let nameCell = document.createElement("td");
     $(nameCell).css("border-top", "1px solid")
     let nameField = document.createElement("input");
+    $(nameField).addClass("shift-name")
     if (name != "") {
         $(nameField).attr("value", name);
     }
@@ -119,55 +120,50 @@ function create_row(attribute, name, shift){
     let startTime = document.createElement("td");
     $(startTime).css("border-top", "1px solid")
     let startHourOptions = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5];
+    let startInput = document.createElement("input")
+    $(startInput).val(shift["start"])
+
+    $(function() {
+        $(startInput).timepicker()
+        $(startInput).timepicker('option', { useSelect: true });
+    })
+
     let startSelect = document.createElement("select");
 
-
-    for (let i=0; i < startHourOptions.length; i++) {
-        let option = document.createElement("option");
-        option.value = startHourOptions[i];
-        option.text = startHourOptions[i];
-        if (startHourOptions[i] == shift["start"]) {
-            $(option).prop("selected", true);
-        }
-        startSelect.appendChild(option);
-    };
-
-    startTime.append(startSelect);
+    startTime.append(startInput)
     row.append(startTime);
 
     //manage end time dropdown
     let endTime = document.createElement("td");
     $(endTime).css("border-top", "1px solid")
     let endOptions = [10, 11, 12, 1, 2, 3, 4, 5];
-    let endSelect = document.createElement("select");
+    let endInput = document.createElement("input")
+    $(endInput).val(shift["end"])
 
-    for (let i=0; i < endOptions.length; i++) {
-        let option = document.createElement("option");
-        option.value = endOptions[i];
-        option.text = endOptions[i];
-        if (endOptions[i] == shift["end"]) {
-            $(option).prop("selected", true)
-        }
-        endSelect.appendChild(option);
-    };
+    $(function() {
+        $(endInput).timepicker()
+        $(endInput).timepicker('option', { useSelect: true });
+    })
 
-    endTime.append(endSelect);
+    let endSelect = document.createElement("select")
+
+    $(endTime).append(endInput)
     row.append(endTime);
 
     //determine length
     let length = document.createElement("td");
     $(length).css("border-top", "1px solid")
-    length.append($(startSelect).val() - $(endSelect).val())
-    $(startSelect).on("change", function () {
-        console.log($(startSelect).val())
+    length.append(timeDifference($(startInput).val(), $(endInput).val()))
+
+    $(startInput).on("change", function () {
         $(length).empty()
-        length.append($(startSelect).val() - $(endSelect).val())
+        length.append(timeDifference($(startInput).val(), $(endInput).val()))
     })
-    $(endSelect).on("change", function () {
-        console.log($(startSelect).val())
+    $(endInput).on("change", function () {
         $(length).empty()
-        length.append($(startSelect).val() - $(endSelect).val())
+        length.append(timeDifference($(startInput).val(), $(endInput).val()))
     })
+
     row.append(length);
 
     //select number of employees
@@ -211,6 +207,47 @@ function create_row(attribute, name, shift){
     $(attribute).append(row);
 };
 
+function timeDifference (start, end) {
+
+    function to24 (time) {
+        time_period = time.slice(-2)
+        time_array = time.slice(0, -2).split(":")
+        if (time_period == "pm" && time_array[0] < 12) {
+            time_array[0] = Number(time_array[0]) + 12
+            time_array[1] = Number(time_array[1])
+        }
+        if (time_period == "am" && time_array[0] == 12) {
+            time_array[0] = 0
+            time_array[1] = Number(time_array[1])
+        }
+        else {
+            time_array[0] = Number(time_array[0])
+            time_array[1] = Number(time_array[1])
+        }
+        return time_array
+    }
+
+    start_time = to24(start)
+    end_time = to24(end)
+
+    diff = end_time[0] - start_time[0]
+    if (start_time[1] != end_time[1]) {
+        if (start_time[1] == 30) {
+            diff = diff - 0.5
+        }
+        if (start_time[1] == 0) {
+            diff = diff + 0.5
+        }
+    }
+    if (diff < 0) {
+        return "time-traveler!"
+    }
+    if (diff == 1) {
+        return diff + " hr"
+    }
+    return diff + " hrs"
+}
+
 var counter = 1
 
 function collectShiftData () {
@@ -218,10 +255,12 @@ function collectShiftData () {
     $(".shift-table-body tr").each(function () {
         var shift = []
         $(this).children().each(function () {
-            if ($(this).find("input").length > 0) {
+            if ($(this).find("input").hasClass("shift-name")) {
+                console.log($(this).find("input").val())
                 shift.push($(this).find("input").val())
             }
             if ($(this).find("select").length > 0) {
+                console.log($(this).find("select").val())
                 shift.push($(this).find("select").val())
             }
         })
