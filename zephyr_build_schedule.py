@@ -45,6 +45,7 @@ class Schedule:
         self.prob = prob = LpProblem("Schedule", LpMaximize)
 
         shifts = schedule.shifts
+
         print("Management Data ---------------------------")
         pprint.pprint(management_data)
         print('Shifts ---------------------')

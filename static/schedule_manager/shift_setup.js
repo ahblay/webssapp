@@ -278,12 +278,8 @@ $(document).on("click", "#save-shifts", function () {
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
     var i = getIndexOf(allDates, current)
-    console.log(allDates)
-    console.log(i)
-    console.log(current)
     date = allDates[i][1]
-    console.log(date)
-    shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
+    shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date, ""}
     console.log(shift_data)
     $.ajax({
         type: "POST",
