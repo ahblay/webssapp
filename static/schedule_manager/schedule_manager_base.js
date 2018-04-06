@@ -6,15 +6,15 @@ $(function () {
     console.log(status)
     if (status == "active") {
         $('#navbar-line').addClass("line-active").addClass("alert-active")
-        $('#schedule-tabs').addClass("below-line-active")
+        //$('tab-select').addClass("below-line-active")
     }
     else if (status == "upcoming") {
         $('#navbar-line').addClass("line-upcoming").addClass("alert-upcoming")
-        $('#schedule-tabs').addClass("below-line-upcoming")
+        //$('#tab-select').addClass("below-line-upcoming")
     }
     else {
         $('#navbar-line').addClass("line-default").addClass("alert-default")
-        $('#schedule-tabs').addClass("below-line-default")
+        //$('#tab-select').addClass("below-line-default")
     }
 });
 
@@ -26,7 +26,9 @@ $('#tab-select .btn-secondary').on('click', function(){
 
     let current_view = $(".btn-secondary.active");
     current_view.removeClass("active");
+    current_view.removeClass("selected-tab")
     $(this).addClass("active")
+    $(this).addClass("selected-tab")
 
     change_view(current_view.data("view-id"), $(this).data("view-id"))
 });
