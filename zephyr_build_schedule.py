@@ -139,12 +139,15 @@ class Schedule:
 
         for employee, role, day, shift in product_range(num_employees, num_roles, num_days, num_shifts):
 
-            print("{}, {}, {} --> {}".format(employee,
+            print("{}, {}, {}, {}, {} --> {}".format(employee,
                                              role,
+                                             day,
+                                             shift,
                                              coeff(employee, role, day, shift),
                                              x[employee][role][day][shift]))
 
-            prob.setObjective(lpSum(coeff(employee, role, day, shift)*x[employee][role][day][shift]))
+        prob += lpSum(coeff(employee, role, day, shift)*x[employee][role][day][shift]
+                      for employee, role, day, shift in product_range(num_employees, num_roles, num_days, num_shifts))
 
         prob.solve(solvers.PULP_CBC_CMD())
 
