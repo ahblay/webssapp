@@ -124,7 +124,7 @@ select {
     border-bottom: 5px solid #e6b829;
 }
 
-/*
+/* title row background */
 .alert-default #title-row {
     background-color: #f0f6fd;
 }
@@ -134,7 +134,15 @@ select {
 .alert-upcoming #title-row {
     background-color: #fdf6e1;
 }
-*/
+.alert-default #tab-select {
+    background-color: #f0f6fd;
+}
+.alert-active #tab-select {
+    background-color: #f7fbf7;
+}
+.alert-upcoming #tab-select {
+    background-color: #fdf6e1;
+}
 
 /*alert styling
 .alert-default .alert {
@@ -207,20 +215,47 @@ select {
     padding-bottom: 10px;
 }
 
+/* schedule tabs */
+#tab-select {
+    border-bottom: 1px solid black;
+}
+.selected-tab {
+    background-color: white !important;
+    color: black !important;
+    border-bottom: 1px solid white !important;
+    z-index: 10;
+}
+#tab-select button {
+    background-color: #eeeeee;
+    color: black !important;
+    font-weight: 450;
+    margin-left: 0.5em;
+    border: 1px solid black;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-bottom: -1px;
+    padding-top: 0.75em;
+    padding-bottom: 0.75em;
+}
+#tab-select button:first-child {
+    margin-left: 1em;
+}
+#tab-select button:last-child {
+    margin-right: 1em;
+}
+
 /* just for funsies */
 .ugly {
     font-family: "Times New Roman", Times, serif;
 }
-
 .less-ugly {
     font-family: "Courier New", monospace;
 }
-
 .pink {
     background-color: #d126ff;
     color: #5126ff;
 }
-
 .lit {
     background-image: url('/static/lit.jpeg')
 }
+
