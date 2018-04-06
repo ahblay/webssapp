@@ -268,6 +268,11 @@ function getIndexOf(arr, k) {
     }
 }
 
+$(document).on("click", "#page-right", () => {
+
+});
+
+
 $(document).on("click", "#page-right", function(){
     day_index++;
     $('#page-left').prop('disabled', false);

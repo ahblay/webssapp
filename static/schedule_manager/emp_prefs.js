@@ -262,7 +262,7 @@ $(document).on("click", "#save-prefs", function () {
         contentType: 'application/json;charset=UTF-8',
         dataType: "json",
     }).done(function(){
-        console.log("Sent to server.")
+        console.log("Sending prefs to server.")
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
     });

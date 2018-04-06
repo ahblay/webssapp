@@ -83,7 +83,7 @@ class ScheduleProcessor:
         print(self.roles)
 
         management_data = []
-        for role in self.roles:
+        for _ in self.roles:
             role_dict = {}
             day_index = 0
             for day in self.shifts.keys():
@@ -119,7 +119,6 @@ class ScheduleProcessor:
 
             emp_id = str(employee['_id'])
             emp_prefs = self.prefs[emp_id]
-
             pref_val = -1000
 
             if emp_id in self.prefs.keys():
@@ -196,7 +195,7 @@ class ScheduleProcessor:
 
     def to_dict(self):
 
-        schedule_dict = self.__dict__
+        schedule_dict = self.__dict__.copy()
 
         schedule_dict['employees'] = self._emps_to_str()
         schedule_dict['days'] = self._days_to_str()
