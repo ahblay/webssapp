@@ -219,7 +219,7 @@ function create_row(attribute, name, shift){
     let createTemplateButton = $("<button/>", {
         "data-target": "#create-template-modal",
         "data-toggle": "modal",
-        "data-shift-id": row_id,
+        "data-shift-id": $(row).data("id"),
         class: "btn btn-outline-dark shift-btn",
         text: "Create Template",
         click: openShiftModal
