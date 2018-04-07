@@ -62,8 +62,10 @@ class Schedule:
                 continue
 
             date = list(shifts.keys())[day]
-            _id = list(shifts[date].keys())[shift]
+            # TODO: Changed
+            _id = list(shifts.keys())[shift]
 
+            # TODO: change to shifts[_id][role]
             if shift < len(self.management_data[role][day]["num_employees"]) and \
                 schedule.roles[role] == shifts[date][_id]['role']:
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
@@ -107,11 +109,13 @@ class Schedule:
             if shift >= len(self.management_data[role][day]["num_employees"]):
                 return -7500
 
-            date = list(shifts.keys())[day]
-            _id = list(shifts[date].keys())[shift]
+            # TODO: change to shifts[_id]
+            _id = list(shifts.keys())[shift]
+            date = shifts[_id]['date']
 
             if shift < len(self.management_data[role][day]["num_employees"]):
-                if schedule.roles[role] == shifts[date][_id]['role']:
+                # TODO: Change to shifts[_id][role]
+                if schedule.roles[role] == shifts[_id]['role']:
                     if employee_info[employee]["shift_pref"][day][shift]["lock_in_role"] == role:
                         c = 1000
                     else:
@@ -126,26 +130,10 @@ class Schedule:
                     c *= employee_info[employee]["role_seniority"][role]
                 else:
                     c = -7500
-                '''
-                print('{} || {} || {} || {} || Pref:{} with coeff: {}'.format(schedule.employees[employee]['name'],
-                                                                              schedule.roles[role],
-                                                                              schedule.days[day],
-                                                                              shifts[date][_id]['name'],
-                                                                              employee_info[employee]['shift_pref'][day][shift]['pref'],
-                                                                              c))
-                '''
+
                 return c
 
         self.coeff = coeff
-
-        for employee, role, day, shift in product_range(num_employees, num_roles, num_days, num_shifts):
-
-            print("{}, {}, {}, {}, {} --> {}".format(employee,
-                                             role,
-                                             day,
-                                             shift,
-                                             coeff(employee, role, day, shift),
-                                             x[employee][role][day][shift]))
 
         prob += lpSum(coeff(employee, role, day, shift)*x[employee][role][day][shift]
                       for employee, role, day, shift in product_range(num_employees, num_roles, num_days, num_shifts))
