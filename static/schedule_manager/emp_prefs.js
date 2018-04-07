@@ -81,7 +81,7 @@ function createRow(attribute, name, id) {
     $(attribute).append(row)
 }
 
-function createDayShiftPrefs(attribute, shift, start, employees) {
+function createDayShiftPrefs(attribute, shifts, start, employees) {
     let date_row = document.createElement("tr");
     $(date_row).addClass("table-active")
     date_cell = document.createElement("td");
@@ -91,7 +91,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
     $(date_row).append(date_cell)
     $(attribute).append(date_row)
 
-    for (j = 0; j < Object.entries(shift).length; j++) {
+    for (j = 0; j < shifts.length; j++) {
 
         let shift_row = document.createElement("tr");
         $(shift_row).css("display", "none")
@@ -101,7 +101,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         for (k = 0; k < employees.length; k++) {
             for (l = 0; l < employees[k]["roles"].length; l++) {
                 console.log()
-                if (employees[k]["roles"][l] == Object.entries(shift)[j][1]["role"]) {
+                if (employees[k]["roles"][l] == shifts[j]['role']) {
                     eligible_employees.push(employees[k]['_id'])
                 }
             }
@@ -111,13 +111,13 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         //shift name
         let shift_name = document.createElement("td");
         $(shift_name).css("border-top", "1px solid")
-        $(shift_name).append(Object.entries(shift)[j][1]["name"]);
+        $(shift_name).append(shifts[j]['name']);
         $(shift_row).append(shift_name)
 
         //role
         let shift_role = document.createElement("td");
         $(shift_role).css("border-top", "1px solid")
-        $(shift_role).append(Object.entries(shift)[j][1]["role"])
+        $(shift_role).append(shifts[j]['role'])
         $(shift_row).append(shift_role)
 
         //unavailable button
@@ -128,7 +128,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         let unavailable_label = $('<label/>',
             {
                 class: "btn btn-outline-dark",
-                "data-shift-id": Object.entries(shift)[j][0],
+                "data-shift-id": shifts[j]['_id'],
                 click: preferenceSelect,
             });
         $(unavailable_label).append(unavailable);
@@ -142,7 +142,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         let available_label = $('<label/>',
             {
                 class: "btn btn-outline-dark",
-                "data-shift-id": Object.entries(shift)[j][0],
+                "data-shift-id": shifts[j]['_id'],
                 click: preferenceSelect,
             });
         $(available_label).append(available);
@@ -156,7 +156,7 @@ function createDayShiftPrefs(attribute, shift, start, employees) {
         let prefer_label = $('<label/>',
             {
                 class: "btn btn-outline-dark",
-                "data-shift-id": Object.entries(shift)[j][0],
+                "data-shift-id": shifts[j]['_id'],
                 click: preferenceSelect,
             });
         $(prefer_label).append(prefer);
