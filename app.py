@@ -464,7 +464,7 @@ def update_shift_data():
 
     db = get_db()
     db.schedules.find({"shifts": {"$elemMatch": {"_id": shift_id}}})
-    pprint.pprint(list(db.schedules.find({"shifts": {"$elemMatch": {"_id": shift_id}}})))
+    pprint.pprint(dict(db.schedules.find({"shifts": {"$elemMatch": {"_id": shift_id}}})))
 
 
 @app.route('/save_pref_data', methods=['POST'])
