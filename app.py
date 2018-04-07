@@ -471,11 +471,11 @@ def save_pref_data():
     pref_data = request.json["pref_data"]
     employee = request.json["employee"]
 
-    id = request.json["_id"]
+    _id = request.json["_id"]
     db = get_db()
-    db.schedules.update({"_id": ObjectId(id)},
+    db.schedules.update({"_id": ObjectId(_id)},
                         {"$set": {"prefs." + employee: pref_data[employee]}})
-    pprint.pprint(db.schedules.find_one({"_id": ObjectId(id)}))
+    pprint.pprint(db.schedules.find_one({"_id": ObjectId(_id)}))
     return jsonify({"success": True, "message": "Database updated with prefs."})
 
 

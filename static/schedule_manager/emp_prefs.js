@@ -30,15 +30,43 @@ function renderEmpTable(data) {
 }
 
 function renderShiftPrefsTable(data) {
-    shifts = data['shifts']
+    shifts_by_day = get_shifts_by_day(data['shifts'])
     employees = data['employees']
-    console.log(shifts)
+    console.log(shifts_by_day)
     console.log(employees)
 
-    for (i = 0; i < Object.keys(shifts).length; i++) {
-        createDayShiftPrefs(".emp-shift-prefs", shifts[Object.keys(shifts)[i]], Object.keys(shifts)[i], employees)
+    for (i = 0; i < shifts_by_day.length; i++) {
+        createDayShiftPrefs(".emp-shift-prefs", shifts_by_day[i], shifts_by_day[i][0]['date'], employees)
     }
 }
+
+function get_shifts_by_day(shifts){
+
+    let days = [];
+
+    for (i=0; i<shifts.length; i++){
+        if (!(days.includes(shifts[i]['date']))){
+            console.log("Pushing " + shifts[i]['date'] + " to days.")
+            days.push(shifts[i]['date']);
+        };
+    };
+
+    console.log(days)
+
+    shifts_by_day = []
+    for (i=0; i<days.length; i++){
+        daily_shifts = []
+        for(shift=0; shift<shifts.length; shift++){
+            if (shifts[shift]['date'] == days[i]){
+                daily_shifts.push(shifts[shift])
+            };
+        };
+        shifts_by_day.push(daily_shifts);
+    };
+
+    return shifts_by_day
+};
+
 
 function createRow(attribute, name, id) {
     let row = document.createElement("tr");
@@ -191,6 +219,7 @@ function showEmployeeShifts(id) {
 }
 
 function dateToString(date) {
+    console.log(date)
     var date_array = date.split("/");
     date_array[0] = Number(date_array[0])
     var month_array = ["January",
