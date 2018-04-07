@@ -1,5 +1,7 @@
 console.log("shift_setup.js is running.")
 
+$.getScript("/static/ObjectId.js").fail("Script 'ObjectId.js' failed to load.")
+
 var schedule_id = "default assignment";
 var schedule_dates = "default assignment";
 var master_roles = []
@@ -83,7 +85,11 @@ function create_row(attribute, name, shift){
     if (typeof(name) === 'undefined') name = "";
     if (typeof(shift) === "undefined") shift = {"start": "", "end": "", "num_employees": "", "role": ""};
 
+    var row_id = new ObjectId()
+
     let row = document.createElement("tr");
+    $(row).data("id", row_id)
+
     console.log(shift)
 
     //checkbox
@@ -264,6 +270,7 @@ function collectShiftData () {
                 shift.push($(this).find("select").val())
             }
         })
+        shift.push($(this).data("id").toString())
         shift_data.push(shift)
     })
     return shift_data;
@@ -279,7 +286,7 @@ $(document).on("click", "#save-shifts", function () {
     var current = $("#date").text()
     var i = getIndexOf(allDates, current)
     date = allDates[i][1]
-    shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date, ""}
+    shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
     console.log(shift_data)
     $.ajax({
         type: "POST",

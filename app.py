@@ -434,17 +434,16 @@ def save_shift_data():
     id = request.json["_id"]
     date = request.json["date"]
     print(shift_data)
-    shifts = {str(ObjectId()): {"name": shift[0],
-                                "start": shift[1],
-                                "end": shift[2],
-                                "num_employees": int(shift[3]),
-                                "role": shift[4]}
+
+    shifts = {shift[5]: {"name": shift[0],
+                         "start": shift[1],
+                         "end": shift[2],
+                         "num_employees": int(shift[3]),
+                         "role": shift[4]}
               for shift in shift_data}
     db = get_db()
     db.schedules.update({"_id": ObjectId(id)},
                         {"$set": {"shifts." + date: shifts}})
-    dbshifts = db.schedules.find_one({"_id": ObjectId(id)})
-    pprint.pprint(dbshifts)
     return jsonify({"success": True, "message": "Database updated with shifts."})
 
 
@@ -471,7 +470,7 @@ def settings():
 @app.route('/clear_database')
 def clear():
     db = get_db()
-    db.employees.delete_many({})
+    #db.employees.delete_many({})
     #db.users.delete_many({})
     db.schedules.delete_many({})
     return render_template('index.html')

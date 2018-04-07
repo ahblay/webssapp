@@ -46,7 +46,7 @@ class Schedule:
 
         shifts = schedule.shifts
 
-        print("Management Data ---------------------------")
+        print('Management Data ---------------------------')
         pprint.pprint(management_data)
         print('Shifts ---------------------')
         pprint.pprint(shifts)
