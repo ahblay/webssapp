@@ -90,14 +90,17 @@ class ScheduleProcessor:
         print("Num shifts: {} | Num roles: {}".format(self.num_shifts, self.num_roles))
         print(self.roles)
 
+        shifts_by_day = self._get_shifts_by_day()
+
         management_data = []
         for _ in self.roles:
             role_dict = {}
             day_index = 0
-            for day in self.shifts.keys():
+            # TODO: Changed
+            for day in shifts_by_day:
                 day_dict = {
-                    "num_employees": [self.shifts[day][_id]['num_employees'] for _id in self.shifts[day].keys()],
-                    "shift_times": ['{} - {}'.format(self.shifts[day][_id]['start'], self.shifts[day][_id]['end']) for _id in self.shifts[day].keys()]}
+                    "num_employees": [day[shift]['num_employees'] for shift in range(len(day))],
+                    "shift_times": ['{} - {}'.format(day[shift]['start'], day[shift]['end']) for shift in range(len(day))]}
                 role_dict[day_index] = day_dict
                 day_index += 1
             management_data.append(role_dict)
@@ -118,6 +121,19 @@ class ScheduleProcessor:
 
         return employee_info
 
+    def _get_shifts_by_day(self):
+
+        shifts_by_day = []
+        for day in self.days:
+            daily_shifts = []
+            for shift in self.shifts:
+                if shift['date'] == day:
+                    daily_shifts.append(shift)
+            shifts_by_day.append(daily_shifts)
+
+        return shifts_by_day
+
+
     def _init_role_seniority(self, employee):
         return [int(employee['seniority']) if role in employee['roles'] else 0 for role in self.roles.values()]
 
@@ -137,9 +153,11 @@ class ScheduleProcessor:
 
         shift_prefs = []
 
-        for index, day in enumerate(self.shifts.keys()):
+        shifts_by_day = self._get_shifts_by_day()
+
+        for day in shifts_by_day:
             day_prefs = []
-            for _id in self.shifts[day].keys():
+            for _id in [shift['_id'] for shift in day]:
                 pref = {'pref': gen_pref_val(_id), 'lock_in_role': None}
                 day_prefs.append(pref)
             shift_prefs.append(day_prefs)
@@ -164,7 +182,7 @@ class ScheduleProcessor:
         return s.get_schedule()
 
     def build_employer_setup_dict(self):
-        employer_setup = {day: self.shifts[day]
+        employer_setup = {day: self._get_shifts_by_day()[day]
                           for day in self.days}
         return employer_setup
 

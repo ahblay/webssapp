@@ -382,10 +382,11 @@ def get_shift_data(date=None, _id=None):
         return jsonify({"success": False, "message": "No schedule id."})
     date = datetime.datetime.strptime(date, '%m%d%Y')
     shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
-    for i in shifts.keys():
-        if i == date.strftime('%m/%d/%Y'):
-            return jsonify(shifts[i])
-    return jsonify({"jsonify": {"success": False, "message": "Could not find shift for " + date.strftime('%m/%d/%Y')}})
+    shifts_for_day = []
+    for shift in shifts:
+        if shift['date'] == date.strftime('%m/%d/%Y'):
+            shifts_for_day.append(shift)
+    return jsonify(shifts_for_day)
 
 
 @app.route("/_api/get_prefs/<_id>")
@@ -445,8 +446,10 @@ def save_shift_data():
                  "role": shift[4],
                  "date": date}
 
-        db.schedules.update({'shifts._id': ObjectId(entry["_id"])},
-                            {'$pull': {"shifts": {'_id': ObjectId(entry["_id"])}}})
+        print(entry['_id'])
+        pprint.pprint(list(db.schedules.find({'shifts': {"$elemMatch": {'_id': entry['_id']}}})))
+        db.schedules.update({'shift._id': entry['_id']},
+                            {'$pull': {'shift': {'_id': entry['_id']}}})
         db.schedules.update({'_id': ObjectId(id)},
                             {'$push': {"shifts": entry}})
 
