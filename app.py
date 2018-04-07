@@ -433,18 +433,34 @@ def save_shift_data():
     shift_data = request.json["shift_data"]
     id = request.json["_id"]
     date = request.json["date"]
-    print(shift_data)
-
-    shifts = {shift[5]: {"name": shift[0],
-                         "start": shift[1],
-                         "end": shift[2],
-                         "num_employees": int(shift[3]),
-                         "role": shift[4]}
-              for shift in shift_data}
     db = get_db()
-    db.schedules.update({"_id": ObjectId(id)},
-                        {"$set": {"shifts." + date: shifts}})
+    pprint.pprint(db.schedules.find_one({"_id": ObjectId(id)}))
+
+    for shift in shift_data:
+        entry = {"_id": shift[5],
+                 "name": shift[0],
+                 "start": shift[1],
+                 "end": shift[2],
+                 "num_employees": int(shift[3]),
+                 "role": shift[4],
+                 "date": date}
+
+        db.schedules.update({'shifts._id': ObjectId(entry["_id"])},
+                            {'$pull': {"shifts": {'_id': ObjectId(entry["_id"])}}})
+        db.schedules.update({'_id': ObjectId(id)},
+                            {'$push': {"shifts": entry}})
+
+    pprint.pprint(db.schedules.find_one({"_id": ObjectId(id)}))
     return jsonify({"success": True, "message": "Database updated with shifts."})
+
+
+@app.route('/update_shift_data', methods=["POST"])
+def update_shift_data():
+    dates = request.json["dates"]
+    shift_id = request.json["shift_id"]
+
+    db = get_db()
+    pprint.pprint(list(db.schedules.find({shift_id: {}})))
 
 
 @app.route('/save_pref_data', methods=['POST'])

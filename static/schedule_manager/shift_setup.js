@@ -90,7 +90,7 @@ function create_row(attribute, name, shift){
     let row = document.createElement("tr");
     $(row).data("id", row_id)
 
-    console.log(shift)
+    console.log(row_id.toString())
 
     //checkbox
     let checkCell = document.createElement("td");
@@ -210,8 +210,72 @@ function create_row(attribute, name, shift){
     };
 
     roles.append(roleSelect);
+
+    //template button
+    let template = document.createElement("td");
+    $(template).css("border-top", "1px solid");
+    let createTemplateButton = $("<button/>", {
+        "data-target": "#create-template-modal",
+        "data-toggle": "modal",
+        "data-shift-id": row_id,
+        class: "btn btn-outline-dark shift-btn",
+        text: "Create Template",
+        click: openShiftModal
+    });
+    $(template).append(createTemplateButton);
+    row.append(template);
+
     $(attribute).append(row);
 };
+
+function openShiftModal () {
+    var allDates = createDates(schedule_dates)
+    $("#schedule-days").empty();
+    $("#schedule-days").data("shift-id", $(this).data("shift-id"))
+    for (let j = 0; j < allDates.length; j++) {
+        let day = $('<input/>',
+            {
+                type: "checkbox",
+                class: "shift-template-date",
+            });
+        let day_label = $('<label/>',
+            {
+                class: "btn btn-outline-dark",
+                "data-date": allDates[j][1],
+                text: allDates[j][0],
+            });
+        $(day_label).append(day);
+        $("#schedule-days").append(day_label);
+    }
+    return console.log("success");
+}
+
+$(document).on("click", "#create-template-submit", function () {
+    var selectedDatesLength = $(".shift-template-date:checked").length;
+    var selectedDates = [];
+    $("#schedule-days").children().each(function () {
+        $(this).children().each(function () {
+            if ($(this).is(":checked")) {
+                console.log(this)
+                selectedDates.push($(this).parent().data("date"));
+            }
+        })
+    })
+    var data = {"dates": selectedDates, "shift_id": $("#schedule-days").data("shift-id")}
+    console.log(data);
+    $.ajax({
+        type: "POST",
+        url: "/update_shift_data",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        dataType: "json",
+    }).done(function(){
+        console.log("Sent to server.")
+    }).fail(function(jqXHR, status, error){
+        alert(status + ": " + error);
+    });
+});
+
 
 function timeDifference (start, end) {
 
@@ -309,11 +373,6 @@ function getIndexOf(arr, k) {
         }
     }
 }
-
-$(document).on("click", "#page-right", () => {
-
-});
-
 
 $(document).on("click", "#page-right", function(){
     day_index++;
