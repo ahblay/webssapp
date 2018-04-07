@@ -28,13 +28,7 @@ class ScheduleProcessor:
         self.employees = schedule['employees'] if 'employees' in schedule.keys() else None
         self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else []
         self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
-        if 'shifts' in schedule.keys():
-            # TODO: Changed
-            roles = list(set([schedule['shifts'][shift]['role']
-                              for shift in range(len(schedule['shifts']))]))
-        else:
-            roles = []
-        self.roles = {index: role for index, role in enumerate(roles)}
+        self.roles = {index: role for index, role in enumerate(schedule['roles'])} if 'roles' in schedule.keys() else {}
         self.start_date = schedule['start_date'] if 'start_date' in schedule.keys() else None
         self.end_date = schedule['end_date']if 'end_date' in schedule.keys() else None
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
@@ -78,7 +72,7 @@ class ScheduleProcessor:
         print('Daily Shifts: {}'.format(daily_shifts))
         for index, _ in enumerate(daily_shifts):
             for shift in self.shifts:
-                if shift['date'] == self.days[index]:
+                if shift['date'] == self.days[index].strftime('%m/%d/%Y'):
                     daily_shifts[index] += 1
 
         return max(daily_shifts)
@@ -125,7 +119,7 @@ class ScheduleProcessor:
         for day in self.days:
             daily_shifts = []
             for shift in self.shifts:
-                if shift['date'] == day:
+                if shift['date'] == day.strftime('%m/%d/%Y'):
                     daily_shifts.append(shift)
             shifts_by_day.append(daily_shifts)
 
@@ -137,12 +131,14 @@ class ScheduleProcessor:
 
     def _init_shift_prefs(self, employee):
 
-        def gen_pref_val(_id):
+        print('Prefs: {}'.format(self.prefs))
 
-            emp_id = str(employee['_id'])
+        def gen_pref_val(_id, emp):
+
+            emp_id = str(emp['_id'])
             emp_prefs = self.prefs[emp_id]
             pref_val = -1000
-
+            print('Emp Prefs: {}'.format(emp_prefs))
             if emp_id in self.prefs.keys():
                 if str(_id) in self.prefs[emp_id].keys():
                     pref_val = emp_prefs[_id]
@@ -153,10 +149,14 @@ class ScheduleProcessor:
 
         shifts_by_day = self._get_shifts_by_day()
 
+
+        print('SHIFTS BY DAY: {}'.format(shifts_by_day))
+
         for day in shifts_by_day:
             day_prefs = []
-            for _id in [shift['_id'] for shift in day]:
-                pref = {'pref': gen_pref_val(_id), 'lock_in_role': None}
+            shift_ids = [shift['_id'] for shift in day]
+            for _id in shift_ids:
+                pref = {'pref': gen_pref_val(_id, employee), 'lock_in_role': None}
                 day_prefs.append(pref)
             shift_prefs.append(day_prefs)
 

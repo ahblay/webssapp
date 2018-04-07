@@ -707,6 +707,11 @@ def create_schedule(schedule_id=None):
     db = get_db()
     schedule_dict = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
 
+    roles = list(db.roles.find())
+    print(roles)
+    schedule_dict['roles'] = [role['name'] for role in roles]
+    print(schedule_dict)
+
     schedule = ScheduleProcessor(schedule_dict)
     output = schedule.build_schedule(schedule)
     schedule.output = output
