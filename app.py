@@ -386,6 +386,8 @@ def get_shift_data(date=None, _id=None):
     for shift in shifts:
         if shift['date'] == date.strftime('%m/%d/%Y'):
             shifts_for_day.append(shift)
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    pprint.pprint(shifts_for_day)
     return jsonify(shifts_for_day)
 
 
@@ -448,8 +450,8 @@ def save_shift_data():
 
         print(entry['_id'])
         pprint.pprint(list(db.schedules.find({'shifts': {"$elemMatch": {'_id': entry['_id']}}})))
-        db.schedules.update({'shift._id': entry['_id']},
-                            {'$pull': {'shift': {'_id': entry['_id']}}})
+        db.schedules.update({'_id': ObjectId(id)},
+                            {'$pull': {'shifts': {'_id': entry['_id']}}})
         db.schedules.update({'_id': ObjectId(id)},
                             {'$push': {"shifts": entry}})
 
@@ -508,7 +510,7 @@ def remove_schedule_shifts():
     for _id in post_data['_ids']:
         print("Removing {} from {}".format(_id, db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])})))
         db.schedules.update({"_id": ObjectId(post_data["schedule_id"])},
-                            {"$unset": {"shifts." + day + "." + _id: ""}})
+                            {"$pull": {"shifts": {"_id": _id}}})
 
     pprint.pprint(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))
     return jsonify({"success": True, "message": "Request received by server."})

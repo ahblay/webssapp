@@ -33,13 +33,11 @@ function getRoles(data) {
 function renderShiftTable(data) {
     console.log(data)
     //if statement because jsonify error message is used as data to create a row
-    if (Object.keys(data)[0] !== "jsonify") {
-        for (let i = 0; i < Object.keys(data).length; i++) {
-            shift_name = data[Object.keys(data)[i]]["name"]
-            shift_info = data[Object.keys(data)[i]]
-            shift_info["_id"] = Object.keys(data)[i]
-            create_row(".shift-table-body", shift_name, shift_info)
-        }
+    for (let i = 0; i < data.length; i++) {
+        shift_name = data[i]["name"]
+        console.log(shift_name)
+        shift_data = data[i]
+        create_row(".shift-table-body", shift_name, shift_data)
     }
 }
 
@@ -83,14 +81,18 @@ $(function () {
 
 function create_row(attribute, name, shift){
     if (typeof(name) === 'undefined') name = "";
-    if (typeof(shift) === "undefined") shift = {"start": "", "end": "", "num_employees": "", "role": ""};
+    if (typeof(shift) === "undefined") shift = {"start": "", "end": "", "num_employees": "", "role": "", "_id": "", "name": ""};
 
-    var row_id = new ObjectId()
-
+    console.log(shift)
     let row = document.createElement("tr");
-    $(row).data("id", row_id)
 
-    console.log(row_id.toString())
+    if (shift["_id"] == "")  {
+        var row_id = new ObjectId()
+        $(row).data("id", row_id.toString())
+    }
+    else {
+        $(row).data("id", shift["_id"])
+    }
 
     //checkbox
     let checkCell = document.createElement("td");
@@ -334,7 +336,7 @@ function collectShiftData () {
                 shift.push($(this).find("select").val())
             }
         })
-        shift.push($(this).data("id").toString())
+        shift.push($(this).data("id"))
         shift_data.push(shift)
     })
     return shift_data;
