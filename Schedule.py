@@ -26,7 +26,7 @@ class ScheduleProcessor:
         self.status = schedule['status'] if 'status' in schedule.keys() else None
         self.name = schedule['name'] if 'name' in schedule.keys() else None
         self.employees = schedule['employees'] if 'employees' in schedule.keys() else None
-        self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else {}
+        self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else []
         self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
         if 'shifts' in schedule.keys():
             roles = list(set([schedule['shifts'][day][_id]['role']
@@ -68,7 +68,7 @@ class ScheduleProcessor:
 
     def build_num_shifts(self):
 
-        if self.shifts == {}:
+        if self.shifts == []:
             return None
 
         daily_shifts = []
