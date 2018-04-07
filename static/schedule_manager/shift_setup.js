@@ -81,11 +81,11 @@ $(function () {
     console.log($("#date").text());
 });
 
-function create_row(attribute, name, shift){
+function create_row(attribute, name, shift, _id){
     if (typeof(name) === 'undefined') name = "";
     if (typeof(shift) === "undefined") shift = {"start": "", "end": "", "num_employees": "", "role": ""};
 
-    var row_id = new ObjectId()
+    var row_id = new ObjectId();
 
     let row = document.createElement("tr");
     $(row).data("id", row_id)

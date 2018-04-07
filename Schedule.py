@@ -30,9 +30,8 @@ class ScheduleProcessor:
         self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
         if 'shifts' in schedule.keys():
             # TODO: Changed
-            roles = list(set([schedule['shifts'][_id]['role']
-                              for day in schedule['shifts'].keys()
-                              for _id in schedule['shifts'][day].keys()]))
+            roles = list(set([schedule['shifts'][shift]['role']
+                              for shift in range(len(schedule['shifts']))]))
         else:
             roles = []
         self.roles = {index: role for index, role in enumerate(roles)}
@@ -41,9 +40,10 @@ class ScheduleProcessor:
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
 
         self.num_employees = self.get_length(self.employees)
+        self.num_days = self.get_length(self.days)
         self.num_shifts = self.build_num_shifts()
         self.num_roles = self.get_length(self.roles)
-        self.num_days = self.get_length(self.days)
+
 
         self.management_data = self.build_management_data()
         self.employee_info = self.build_employee_info()
@@ -73,15 +73,13 @@ class ScheduleProcessor:
         if self.shifts == []:
             return None
 
-        daily_shifts = [self.num_days]
+        daily_shifts = [0] * self.num_days
 
+        print('Daily Shifts: {}'.format(daily_shifts))
         for index, _ in enumerate(daily_shifts):
-            count = 0
             for shift in self.shifts:
                 if shift['date'] == self.days[index]:
-                    count += 1
-
-            daily_shifts.append(count)
+                    daily_shifts[index] += 1
 
         return max(daily_shifts)
 
