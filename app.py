@@ -461,10 +461,25 @@ def save_shift_data():
 def update_shift_data():
     dates = request.json["dates"]
     shift_id = request.json["shift_id"]
+    schedule_id = request.json["schedule_id"]
+    shift_to_copy = None
 
     db = get_db()
-    db.schedules.find({"shifts": {"$elemMatch": {"_id": shift_id}}})
-    pprint.pprint(dict(db.schedules.find({"shifts": {"$elemMatch": {"_id": shift_id}}})))
+    all_shifts = list(db.schedules.find({"_id": ObjectId(schedule_id)}, {"shifts": 1}))[0]["shifts"]
+    for shift in all_shifts:
+        if shift["_id"] == shift_id:
+            shift_to_copy = shift
+            break
+
+    pprint.pprint(shift_to_copy)
+    for date in dates:
+        shift_to_copy["date"] = date
+        shift_to_copy["_id"] = str(ObjectId())
+        db.schedules.update({'_id': ObjectId(schedule_id)},
+                            {'$push': {"shifts": shift_to_copy}})
+
+    pprint.pprint(list(db.schedules.find({"_id": ObjectId(schedule_id)})))
+    return jsonify({"success": True, "message": "Recurring shifts added to database."})
 
 
 @app.route('/save_pref_data', methods=['POST'])
@@ -501,8 +516,6 @@ def remove_schedule_shifts():
     db = get_db()
 
     post_data = request.get_json()
-
-    day = post_data["day"]
 
     pprint.pprint(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))
 

@@ -263,7 +263,7 @@ $(document).on("click", "#create-template-submit", function () {
             }
         })
     })
-    var data = {"dates": selectedDates, "shift_id": $("#schedule-days").data("shift-id")}
+    var data = {"dates": selectedDates, "shift_id": $("#schedule-days").data("shift-id"), "schedule_id": schedule_id}
     console.log(data);
     $.ajax({
         type: "POST",
