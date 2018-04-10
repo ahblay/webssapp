@@ -502,17 +502,19 @@ def build_recurring_dates(recurrence_type, schedule_days):
             add_dates.append(day[0].strftime('%m/%d/%Y'))
     if recurrence_type == "Every 2nd day":
         for day in schedule_days:
-            print(schedule_days.index(day) % 2)
             if schedule_days.index(day) % 2 == 0:
                 add_dates.append(day[0].strftime('%m/%d/%Y'))
     if recurrence_type == "Every 3rd day":
         for day in schedule_days:
-
             if schedule_days.index(day) % 3 == 0:
                 add_dates.append(day[0].strftime('%m/%d/%Y'))
     if recurrence_type == "Every 4th day":
         for day in schedule_days:
             if schedule_days.index(day) % 4 == 0:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "If the day has 6 letters":
+        for day in schedule_days:
+            if day[1] == 0 or day[1] == 6 or day[1] == 4:
                 add_dates.append(day[0].strftime('%m/%d/%Y'))
     return add_dates
 
