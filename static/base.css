@@ -263,6 +263,46 @@ select {
     background: #dadada;
     color: #000000;
 }
+.calendar-selected {
+    background: #dd4245;
+    color: #000000;
+}
+
+/* calendar */
+.calendar_week,
+.calendar_header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.calendar_week {
+    grid-auto-rows: 75px;
+    text-align: right;
+}
+.calendar_header {
+    background-color: #343a40;
+    grid-auto-rows: 50px;
+    align-items: center;
+    text-align: center;
+}
+.calendar_day {
+    padding: 7px;
+}
+.calendar {
+    background-color: white;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}
+.calendar_header > div {
+    color: #ffffff;
+    font-weight: normal;
+}
+.calendar_day {
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+.calendar_day:last-child {
+    border-right: 0;
+}
 
 /* just for funsies */
 .ugly {

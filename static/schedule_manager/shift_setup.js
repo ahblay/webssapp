@@ -230,31 +230,82 @@ function create_row(attribute, name, shift){
     $(attribute).append(row);
 };
 
+function findCalendarDates () {
+    var allDates = createDates(schedule_dates)
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    start_date_day_index = days.indexOf(allDates[0][0].split(",")[0])
+    start_date = Number(allDates[0][1].split("/")[1])
+    var month = []
+    var date_counter = 1
+    var length = (allDates.length + 6) - ((allDates.length + 6) % 7)
+    for (i = 0; i < length; i++) {
+        if (i < start_date_day_index) {
+            month.push("")
+        }
+        else if (i == start_date_day_index) {
+            month.push(start_date)
+        }
+        else {
+            if (date_counter <= (allDates.length - 1)) {
+                month.push(Number(allDates[date_counter][1].split("/")[1]))
+            }
+            else {month.push("")}
+            date_counter++
+        }
+    }
+    console.log(month)
+    var for_calendar = []
+    for (i = 0; i < month.length - 6; i += 7) {
+        console.log(month.slice(i, i + 7))
+        for_calendar.push(month.slice(i, i + 7))
+    }
+    return for_calendar
+}
+
 function openShiftModal () {
     var allDates = createDates(schedule_dates)
-    $("#schedule-days tbody").empty();
-    $("#schedule-days").data("shift-id", $(this).data("shift-id"))
-    for (let j = 0; j < allDates.length; j++) {
-        var row = document.createElement("tr")
-        var cell = document.createElement("td")
-        $(cell).text(allDates[j][0])
-        $(cell).addClass("shift-template-date")
-        $(row).data("date", allDates[j][1])
-        $(cell).css("border-top", "1px solid")
-        $(row).append(cell)
-        $("#schedule-days tbody").append(row);
+
+    $("#recurrence-options").data("shift-id", $(this).data("shift-id"))
+
+    calendar_dates = findCalendarDates()
+
+    $(".calendar").children().each(function () {
+        if ($(this).hasClass("calendar_week")) {
+            $(this).remove()
+        }
+    })
+
+    date_counter = 0
+    for (i = 0; i < calendar_dates.length; i++) {
+        var calendar_week = document.createElement("div")
+        $(calendar_week).addClass("calendar_week")
+        for (j = 0; j < calendar_dates[i].length; j++) {
+            var calendar_day = document.createElement("div")
+            $(calendar_day).addClass("calendar_day").addClass("day")
+            $(calendar_day).text(calendar_dates[i][j])
+            if (calendar_dates[i][j] == "") {
+                $(calendar_day).css("background-color", "#72777a")
+            }
+            else {
+                $(calendar_day).click(selectDay)
+                $(calendar_day).data("date", allDates[date_counter][1])
+                date_counter++
+            }
+            $(calendar_week).append(calendar_day)
+        }
+        $(".calendar").append(calendar_week)
     }
     return console.log("success");
 }
 
-$(document).on("click", "#schedule-days tr", function () {
-    if ($(this).hasClass("selected")) {
-        $(this).removeClass("selected")
+function selectDay () {
+    if ($(this).hasClass("calendar-selected")) {
+        $(this).removeClass("calendar-selected")
     }
     else {
-        $(this).addClass("selected")
+        $(this).addClass("calendar-selected")
     }
-})
+}
 
 $(document).on("click", "#recurrence-options tr", function () {
     if ($(this).hasClass("selected")) {
@@ -267,9 +318,16 @@ $(document).on("click", "#recurrence-options tr", function () {
 
 $(document).on("click", "#create-template-submit", function () {
     var selectedDates = [];
-    $("#schedule-days tbody").children().each(function () {
-        if ($(this).hasClass("selected")) {
-            selectedDates.push($(this).data("date"));
+    $(".calendar").children().each(function () {
+        console.log("In calendar!")
+        if ($(this).hasClass("calendar_week")) {
+            console.log("In calendar week!!")
+            $(this).children().each(function () {
+                if ($(this).hasClass("calendar-selected")) {
+                    console.log("Found selected date!!")
+                    selectedDates.push($(this).data("date"));
+                }
+            })
         }
     })
     var recurrenceType = "";
@@ -286,7 +344,7 @@ $(document).on("click", "#create-template-submit", function () {
         }
     })
     var data = {"dates": selectedDates,
-                "shift_id": $("#schedule-days").data("shift-id"),
+                "shift_id": $("#recurrence-options").data("shift-id"),
                 "schedule_id": schedule_id,
                 "recurrenceType": recurrenceType}
     console.log(data);
@@ -459,7 +517,6 @@ $(document).on("click", "#remove-shifts", function() {
         data = {
             "_ids": $(".shift-select-checkbox:checked").map(function(){return this.id}).get(),
             "schedule_id": schedule_id,
-            "day": schedule_dates[day_index],
         };
         console.log(data)
         console.log("Attempting to remove the following shifts from schedule:")
@@ -467,7 +524,7 @@ $(document).on("click", "#remove-shifts", function() {
         let success = function() {
                 $("#remove-shifts").attr("disabled", "disabled");
                 $(".shift-table-body").empty();
-                $.getJSON("/api/get_shift_data/" + schedule_dates[day_index].replace(/\//g, "") + "/" + schedule_id,
+                $.getJSON("/api/get_shift_data/" + createDates(schedule_dates)[day_index][1].replace(/\//g, "") + "/" + schedule_id,
                     renderShiftTable
                 );
         };

@@ -444,7 +444,8 @@ def save_shift_data():
                  "end": shift[2],
                  "num_employees": int(shift[3]),
                  "role": shift[4],
-                 "date": date}
+                 "date": date,
+                 "parent_shift": shift[5]}
 
         print(entry['_id'])
         pprint.pprint(list(db.schedules.find({'shifts': {"$elemMatch": {'_id': entry['_id']}}})))
@@ -544,15 +545,15 @@ def update_shift_data():
         recurrence_days.append(day)
 
     recurrence_days = list(set(recurrence_days))
-    pprint.pprint(recurrence_days)
 
     for date in recurrence_days:
+        shift_to_copy["parent_shift"] = shift_id
         shift_to_copy["date"] = date
         shift_to_copy["_id"] = str(ObjectId())
         db.schedules.update({'_id': ObjectId(schedule_id)},
                             {'$push': {"shifts": shift_to_copy}})
 
-    #pprint.pprint(list(db.schedules.find({"_id": ObjectId(schedule_id)})))
+    pprint.pprint(list(db.schedules.find({"_id": ObjectId(schedule_id)})))
     return jsonify({"success": True, "message": "Recurring shifts added to database."})
 
 
