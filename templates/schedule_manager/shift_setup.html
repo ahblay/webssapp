@@ -84,8 +84,57 @@
                     </div>
                     <div class="col-md-10">
                         <form>
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons" id="schedule-days">
-                            </div>
+                            <table class="table rounded-table-basic" id="schedule-days">
+                                <thead>
+                                    <tr>
+                                        <th>Add to Day:</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <table class="table rounded-table-basic" id="recurrence-options">
+                                <thead>
+                                    <tr>
+                                        <th>Add Recurrence:</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="border-top: 1px solid;">Weekends</td>
+                                    <tr>
+                                        <td style="border-top: 1px solid;">Weekdays</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top: 1px solid;">
+                                            <select>
+                                                <option disabled selected>Select day</option>
+                                                <option>Sunday</option>
+                                                <option>Monday</option>
+                                                <option>Tuesday</option>
+                                                <option>Wednesday</option>
+                                                <option>Thursday</option>
+                                                <option>Friday</option>
+                                                <option>Saturday</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top: 1px solid;">
+                                            <select style="width: 160px;">
+                                                <option disabled selected>Select frequency</option>
+                                                <option>Every day</option>
+                                                <option>Every 2nd day</option>
+                                                <option>Every 3rd day</option>
+                                                <option>Every 4th day</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top: 1px solid;">If the day has 6 letters</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </form>
                     </div>
                     <div class="col-md-1">

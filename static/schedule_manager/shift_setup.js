@@ -232,38 +232,63 @@ function create_row(attribute, name, shift){
 
 function openShiftModal () {
     var allDates = createDates(schedule_dates)
-    $("#schedule-days").empty();
+    $("#schedule-days tbody").empty();
     $("#schedule-days").data("shift-id", $(this).data("shift-id"))
     for (let j = 0; j < allDates.length; j++) {
-        let day = $('<input/>',
-            {
-                type: "checkbox",
-                class: "shift-template-date",
-            });
-        let day_label = $('<label/>',
-            {
-                class: "btn btn-outline-dark",
-                "data-date": allDates[j][1],
-                text: allDates[j][0],
-            });
-        $(day_label).append(day);
-        $("#schedule-days").append(day_label);
+        var row = document.createElement("tr")
+        var cell = document.createElement("td")
+        $(cell).text(allDates[j][0])
+        $(cell).addClass("shift-template-date")
+        $(row).data("date", allDates[j][1])
+        $(cell).css("border-top", "1px solid")
+        $(row).append(cell)
+        $("#schedule-days tbody").append(row);
     }
     return console.log("success");
 }
 
+$(document).on("click", "#schedule-days tr", function () {
+    if ($(this).hasClass("selected")) {
+        $(this).removeClass("selected")
+    }
+    else {
+        $(this).addClass("selected")
+    }
+})
+
+$(document).on("click", "#recurrence-options tr", function () {
+    if ($(this).hasClass("selected")) {
+        $(this).removeClass("selected").siblings().removeClass("selected")
+    }
+    else {
+        $(this).addClass("selected").siblings().removeClass("selected")
+    }
+})
+
 $(document).on("click", "#create-template-submit", function () {
-    var selectedDatesLength = $(".shift-template-date:checked").length;
     var selectedDates = [];
-    $("#schedule-days").children().each(function () {
-        $(this).children().each(function () {
-            if ($(this).is(":checked")) {
-                console.log(this)
-                selectedDates.push($(this).parent().data("date"));
-            }
-        })
+    $("#schedule-days tbody").children().each(function () {
+        if ($(this).hasClass("selected")) {
+            selectedDates.push($(this).data("date"));
+        }
     })
-    var data = {"dates": selectedDates, "shift_id": $("#schedule-days").data("shift-id"), "schedule_id": schedule_id}
+    var recurrenceType = "";
+    $("#recurrence-options tbody").children().each(function () {
+        if ($(this).hasClass("selected")) {
+            $(this).children().each(function () {
+                if ($(this).find("select").length > 0) {
+                    recurrenceType = $(this).find("select").val()
+                }
+                else {
+                    recurrenceType = $(this).text()
+                }
+            })
+        }
+    })
+    var data = {"dates": selectedDates,
+                "shift_id": $("#schedule-days").data("shift-id"),
+                "schedule_id": schedule_id,
+                "recurrenceType": recurrenceType}
     console.log(data);
     $.ajax({
         type: "POST",

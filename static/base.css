@@ -26,7 +26,7 @@ input {
 
 /* select dropdown style */
 select {
-    width: 150px;
+    width: 120px;
     padding: 0 0 0 5px;
     font-size: 16px;
     border: 1px solid;
@@ -256,6 +256,12 @@ select {
     height: 25px;
     padding-top: 0px;
     padding-bottom: 20px;
+}
+
+/* highlight selected */
+.selected {
+    background: #dadada;
+    color: #000000;
 }
 
 /* just for funsies */
