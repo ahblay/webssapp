@@ -21,7 +21,8 @@ $(function () {
     schedule_dates = $("#shift-setup-tab").data("schedule-dates").split(" ")
     $.getJSON("/_api/get_roles", getRoles)
     //the code below runs, although pycharm interprets it as being commented out
-    $.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+    //$.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+    $.getJSON("/api/get_all_shift_data/" + schedule_id, loadShiftCalendar)
 })
 
 function getRoles(data) {
@@ -32,6 +33,7 @@ function getRoles(data) {
 
 function renderShiftTable(data) {
     console.log(data)
+    $(".shift-table-body").empty()
     //if statement because jsonify error message is used as data to create a row
     for (let i = 0; i < data.length; i++) {
         shift_name = data[i]["name"]
@@ -229,6 +231,65 @@ function create_row(attribute, name, shift){
 
     $(attribute).append(row);
 };
+
+function loadShiftCalendar (data) {
+
+    var allDates = createDates(schedule_dates)
+    console.log(data)
+    console.log(allDates)
+    calendar_dates = findCalendarDates()
+
+    $(".big-calendar").children().each(function () {
+        if ($(this).hasClass("big-calendar-week")) {
+            $(this).remove()
+        }
+    })
+
+    date_counter = 0
+    for (i = 0; i < calendar_dates.length; i++) {
+        var calendar_week = document.createElement("div")
+        $(calendar_week).addClass("big-calendar-week")
+        for (j = 0; j < calendar_dates[i].length; j++) {
+            var calendar_day = document.createElement("div")
+            $(calendar_day).addClass("big-calendar-day").addClass("day")
+            if (calendar_dates[i][j] == "") {
+                $(calendar_day).addClass("calendar-empty")
+            }
+            else {
+                $(calendar_day).attr("data-calendar-date", allDates[date_counter][1])
+                $(calendar_day).attr("data-calendar-day", allDates[date_counter][0])
+                $(calendar_day).click(highlightDay)
+                for (k = 0; k < data.length; k++) {
+                    if (data[k]["date"] == allDates[date_counter][1]) {
+                        var calendar_shift = document.createElement("div")
+                        $(calendar_shift).addClass("big-calendar-shift")
+                        $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
+                        $(calendar_day).append(calendar_shift)
+                    }
+                }
+                var calendar_date_label = document.createElement("div")
+                $(calendar_date_label).addClass("calendar-date-label").text(calendar_dates[i][j])
+                $(calendar_day).append(calendar_date_label)
+                date_counter++
+            }
+
+            $(calendar_week).append(calendar_day)
+        }
+        $(".big-calendar").append(calendar_week)
+    }
+    return console.log("success");
+}
+
+function highlightDay () {
+    var allDates = createDates(schedule_dates)
+    $(".big-calendar").find(".calendar-highlighted").removeClass("calendar-highlighted")
+    $(this).addClass("calendar-highlighted")
+    var date = $(this).data("calendar-date")
+    var day = $(this).data("calendar-day")
+    console.log(date)
+    $("#date").empty().append("<b>" + day + "</b>")
+    $.getJSON("/api/get_shift_data/" + date.replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+}
 
 function findCalendarDates () {
     var allDates = createDates(schedule_dates)
@@ -436,7 +497,10 @@ $(document).on("click", "#save-shifts", function () {
     var i = getIndexOf(allDates, current)
     date = allDates[i][1]
     shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
-    console.log(shift_data)
+    role = shift_data["shift_data"][shift_data["shift_data"].length - 1][4]
+    start = shift_data["shift_data"][shift_data["shift_data"].length - 1][2]
+    console.log(role)
+
     $.ajax({
         type: "POST",
         url: "/save_shift_data",
@@ -445,6 +509,10 @@ $(document).on("click", "#save-shifts", function () {
         dataType: "json",
     }).done(function(){
         console.log("Sent to server.")
+        var calendar_shift = document.createElement("div")
+        $(calendar_shift).addClass("big-calendar-shift")
+        $(calendar_shift).text(role + " " + start)
+        $('*[data-calendar-date="' + date + '"]').append(calendar_shift)
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
     });

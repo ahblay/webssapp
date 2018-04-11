@@ -389,6 +389,15 @@ def get_shift_data(date=None, _id=None):
     return jsonify(shifts_for_day)
 
 
+@app.route('/api/get_all_shift_data/<_id>')
+def get_all_shift_data(_id=None):
+    db = get_db()
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id."})
+    shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+    return jsonify(shifts)
+
+
 @app.route("/_api/get_prefs/<_id>")
 def _get_prefs(_id=None):
     db = get_db()
