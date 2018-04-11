@@ -26,7 +26,7 @@ input {
 
 /* select dropdown style */
 select {
-    width: 150px;
+    width: 120px;
     padding: 0 0 0 5px;
     font-size: 16px;
     border: 1px solid;
@@ -286,6 +286,129 @@ select {
     height: 25px;
     padding-top: 0px;
     padding-bottom: 20px;
+}
+
+/* highlight selected */
+.selected {
+    background: #dadada;
+    color: #000000;
+}
+.calendar-selected {
+    background: #dd4245;
+    color: #000000;
+}
+.calendar-highlighted {
+    background: #dadada;
+    box-shadow: inset 0 0 10px #000000;
+}
+
+/* calendar */
+.calendar_week,
+.calendar_header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.calendar_week {
+    grid-auto-rows: 75px;
+    text-align: right;
+}
+.calendar_header {
+    background-color: #343a40;
+    grid-auto-rows: 50px;
+    align-items: center;
+    text-align: center;
+}
+.calendar_day {
+    padding: 7px;
+}
+.calendar {
+    background-color: white;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}
+.calendar_header > div {
+    color: #ffffff;
+    font-weight: normal;
+}
+.calendar_day {
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+.calendar_day:last-child {
+    border-right: 0;
+}
+
+/* big calendar */
+.big-calendar-week,
+.big-calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.big-calendar-week {
+    grid-auto-rows: 125px;
+    text-align: right;
+}
+.big-calendar-header {
+    background-color: #343a40;
+    grid-auto-rows: 50px;
+    align-items: center;
+    text-align: center;
+}
+.big-calendar {
+    background-color: white;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}
+.big-calendar-header > div {
+    color: #ffffff;
+    font-weight: normal;
+}
+.big-calendar-shift {
+    border-bottom: 1px solid;
+    align-items: center;
+    text-align: center;
+    font-size: 13px;
+    padding-top: 8px;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+.big-calendar-shift:first-child {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+.calendar-date-label {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    text-align: center;
+    padding-top: 5px;
+    font-weight: bold;
+    background-color: #eeeeee;
+}
+.big-calendar-day {
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    display: grid;
+    grid-auto-rows: 35px;
+    grid-template-columns: 35px auto;
+}
+.big-calendar-day:last-child {
+    border-right: 0;
+}
+.calendar-empty {
+    background-color: #72777a;
+}
+.red {
+    background-color: #ff000075;
+}
+.blue {
+    background-color: #0000ffa1;
+}
+.green {
+    background-color: #87e586;
 }
 
 /* just for funsies */

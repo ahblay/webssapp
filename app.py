@@ -389,6 +389,15 @@ def get_shift_data(date=None, _id=None):
     return jsonify(shifts_for_day)
 
 
+@app.route('/api/get_all_shift_data/<_id>')
+def get_all_shift_data(_id=None):
+    db = get_db()
+    if _id is None:
+        return jsonify({"success": False, "message": "No schedule id."})
+    shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+    return jsonify(shifts)
+
+
 @app.route("/_api/get_prefs/<_id>")
 def _get_prefs(_id=None):
     db = get_db()
@@ -444,7 +453,8 @@ def save_shift_data():
                  "end": shift[2],
                  "num_employees": int(shift[3]),
                  "role": shift[4],
-                 "date": date}
+                 "date": date,
+                 "parent_shift": shift[5]}
 
         print(entry['_id'])
         pprint.pprint(list(db.schedules.find({'shifts': {"$elemMatch": {'_id': entry['_id']}}})))
@@ -457,14 +467,103 @@ def save_shift_data():
     return jsonify({"success": True, "message": "Database updated with shifts."})
 
 
+def build_recurring_dates(recurrence_type, schedule_days):
+    add_dates = []
+    pprint.pprint(recurrence_type)
+    pprint.pprint(schedule_days)
+    if recurrence_type == "Weekends":
+        for day in schedule_days:
+            if day[1] == 5 or day[1] == 6:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Weekdays":
+        for day in schedule_days:
+            if day[1] == 0 or day[1] == 1 or day[1] == 2 or day[1] == 3 or day[1] == 4:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Sunday":
+        for day in schedule_days:
+            if day[1] == 6:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Monday":
+        for day in schedule_days:
+            if day[1] == 0:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Tuesday":
+        for day in schedule_days:
+            if day[1] == 1:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Wednesday":
+        for day in schedule_days:
+            if day[1] == 2:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Thursday":
+        for day in schedule_days:
+            if day[1] == 3:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Friday":
+        for day in schedule_days:
+            if day[1] == 4:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Saturday":
+        for day in schedule_days:
+            if day[1] == 5:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Every day":
+        for day in schedule_days:
+            add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Every 2nd day":
+        for day in schedule_days:
+            if schedule_days.index(day) % 2 == 0:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Every 3rd day":
+        for day in schedule_days:
+            if schedule_days.index(day) % 3 == 0:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "Every 4th day":
+        for day in schedule_days:
+            if schedule_days.index(day) % 4 == 0:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    if recurrence_type == "If the day has 6 letters":
+        for day in schedule_days:
+            if day[1] == 0 or day[1] == 6 or day[1] == 4:
+                add_dates.append(day[0].strftime('%m/%d/%Y'))
+    return add_dates
+
+
 @app.route('/update_shift_data', methods=["POST"])
 def update_shift_data():
     dates = request.json["dates"]
     shift_id = request.json["shift_id"]
+    schedule_id = request.json["schedule_id"]
+    recurrence_type = request.json["recurrenceType"]
+    shift_to_copy = None
 
     db = get_db()
-    db.schedules.find({"shifts": {"$elemMatch": {"_id": shift_id}}})
-    pprint.pprint(list(db.schedules.find({"shifts": {"$elemMatch": {"_id": shift_id}}})))
+    all_shifts = list(db.schedules.find({"_id": ObjectId(schedule_id)}, {"shifts": 1, "days": 1}))[0]["shifts"]
+    schedule_days = list(db.schedules.find({"_id": ObjectId(schedule_id)}, {"shifts": 1, "days": 1}))[0]["days"]
+    for i in range(len(schedule_days)):
+        schedule_days[i] = [schedule_days[i], schedule_days[i].weekday()]
+
+    for shift in all_shifts:
+        if shift["_id"] == shift_id:
+            shift_to_copy = shift
+            break
+
+    recurrence_days = dates
+    add_dates = build_recurring_dates(recurrence_type, schedule_days)
+    for day in add_dates:
+        recurrence_days.append(day)
+
+    recurrence_days = list(set(recurrence_days))
+
+    for date in recurrence_days:
+        shift_to_copy["parent_shift"] = shift_id
+        shift_to_copy["date"] = date
+        shift_to_copy["_id"] = str(ObjectId())
+        db.schedules.update({'_id': ObjectId(schedule_id)},
+                            {'$push': {"shifts": shift_to_copy}})
+
+    pprint.pprint(list(db.schedules.find({"_id": ObjectId(schedule_id)})))
+    return jsonify({"success": True, "message": "Recurring shifts added to database."})
 
 
 @app.route('/save_pref_data', methods=['POST'])
@@ -501,8 +600,6 @@ def remove_schedule_shifts():
     db = get_db()
 
     post_data = request.get_json()
-
-    day = post_data["day"]
 
     pprint.pprint(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))
 

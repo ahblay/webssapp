@@ -21,7 +21,8 @@ $(function () {
     schedule_dates = $("#shift-setup-tab").data("schedule-dates").split(" ")
     $.getJSON("/_api/get_roles", getRoles)
     //the code below runs, although pycharm interprets it as being commented out
-    $.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+    //$.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+    $.getJSON("/api/get_all_shift_data/" + schedule_id, loadShiftCalendar)
 })
 
 $(() => {
@@ -42,6 +43,7 @@ function getRoles(data) {
 
 function renderShiftTable(data) {
     console.log(data)
+    $(".shift-table-body").empty()
     //if statement because jsonify error message is used as data to create a row
     for (let i = 0; i < data.length; i++) {
         shift_name = data[i]["name"]
@@ -240,40 +242,182 @@ function create_row(attribute, name, shift){
     $(attribute).append(row);
 };
 
-function openShiftModal () {
+function loadShiftCalendar (data) {
+
     var allDates = createDates(schedule_dates)
-    $("#schedule-days").empty();
-    $("#schedule-days").data("shift-id", $(this).data("shift-id"))
-    for (let j = 0; j < allDates.length; j++) {
-        let day = $('<input/>',
-            {
-                type: "checkbox",
-                class: "shift-template-date",
-            });
-        let day_label = $('<label/>',
-            {
-                class: "btn btn-outline-dark",
-                "data-date": allDates[j][1],
-                text: allDates[j][0],
-            });
-        $(day_label).append(day);
-        $("#schedule-days").append(day_label);
+    console.log(data)
+    console.log(allDates)
+    calendar_dates = findCalendarDates()
+
+    $(".big-calendar").children().each(function () {
+        if ($(this).hasClass("big-calendar-week")) {
+            $(this).remove()
+        }
+    })
+
+    date_counter = 0
+    for (i = 0; i < calendar_dates.length; i++) {
+        var calendar_week = document.createElement("div")
+        $(calendar_week).addClass("big-calendar-week")
+        for (j = 0; j < calendar_dates[i].length; j++) {
+            var calendar_day = document.createElement("div")
+            $(calendar_day).addClass("big-calendar-day").addClass("day")
+            if (calendar_dates[i][j] == "") {
+                $(calendar_day).addClass("calendar-empty")
+            }
+            else {
+                $(calendar_day).attr("data-calendar-date", allDates[date_counter][1])
+                $(calendar_day).attr("data-calendar-day", allDates[date_counter][0])
+                $(calendar_day).click(highlightDay)
+                for (k = 0; k < data.length; k++) {
+                    if (data[k]["date"] == allDates[date_counter][1]) {
+                        var calendar_shift = document.createElement("div")
+                        $(calendar_shift).addClass("big-calendar-shift")
+                        $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
+                        $(calendar_day).append(calendar_shift)
+                    }
+                }
+                var calendar_date_label = document.createElement("div")
+                $(calendar_date_label).addClass("calendar-date-label").text(calendar_dates[i][j])
+                $(calendar_day).append(calendar_date_label)
+                date_counter++
+            }
+
+            $(calendar_week).append(calendar_day)
+        }
+        $(".big-calendar").append(calendar_week)
     }
     return console.log("success");
 }
 
-$(document).on("click", "#create-template-submit", function () {
-    var selectedDatesLength = $(".shift-template-date:checked").length;
-    var selectedDates = [];
-    $("#schedule-days").children().each(function () {
-        $(this).children().each(function () {
-            if ($(this).is(":checked")) {
-                console.log(this)
-                selectedDates.push($(this).parent().data("date"));
+function highlightDay () {
+    var allDates = createDates(schedule_dates)
+    $(".big-calendar").find(".calendar-highlighted").removeClass("calendar-highlighted")
+    $(this).addClass("calendar-highlighted")
+    var date = $(this).data("calendar-date")
+    var day = $(this).data("calendar-day")
+    console.log(date)
+    $("#date").empty().append("<b>" + day + "</b>")
+    $.getJSON("/api/get_shift_data/" + date.replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+}
+
+function findCalendarDates () {
+    var allDates = createDates(schedule_dates)
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    start_date_day_index = days.indexOf(allDates[0][0].split(",")[0])
+    start_date = Number(allDates[0][1].split("/")[1])
+    var month = []
+    var date_counter = 1
+    var length = (allDates.length + 6) - ((allDates.length + 6) % 7)
+    for (i = 0; i < length; i++) {
+        if (i < start_date_day_index) {
+            month.push("")
+        }
+        else if (i == start_date_day_index) {
+            month.push(start_date)
+        }
+        else {
+            if (date_counter <= (allDates.length - 1)) {
+                month.push(Number(allDates[date_counter][1].split("/")[1]))
             }
-        })
+            else {month.push("")}
+            date_counter++
+        }
+    }
+    console.log(month)
+    var for_calendar = []
+    for (i = 0; i < month.length - 6; i += 7) {
+        console.log(month.slice(i, i + 7))
+        for_calendar.push(month.slice(i, i + 7))
+    }
+    return for_calendar
+}
+
+function openShiftModal () {
+    var allDates = createDates(schedule_dates)
+
+    $("#recurrence-options").data("shift-id", $(this).data("shift-id"))
+
+    calendar_dates = findCalendarDates()
+
+    $(".calendar").children().each(function () {
+        if ($(this).hasClass("calendar_week")) {
+            $(this).remove()
+        }
     })
-    var data = {"dates": selectedDates, "shift_id": $("#schedule-days").data("shift-id")}
+
+    date_counter = 0
+    for (i = 0; i < calendar_dates.length; i++) {
+        var calendar_week = document.createElement("div")
+        $(calendar_week).addClass("calendar_week")
+        for (j = 0; j < calendar_dates[i].length; j++) {
+            var calendar_day = document.createElement("div")
+            $(calendar_day).addClass("calendar_day").addClass("day")
+            $(calendar_day).text(calendar_dates[i][j])
+            if (calendar_dates[i][j] == "") {
+                $(calendar_day).css("background-color", "#72777a")
+            }
+            else {
+                $(calendar_day).click(selectDay)
+                $(calendar_day).data("date", allDates[date_counter][1])
+                date_counter++
+            }
+            $(calendar_week).append(calendar_day)
+        }
+        $(".calendar").append(calendar_week)
+    }
+    return console.log("success");
+}
+
+function selectDay () {
+    if ($(this).hasClass("calendar-selected")) {
+        $(this).removeClass("calendar-selected")
+    }
+    else {
+        $(this).addClass("calendar-selected")
+    }
+}
+
+$(document).on("click", "#recurrence-options tr", function () {
+    if ($(this).hasClass("selected")) {
+        $(this).removeClass("selected").siblings().removeClass("selected")
+    }
+    else {
+        $(this).addClass("selected").siblings().removeClass("selected")
+    }
+})
+
+$(document).on("click", "#create-template-submit", function () {
+    var selectedDates = [];
+    $(".calendar").children().each(function () {
+        console.log("In calendar!")
+        if ($(this).hasClass("calendar_week")) {
+            console.log("In calendar week!!")
+            $(this).children().each(function () {
+                if ($(this).hasClass("calendar-selected")) {
+                    console.log("Found selected date!!")
+                    selectedDates.push($(this).data("date"));
+                }
+            })
+        }
+    })
+    var recurrenceType = "";
+    $("#recurrence-options tbody").children().each(function () {
+        if ($(this).hasClass("selected")) {
+            $(this).children().each(function () {
+                if ($(this).find("select").length > 0) {
+                    recurrenceType = $(this).find("select").val()
+                }
+                else {
+                    recurrenceType = $(this).text()
+                }
+            })
+        }
+    })
+    var data = {"dates": selectedDates,
+                "shift_id": $("#recurrence-options").data("shift-id"),
+                "schedule_id": schedule_id,
+                "recurrenceType": recurrenceType}
     console.log(data);
     $.ajax({
         type: "POST",
@@ -363,7 +507,10 @@ $(document).on("click", "#save-shifts", function () {
     var i = getIndexOf(allDates, current)
     date = allDates[i][1]
     shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
-    console.log(shift_data)
+    role = shift_data["shift_data"][shift_data["shift_data"].length - 1][4]
+    start = shift_data["shift_data"][shift_data["shift_data"].length - 1][2]
+    console.log(role)
+
     $.ajax({
         type: "POST",
         url: "/save_shift_data",
@@ -372,6 +519,10 @@ $(document).on("click", "#save-shifts", function () {
         dataType: "json",
     }).done(function(){
         console.log("Sent to server.")
+        var calendar_shift = document.createElement("div")
+        $(calendar_shift).addClass("big-calendar-shift")
+        $(calendar_shift).text(role + " " + start)
+        $('*[data-calendar-date="' + date + '"]').append(calendar_shift)
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
     });
@@ -444,7 +595,6 @@ $(document).on("click", "#remove-shifts", function() {
         data = {
             "_ids": $(".shift-select-checkbox:checked").map(function(){return this.id}).get(),
             "schedule_id": schedule_id,
-            "day": schedule_dates[day_index],
         };
         console.log(data)
         console.log("Attempting to remove the following shifts from schedule:")
@@ -452,7 +602,7 @@ $(document).on("click", "#remove-shifts", function() {
         let success = function() {
                 $("#remove-shifts").attr("disabled", "disabled");
                 $(".shift-table-body").empty();
-                $.getJSON("/api/get_shift_data/" + schedule_dates[day_index].replace(/\//g, "") + "/" + schedule_id,
+                $.getJSON("/api/get_shift_data/" + createDates(schedule_dates)[day_index][1].replace(/\//g, "") + "/" + schedule_id,
                     renderShiftTable
                 );
         };
