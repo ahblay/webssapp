@@ -17,19 +17,8 @@
     <!--main content-->
     <div class="col-md-10">
 
-        <div class="row" id="pref-options" style="padding-bottom: 1em; display: none;">
-            <div class="col-md-12">
-                <div class="btn-group">
-                        <button class="btn btn-outline-dark" id="back-button">Back</button>
-                </div>
-                <div class="btn-group float-right" style="padding-left: 1em;">
-                    <button class="btn btn-outline-dark float-right" id="save-prefs">Save Preferences</button>
-                </div>
-            </div>
-        </div>
-
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <table class="table table-hover emp-prefs-table rounded-table-basic">
                     <thead>
                         <tr>
@@ -39,18 +28,24 @@
                     <tbody class="emp-prefs"></tbody>
                 </table>
             </div>
+            <div class="col-md-9">
+
+            </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="pref-options" style="padding-bottom: 1em; display: none;">
             <div class="col-md-12">
-                <table class="table rounded-table-basic emp-shift-prefs-table" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th class="title" colspan="5"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="emp-shift-prefs"></tbody>
-                </table>
+                <div class="btn-group">
+                        <button class="btn btn-outline-dark" id="back-button">Back</button>
+                </div>
+
+                <div class="btn-group float-right">
+                    <button class="btn btn-outline-dark float-right" id="save-prefs">Save Preferences</button>
+                </div>
+
+                <div class="float-right" id="save-prefs-success" style="color:#5cb85c; display:None; padding-right: 10px">
+                    <span class="fas fa-2x fa-check-circle"></span>
+                </div>
             </div>
         </div>
     </div>

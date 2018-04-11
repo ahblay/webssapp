@@ -61,8 +61,6 @@ class Schedule:
             if shift >= len(self.management_data[role][day]["num_employees"]):
                 continue
 
-
-            # TODO: change to shifts[_id][role]
             if shift < len(self.management_data[role][day]["num_employees"]) and \
                 schedule.roles[role] == shifts[shift]['role']:
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
@@ -103,9 +101,14 @@ class Schedule:
         '''
         def coeff(employee, role, day, shift):
 
+            print('Employee: {}'.format(employee))
+            print('Role: {}'.format(role))
+            print('Day: {}'.format(day))
+            print('Shift: {}'.format(shift))
+            print('------------------------------------------')
+
             if shift >= len(self.management_data[role][day]["num_employees"]):
                 return -7500
-
 
             if shift < len(self.management_data[role][day]["num_employees"]):
                 # TODO: Change to shifts[_id][role]
@@ -167,6 +170,7 @@ class Schedule:
 
         self.schedule = schedule
         return schedule
+
 
 if __name__ == "__main__":
     print("Running sample problem")

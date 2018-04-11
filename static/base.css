@@ -201,6 +201,35 @@ select {
     background-color: white;
 }
 
+/* Schedule Selection Homepage */
+.schedule-card {
+    cursor: pointer;
+}
+
+/* Preferences */
+.emp-prefs-select-emp-tab {
+    background-color: #eeeeee;
+    color: black !important;
+    font-weight: 450;
+    margin-left: 0.5em;
+    border: 1px solid black;
+    margin-bottom: -1px;
+    padding-top: 0.75em;
+    padding-bottom: 0.75em;
+    width: 100%;
+}
+
+.selected-emp-tab {
+    background-color: white !important;
+    color: black !important;
+    border-right: 1px solid white !important;
+    z-index: 10;
+}
+
+.no-hover:hover{
+    cursor: default !important;
+}
+
 /* View schedule */
 .declined-shift {
     background-color: #dd4245;
@@ -225,6 +254,7 @@ select {
     border-bottom: 1px solid white !important;
     z-index: 10;
 }
+
 #tab-select button {
     background-color: #eeeeee;
     color: black !important;
@@ -237,7 +267,7 @@ select {
     padding-top: 0.75em;
     padding-bottom: 0.75em;
 }
-#tab-select button:focus {
+.emp-prefs-select-emp-tab:focus {
     outline: none;
     box-shadow: none;
 }

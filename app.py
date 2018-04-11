@@ -525,7 +525,9 @@ def remove_schedule_employees():
 
     for _id in post_data['_ids']:
         print("Removing {} from {}".format(_id, db.schedules.find_one({"employees._id": ObjectId(_id)})))
+        db.schedules.update({"employees._id": ObjectId(_id)}, {"$unset": {"prefs." + _id: 1}})
         db.schedules.update({"employees._id": ObjectId(_id)}, {"$pull": {"employees": {"_id": ObjectId(_id)}}})
+
 
     return jsonify({"success": True, "message": "Request received by server."})
 
@@ -715,7 +717,7 @@ def create_schedule(schedule_id=None):
     schedule = ScheduleProcessor(schedule_dict)
     output = schedule.build_schedule(schedule)
     schedule.output = output
-
+    pprint.pprint(output)
     return jsonify(schedule.to_dict())
 
     #Populate schedule object

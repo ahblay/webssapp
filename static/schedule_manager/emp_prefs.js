@@ -3,6 +3,7 @@ var selected_user_id = 'initial assignment'
 var employee_names = {}
 var shift_dict = {}
 var pref_dict = {}
+var last_tab = null
 
 // no longer necessary due to the fact that prefs table is generated when the prefs tab is selected
 /*
@@ -21,24 +22,22 @@ $(function () {
 */
 
 function renderEmpTable(data) {
-    data = data['employees']
-    console.log(data)
+    data = data['employees'];
+    console.log(data);
     for (i = 0; i < data.length; i++) {
-        createRow(".emp-prefs", data[i]["name"], data[i]["_id"])
-        employee_names[data[i]["_id"]] = data[i]["name"]
+        createRow(".emp-prefs", data[i]["name"], data[i]["_id"]);
+        employee_names[data[i]["_id"]] = data[i]["name"];
     }
-}
+};
 
 function renderShiftPrefsTable(data) {
-    shifts_by_day = get_shifts_by_day(data['shifts'])
-    employees = data['employees']
-    console.log(shifts_by_day)
-    console.log(employees)
+    shifts_by_day = get_shifts_by_day(data['shifts']);
+    employees = data['employees'];
 
     for (i = 0; i < shifts_by_day.length; i++) {
-        createDayShiftPrefs(".emp-shift-prefs", shifts_by_day[i], shifts_by_day[i][0]['date'], employees)
+        createDayShiftPrefs(".emp-shift-prefs", shifts_by_day[i], shifts_by_day[i][0]['date'], employees);
     }
-}
+};
 
 function get_shifts_by_day(shifts){
 
@@ -46,7 +45,6 @@ function get_shifts_by_day(shifts){
 
     for (i=0; i<shifts.length; i++){
         if (!(days.includes(shifts[i]['date']))){
-            console.log("Pushing " + shifts[i]['date'] + " to days.")
             days.push(shifts[i]['date']);
         };
     };
@@ -181,7 +179,7 @@ function createDayShiftPrefs(attribute, shifts, start, employees) {
 
         $(attribute).append(shift_row)
     }
-}
+};
 
 function preferenceSelect() {
     shift_id = $(this).data("shift-id")
@@ -216,10 +214,9 @@ function showEmployeeShifts(id) {
             }
         }
     })
-}
+};
 
 function dateToString(date) {
-    console.log(date)
     var date_array = date.split("/");
     date_array[0] = Number(date_array[0])
     var month_array = ["January",
@@ -235,11 +232,11 @@ function dateToString(date) {
                        "November",
                        "December"]
     return month_array[date_array[0] - 1] + " " + date_array[1] + ", " + date_array[2]
-}
+};
 
 function resetPrefButtons () {
     $(".emp-shift-prefs tr").find(".btn.btn-outline-dark.active").removeClass("active")
-}
+};
 
 function assignPrefButtons (initial_prefs) {
     //stores db preferences locally as a global variable and toggles corresponding pref buttons
@@ -259,31 +256,52 @@ function assignPrefButtons (initial_prefs) {
             }
         }
     }
-}
+};
 
-$(document).on("click", ".employee", function () {
-    id = $(this).data("id")
-    selected_user_id = id
-    $(".title").text(employee_names[selected_user_id])
-    $(".emp-prefs-table").css("display", "none")
-    $(".emp-shift-prefs-table").css("display", "table")
-    $("#pref-options").css("display", "block")
-    showEmployeeShifts(id)
-    $.getJSON("/_api/get_prefs/" + schedule_id, assignPrefButtons)
-})
+function renderEmpSelectTabs(employees){
 
-$(document).on("click", "#back-button", function () {
-    $(".title").text("Employees")
-    $(".emp-prefs-table").css("display", "table")
-    $(".emp-shift-prefs-table").css("display", "none")
-    $("#pref-options").css("display", "none")
-    shift_dict = {}
-    pref_dict = {}
-    resetPrefButtons()
-})
+    console.log("Rendering #emp-prefs-tab-select.")
+
+    tab_select = $("#emp-prefs-tab-select");
+
+    for (emp=0;emp<employees.length;emp++){
+        let tab = $('<button/>');
+
+        tab.text(employees[emp]['name']);
+        tab.addClass("btn-secondary emp-prefs-select-emp-tab no-hover");
+        tab.attr("data-_id", employees[emp]["_id"]);
+
+        console.log(tab);
+        tab_select.append(tab);
+    };
+
+    if (last_tab != null){
+        selectTab(last_tab);
+    };
+};
+
+function selectTab(tab_data_id){
+    $(document).ready(function (){
+        $(".emp-prefs-select-emp-tab[data-_id='" + tab_data_id + "']")[0].click();
+    });
+};
+
+$(document).on("click", ".emp-prefs-select-emp-tab", function () {
+    _id = $(this).attr("data-_id");
+    last_tab = _id;
+    $('.emp-prefs-select-emp-tab').removeClass('selected-emp-tab');
+    $(this).addClass('selected-emp-tab');
+    selected_user_id = _id;
+    $(".emp-shift-prefs-table").css("display", "table");
+    $("#pref-options").css("display", "block");
+    showEmployeeShifts(_id);
+    resetPrefButtons();
+    $.getJSON("/_api/get_prefs/" + schedule_id, assignPrefButtons);
+});
 
 $(document).on("click", "#save-prefs", function () {
-    prefs = {"_id": schedule_id, "pref_data": pref_dict, "employee": selected_user_id}
+    prefs = {"_id": schedule_id, "pref_data": pref_dict, "employee": selected_user_id};
+    console.log("Sending prefs to server.")
     $.ajax({
         type: "POST",
         url: "/save_pref_data",
@@ -291,8 +309,11 @@ $(document).on("click", "#save-prefs", function () {
         contentType: 'application/json;charset=UTF-8',
         dataType: "json",
     }).done(function(){
-        console.log("Sending prefs to server.")
+        $("#save-prefs-success").show();
+        setTimeout(function(){
+            $("#save-prefs-success").fadeOut("250");
+        }, 750);
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
     });
-})
+});

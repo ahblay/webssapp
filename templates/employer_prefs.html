@@ -177,15 +177,15 @@
                         <div class="card-deck">
                         {% for schedule in schedules %}
                             {% if schedule['status'] == 'active' %}
-                                <div class="card border-dark text-center mb-3 schedule-active {{ schedule['status'] }}"
+                                <div class="card border-dark text-center mb-3 schedule-card schedule-active {{ schedule['status'] }}"
                                      data-id="{{ schedule['_id'] }}"
                                      style="max-width:207px; min-width:207px;">
                             {% elif schedule['status'] == 'upcoming' %}
-                                <div class="card border-dark text-center mb-3 schedule-upcoming {{ schedule['status'] }}"
+                                <div class="card border-dark text-center mb-3 schedule-card schedule-upcoming {{ schedule['status'] }}"
                                      data-id="{{ schedule['_id'] }}"
                                      style="max-width:207px; min-width:207px;">
                             {% else %}
-                                <div class="card border-dark text-center mb-3 schedule-default {{ schedule['status'] }}"
+                                <div class="card border-dark text-center mb-3 schedule-card schedule-default {{ schedule['status'] }}"
                                      data-id="{{ schedule['_id'] }}"
                                      style="max-width:207px; min-width:207px;">
                             {% endif %}

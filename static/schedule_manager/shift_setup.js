@@ -24,6 +24,16 @@ $(function () {
     $.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
 })
 
+$(() => {
+    schedule_length = [... new Set(schedule_dates)].length;
+    console.log('SChedule Length')
+    console.log(schedule_length)
+    if (schedule_length > 1){
+        $("#page-right").prop("disabled", false);
+    };
+});
+
+
 function getRoles(data) {
     for (i = 0; i < data.length; i++) {
         master_roles.push(data[i]["name"])
@@ -374,7 +384,7 @@ function getIndexOf(arr, k) {
           return i;
         }
     }
-}
+};
 
 $(document).on("click", "#page-right", function(){
     day_index++;

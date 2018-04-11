@@ -81,13 +81,15 @@ $("#back-to-home").on("click", function(){
 
 // refresh emp prefs when tab is clicked
 $(document).on("click", "#employee-prefs-tab", function() {
+    $(".emp-prefs-select-emp-tab").remove()
     $(".emp-shift-prefs").empty()
     $(".emp-prefs").empty()
     schedule_id = $(this).data("schedule-id")
     $.getJSON("/api/get_schedule/" + schedule_id, success= function(data) {
-        console.log(data)
-        renderEmpTable(data)
-        renderShiftPrefsTable(data)
+        console.log(data);
+        console.log(data["employees"]);
+        renderEmpSelectTabs(data["employees"]);
+        renderShiftPrefsTable(data);
     });
 })
 

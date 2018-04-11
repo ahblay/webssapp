@@ -108,6 +108,8 @@ $("#submit-new-schedule").on("click", function () {
 })
 
 $(".close-schedule").on("click", function () {
+    preventClickPropogation(event);
+
     var scheduleID = $(this).data("schedule-id")
     removeScheduleModal.style.display = "block";
     bd.appendTo($("#outer-wrapper"));
@@ -121,7 +123,6 @@ $(".close-schedule").on("click", function () {
 
 var removeSchedule = $("[data-schedule-id='test']")
 var removeScheduleModal = document.getElementById("confirm-delete-schedule")
-
 
 $("#cancel-delete").on("click", function () {
     removeScheduleModal.style.display = "none";
@@ -146,23 +147,30 @@ function dateToString(date) {
     return month_array[date_array[0] - 1] + " " + date_array[1] + ", " + date_array[2]
 }
 
+function preventClickPropogation(event){
+    event.preventDefault();
+    event.cancelBubble = true;
+    if(event.stopPropagation) event.stopPropagation();
+};
+
 $(".card-text").each(function(){
     dates = $(this).data("dates").split(" ")
     $(this).append("<b>Start: </b>" + dateToString(dates[0]) + "<br /><b>End: </b>" + dateToString(dates[1]))});
 
-$(document).on("click", ".fa-folder-open", function () {
-    console.log("Clicked on new load schedule icon.")
-    var scheduleID = $(this).data("schedule-id")
+$(document).on("click", ".schedule-card", function () {
+    console.log("Clicked on load schedule icon.")
+    var scheduleID = $(this).data("id")
     window.location.href = "/view_schedule/" + scheduleID
 })
 
 //changes background color of schedule thumbnail
 $(document).on("click", ".d", function () {
+    preventClickPropogation(event);
+
     var parent = $(this).closest($(".card"));
     parent.removeClass("schedule-default schedule-upcoming schedule-active")
     parent.addClass("schedule-default")
     schedule_id = parent.data("id")
-    console.log(schedule_id)
 
     $.ajax({
         type: "POST",
@@ -176,6 +184,8 @@ $(document).on("click", ".d", function () {
 })
 
 $(document).on("click", ".a", function () {
+    preventClickPropogation(event);
+
     console.log("clicked")
     var parent = $(this).closest($(".card"));
     parent.removeClass("schedule-default schedule-upcoming schedule-active")
@@ -193,6 +203,8 @@ $(document).on("click", ".a", function () {
 })
 
 $(document).on("click", ".u", function () {
+    preventClickPropogation(event);
+
     var parent = $(this).closest($(".card"));
     parent.removeClass("schedule-default schedule-upcoming schedule-active")
     parent.addClass("schedule-upcoming")

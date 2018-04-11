@@ -131,14 +131,12 @@ class ScheduleProcessor:
 
     def _init_shift_prefs(self, employee):
 
-        print('Prefs: {}'.format(self.prefs))
-
         def gen_pref_val(_id, emp):
 
             emp_id = str(emp['_id'])
             emp_prefs = self.prefs[emp_id]
             pref_val = -1000
-            print('Emp Prefs: {}'.format(emp_prefs))
+
             if emp_id in self.prefs.keys():
                 if str(_id) in self.prefs[emp_id].keys():
                     pref_val = emp_prefs[_id]
@@ -148,9 +146,6 @@ class ScheduleProcessor:
         shift_prefs = []
 
         shifts_by_day = self._get_shifts_by_day()
-
-
-        print('SHIFTS BY DAY: {}'.format(shifts_by_day))
 
         for day in shifts_by_day:
             day_prefs = []
