@@ -5,12 +5,23 @@ $.getJSON("/api/get_employees", function(data){
 
 // Main table functionality
 $("#check-all-employees").on("click", function(){
-    $(".row-select-checkbox").not(this).prop("checked", this.checked)
+
+    $(".emp-setup-row-select-checkbox").not(this).prop("checked", this.checked)
+
+    var num_boxes_selected = $(".emp-setup-row-select-checkbox:checked").length
+
+    if (num_boxes_selected > 0){
+        $("#edit-employees").removeAttr("disabled");
+        $("#remove-employees").removeAttr("disabled");
+    } else {
+        $("#edit-employees").attr("disabled", "disabled");
+        $("#remove-employees").attr("disabled", "disabled");
+    };
 });
 
-$(document).on("change", ".row-select-checkbox", function(){
+$(document).on("change", ".emp-setup-row-select-checkbox", function(){
     console.log("Checkbox selected, updating #edit-employees button.")
-    var num_boxes_selected = $(".row-select-checkbox:checked").length
+    var num_boxes_selected = $(".emp-setup-row-select-checkbox:checked").length
     if ( num_boxes_selected > 0) {
         $("#edit-employees").removeAttr("disabled");
         $("#remove-employees").removeAttr("disabled");
@@ -37,7 +48,7 @@ function refresh_table_data(employees){
                 let span = document.createElement("span");
                 $(span).addClass("custom-checkbox");
                 let input = $(document.createElement("input"));
-                input.addClass("row-select-checkbox");
+                input.addClass("emp-setup-row-select-checkbox");
                 input.attr("type", "checkbox");
                 input.attr("id", employees[i]["_id"]);
                 input.val("");
@@ -117,7 +128,7 @@ $("#add-employee-submit").on("click", function() {
 
 // Edit employee(s) modal functions
 $("#edit-employees").on('click', function(){
-    if ($(".row-select-checkbox:checked").length > 1){
+    if ($(".emp-setup-row-select-checkbox:checked").length > 1){
         $("#multi-name-change-alert").show()
     }else{
         $("#multi-name-change-alert").hide()
@@ -127,7 +138,7 @@ $("#edit-employees").on('click', function(){
 $(document).on("click", "#edit-emps-submit", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     var data = {
-                    _ids: $(".row-select-checkbox:checked").map(function(){return this.id}).get(),
+                    _ids: $(".emp-setup-row-select-checkbox:checked").map(function(){return this.id}).get(),
                     name: $("#edit-emps-name-input").val(),
                     min_shifts: $("#edit-emps-min-shifts-input").val(),
                     max_shifts: $("#edit-emps-max-shifts-input").val(),
@@ -164,7 +175,7 @@ $(document).on("click", "#remove-employees", function() {
     if (confirmed){
 
         data = {
-            "_ids": $(".row-select-checkbox:checked").map(function(){return this.id}).get()
+            "_ids": $(".emp-setup-row-select-checkbox:checked").map(function(){return this.id}).get()
         };
         console.log("Attempting to remove the following employees from master list:")
         console.log(data["_ids"])
