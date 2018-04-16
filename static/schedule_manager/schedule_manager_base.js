@@ -90,6 +90,7 @@ $(document).on("click", "#employee-prefs-tab", function() {
         console.log(data["employees"]);
         renderEmpSelectTabs(data["employees"]);
         renderShiftPrefsTable(data);
+        renderPrefCalendar(data)
     });
 })
 

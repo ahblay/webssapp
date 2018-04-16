@@ -507,8 +507,12 @@ $(document).on("click", "#save-shifts", function () {
     var i = getIndexOf(allDates, current)
     date = allDates[i][1]
     shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
-    role = shift_data["shift_data"][shift_data["shift_data"].length - 1][4]
-    start = shift_data["shift_data"][shift_data["shift_data"].length - 1][2]
+    roles = []
+    starts = []
+    for (i = 0; i < shift_data["shift_data"].length; i++) {
+        roles.push(shift_data["shift_data"][i][4])
+        starts.push(shift_data["shift_data"][i][2])
+    }
     console.log(role)
 
     $.ajax({
@@ -519,10 +523,17 @@ $(document).on("click", "#save-shifts", function () {
         dataType: "json",
     }).done(function(){
         console.log("Sent to server.")
-        var calendar_shift = document.createElement("div")
-        $(calendar_shift).addClass("big-calendar-shift")
-        $(calendar_shift).text(role + " " + start)
-        $('*[data-calendar-date="' + date + '"]').append(calendar_shift)
+        $('*[data-calendar-date="' + date + '"]').children().each(function () {
+            if ($(this).hasClass("big-calendar-shift")) {
+                $(this).remove()
+            }
+        })
+        for (j = 0; j < roles.length; j++) {
+            var calendar_shift = document.createElement("div")
+            $(calendar_shift).addClass("big-calendar-shift")
+            $(calendar_shift).text(roles[j] + " " + starts[j])
+            $('*[data-calendar-date="' + date + '"]').prepend(calendar_shift)
+        }
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
     });

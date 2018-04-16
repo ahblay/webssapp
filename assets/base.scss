@@ -418,24 +418,21 @@ select {
 .pref-calendar {
     overflow: scroll;
     whitespace: nowrap;
-     --cell-size: 30px;
-     --num-days: 10;
-     --num-shifts: 2;
-     --num-roles: 3;
-     --num-emps: 3;
+}
+:root {
+    --cell-size: 40px;
 }
 .pref-calendar-content {
     display: grid;
-    grid-template-columns: repeat(16, calc(var(--num-shifts) * var(--cell-size)));
+    grid-template-columns: repeat(16, 80px);
     grid-column-gap: 10px;
 }
 .pref-calendar-days {
     display: grid;
-    grid-template-columns: calc(var(--num-shifts) * var(--cell-size))
-                           repeat(var(--num-days),
-                                  calc(var(--num-shifts) * var(--cell-size) * var(--num-roles) + (var(--num-roles) - 1) * 10px));
+    grid-template-columns: 80px repeat(3, 260px);
     grid-column-gap: 10px;
     align-items: center;
+    justify-content: center;
 }
 .pref-calendar-day {
     justify-self: center;
@@ -447,8 +444,8 @@ select {
 }
 .pref-calendar-labels {
     display: grid;
-    grid-template-columns: calc(2 * var(--cell-size));
-    grid-template-rows: repeat(calc(var(--num-emps) + 1), var(--cell-size));
+    grid-template-columns: 80px;
+    grid-template-rows: repeat(6, var(--cell-size));
     grid-column-gap: 1px;
     grid-row-gap: 1px;
     align-items: center;
@@ -456,8 +453,8 @@ select {
 }
 .pref-calendar-col {
     display: grid;
-    grid-template-columns: repeat(var(--num-shifts), var(--cell-size));
-    grid-template-rows: repeat(calc(var(--num-emps) + 1), var(--cell-size));
+    grid-template-columns: repeat(2, var(--cell-size));
+    grid-template-rows: repeat(6, var(--cell-size));
     grid-column-gap: 1px;
     grid-row-gap: 1px;
 }
@@ -468,7 +465,7 @@ select {
 }
 .pref-calendar-role {
     grid-column-start: 1;
-    grid-column-end: calc(var(--num-shifts) + 1);
+    grid-column-end: 3;
     justify-self: center;
     align-self: center;
 }
@@ -478,7 +475,7 @@ select {
 }
 .pref-calendar-times {
     display: grid;
-    grid-template-columns: calc(2 * var(--cell-size)) repeat(3, 260px);
+    grid-template-columns: 80px repeat(3, 260px);
     grid-column-gap: 10px;
     align-items: center;
     justify-content: center;
