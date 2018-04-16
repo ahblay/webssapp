@@ -67,6 +67,13 @@ function renderPrefCalendar(data) {
     $(".pref-calendar").append(pref_calendar_content)
 };
 
+function getPrefCalendarData(data) {
+    employees = data["employees"]
+    for (j = 0; j < employees.length; j++) {
+        let emp_id = employees[j][_id]
+    }
+}
+
 function renderShiftPrefsTable(data) {
     shifts_by_day = get_shifts_by_day(data['shifts']);
     employees = data['employees'];
