@@ -395,6 +395,7 @@ select {
     background-color: #eeeeee;
 }
 .big-calendar-day {
+    overflow: scroll;
     border-right: 1px solid #000000;
     border-top: 1px solid #000000;
     display: grid;
