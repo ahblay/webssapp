@@ -814,6 +814,10 @@ def create_schedule(schedule_id=None):
     print(schedule_dict)
 
     schedule = ScheduleProcessor(schedule_dict)
+    print('Sorting shifts chronologically.')
+    print(schedule.shifts)
+    schedule.sort('shifts', 'chronological')
+    print(schedule.shifts)
     output = schedule.build_schedule(schedule)
     schedule.output = output
     pprint.pprint(output)

@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from flask import g
 import zephyr_build_schedule as scheduling_algorithm
-from datetime import date, timedelta, datetime
+import datetime
 import pprint
 
 from bson import ObjectId
@@ -57,7 +57,7 @@ class ScheduleProcessor:
 
         dates = []
         for i in range(delta.days + 1):
-            dates.append(start_date + timedelta(days=i))
+            dates.append(start_date + datetime.timedelta(days=i))
 
         return dates
 
@@ -240,3 +240,49 @@ class ScheduleProcessor:
                     emps[index][key] = str(emp[key])
 
         return emps
+
+    '''
+    Sorts a field of the Schedule object.
+    
+    Args:
+        attribute: The field of the schedule object to sorted [Accepts: 'shifts', 'employees']
+        order: The sort order to be applied to the attribute.
+    '''
+    def sort(self, attribute, order):
+
+        def chrono_sort(shift):
+            time_str = shift['start']
+            parts = time_str.split(':')
+            time_parts = {'hr': int(parts[0]), 'min': int(parts[1][:2]), 'am_pm': parts[1][-2:]}
+            if time_parts['am_pm'] == 'pm':
+                time_parts['hr'] += 12
+            date_parts = {
+                            'yr': int(shift['date'][-4:]),
+                            'mo': int(shift['date'][:2]),
+                            'day': int(shift['date'][3:5])
+                         }
+            date = datetime.date(date_parts['yr'], date_parts['mo'], date_parts['day'])
+            time = datetime.time(time_parts['hr'], time_parts['min'])
+            return datetime.datetime.combine(date, time)
+
+        attribs = {
+            'shifts': {'data': self.shifts,
+                       'orders': {'chronological': lambda x: chrono_sort(x)}},
+            'employees': {'data': self.employees,
+                          'orders': {'alphabetical': lambda x: x.name}}
+        }
+
+        if attribute not in attribs.keys():
+            raise ValueError('No sorting is available for that field.')
+        else:
+            if order not in attribs[attribute]['orders']:
+                raise ValueError('The specified sort order is not defined for the attribute {}. Try {} instead.'
+                                 .format(attribute, attribs[attribute]['orders']))
+
+        obj_to_sort = attribs[attribute]['data']
+
+        obj_to_sort.sort(key=attribs[attribute]['orders'][order])
+
+
+
+
