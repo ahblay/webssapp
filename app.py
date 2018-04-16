@@ -8,8 +8,10 @@ from bson import json_util, ObjectId
 from collections import defaultdict
 from Schedule import ScheduleProcessor
 import pprint
+from flask_scss import Scss
 
 app = Flask(__name__)
+Scss(app, static_dir='static', asset_dir='assets')
 app.secret_key = "Peter, that bulge in your pants is causing a tidal wave."
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True

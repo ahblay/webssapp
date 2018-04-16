@@ -30,6 +30,43 @@ function renderEmpTable(data) {
     }
 };
 
+function renderPrefCalendar(data) {
+    console.log(data)
+
+    // days row
+    days = data["days"]
+    let pref_calendar_days = document.createElement("div")
+    $(pref_calendar_days).addClass("pref-calendar-days")
+    let pref_calendar_day_label = document.createElement("div")
+    $(pref_calendar_day_label).addClass("pref-calendar-day-label").text("Days:")
+    $(pref_calendar_days).append(pref_calendar_day_label)
+    for (i = 0; i < days.length; i ++) {
+        let pref_calendar_day = document.createElement("div")
+        $(pref_calendar_day).addClass("pref-calendar-day").text(days[i].split(",")[0])
+        $(pref_calendar_days).append(pref_calendar_day)
+    }
+    $(".pref-calendar").append(pref_calendar_days)
+
+    let pref_calendar_content = document.createElement("div")
+    $(pref_calendar_content).addClass("pref-calendar-content")
+
+    // labels
+    employees = data["employees"]
+    let pref_calendar_labels = document.createElement("div")
+    $(pref_calendar_labels).addClass("pref-calendar-labels")
+    let pref_calendar_role_label = document.createElement("div")
+    $(pref_calendar_role_label).addClass("pref-calendar-role-label").text("Roles:")
+    $(pref_calendar_labels).append(pref_calendar_role_label)
+    for (i = 0; i < employees.length; i++) {
+        let pref_calendar_employee_label = document.createElement("div")
+        $(pref_calendar_employee_label).addClass("pref-calendar-employee-label").text(employees[i]["name"])
+        $(pref_calendar_labels).append(pref_calendar_employee_label)
+    }
+    $(pref_calendar_content).append(pref_calendar_labels)
+
+    $(".pref-calendar").append(pref_calendar_content)
+};
+
 function renderShiftPrefsTable(data) {
     shifts_by_day = get_shifts_by_day(data['shifts']);
     employees = data['employees'];
