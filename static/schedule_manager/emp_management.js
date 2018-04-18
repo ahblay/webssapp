@@ -233,6 +233,7 @@ $(document).on("click", "#remove-employees", function() {
     if (confirmed){
 
         data = {
+            "schedule_id": SCHEDULE_ID,
             "_ids": $(".row-select-checkbox:checked").map(function(){return this.id}).get()
         };
         console.log("Attempting to remove the following employees from master list:")

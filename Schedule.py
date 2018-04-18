@@ -30,7 +30,7 @@ class ScheduleProcessor:
         self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
         self.roles = {index: role for index, role in enumerate(schedule['roles'])} if 'roles' in schedule.keys() else {}
         self.start_date = schedule['start_date'] if 'start_date' in schedule.keys() else None
-        self.end_date = schedule['end_date']if 'end_date' in schedule.keys() else None
+        self.end_date = schedule['end_date'] if 'end_date' in schedule.keys() else None
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
 
         self.num_employees = self.get_length(self.employees)
@@ -38,10 +38,9 @@ class ScheduleProcessor:
         self.num_shifts = self.build_num_shifts()
         self.num_roles = self.get_length(self.roles)
 
-
-        self.management_data = self.build_management_data()
-        self.employee_info = self.build_employee_info()
-        self.training = self.build_training()
+        self.management_data = []
+        self.employee_info = []
+        self.training = []
 
         self.output = None
 
