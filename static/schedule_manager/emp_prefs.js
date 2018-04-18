@@ -34,62 +34,107 @@ function renderPrefCalendar(data) {
     console.log(data)
 
     // days row
-    days = data["days"]
-    let pref_calendar_days = document.createElement("div")
-    $(pref_calendar_days).addClass("pref-calendar-days")
+    employees = data["employees"]
+    let pref_calendar_labels = document.createElement("div")
+    $(pref_calendar_labels).addClass("pref-calendar-labels")
     let pref_calendar_day_label = document.createElement("div")
-    $(pref_calendar_day_label).addClass("pref-calendar-day-label").text("Days:")
-    $(pref_calendar_days).append(pref_calendar_day_label)
-    for (i = 0; i < days.length; i ++) {
-        let pref_calendar_day = document.createElement("div")
-        $(pref_calendar_day).addClass("pref-calendar-day").text(days[i])
-        $(pref_calendar_day).attr("data-date", days[i])
-        $(pref_calendar_days).append(pref_calendar_day)
+    $(pref_calendar_day_label).addClass("pref-calendar-label").text("Days:")
+    $(pref_calendar_labels).append(pref_calendar_day_label)
+    let pref_calendar_role_label = document.createElement("div")
+    $(pref_calendar_role_label).addClass("pref-calendar-label").text("Roles:")
+    $(pref_calendar_labels).append(pref_calendar_role_label)
+    for (i = 0; i < employees.length; i ++) {
+        let pref_calendar_name_label = document.createElement("div")
+        $(pref_calendar_name_label).addClass("pref-calendar-name-label").text(employees[i]["name"])
+        $(pref_calendar_labels).append(pref_calendar_name_label)
     }
-    $(".pref-calendar").append(pref_calendar_days)
+    $(".pref-calendar").append(pref_calendar_labels)
 
     let pref_calendar_content = document.createElement("div")
     $(pref_calendar_content).addClass("pref-calendar-content")
 
-    // labels
-    employees = data["employees"]
-    let pref_calendar_labels = document.createElement("div")
-    $(pref_calendar_labels).addClass("pref-calendar-labels")
-    let pref_calendar_role_label = document.createElement("div")
-    $(pref_calendar_role_label).addClass("pref-calendar-role-label").text("Roles:")
-    $(pref_calendar_labels).append(pref_calendar_role_label)
-    for (i = 0; i < employees.length; i++) {
-        let pref_calendar_employee_label = document.createElement("div")
-        $(pref_calendar_employee_label).addClass("pref-calendar-employee-label").text(employees[i]["name"])
-        $(pref_calendar_labels).append(pref_calendar_employee_label)
-    }
-    $(pref_calendar_content).append(pref_calendar_labels)
-
     // content
     pref_calendar_data = getPrefCalendarData(data)
     console.log(pref_calendar_data)
+    days = data["days"]
     for (i = 0; i < days.length; i ++) {
-        for (k = 0; k < Object.keys(pref_calendar_data[days[i]]).length; k++) {
-            let pref_calendar_col = document.createElement("div")
-            $(pref_calendar_col).addClass("pref-calendar-col")
-            //$(pref_calendar_col).css("grid-template-columns", "var(--cell-size)")
+        let pref_calendar_day = document.createElement("div")
+        $(pref_calendar_day).addClass("pref-calendar-day")
+
+        let pref_calendar_day_title = document.createElement("div")
+        $(pref_calendar_day_title).addClass("pref-calendar-title").text(days[i])
+        $(pref_calendar_day).append(pref_calendar_day_title)
+
+        let pref_calendar_roles = document.createElement("div")
+        $(pref_calendar_roles).addClass("pref-calendar-roles")
+
+        for (j = 0; j < Object.keys(pref_calendar_data[days[i]]).length; j++) {
             let pref_calendar_role = document.createElement("div")
-            $(pref_calendar_role).addClass("pref-calendar-role").text(Object.keys(pref_calendar_data[days[i]])[k].slice(0, 3) + ".")
-            $(pref_calendar_col).append(pref_calendar_role)
-            for (j = 0; j < employees.length; j++) {
-                for (l = 0; l < pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[k]].length; l++) {
+            $(pref_calendar_role).addClass("pref-calendar-role")
+
+            let pref_calendar_role_title = document.createElement("div")
+            $(pref_calendar_role_title).addClass("pref-calendar-title").text(Object.keys(pref_calendar_data[days[i]])[j])
+            $(pref_calendar_role).append(pref_calendar_role_title)
+
+            let pref_calendar_all_prefs = document.createElement("div")
+            $(pref_calendar_all_prefs).addClass("pref-calendar-all-prefs")
+
+            for (k = 0; k < pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]].length; k++) {
+                let pref_calendar_prefs = document.createElement("div")
+                $(pref_calendar_prefs).addClass("pref-calendar-prefs")
+
+                for (l = 0; l < employees.length; l ++) {
+                    emp_id = employees[l]["_id"]
+                    shift_id = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["_id"]
+
                     let pref_calendar_pref = document.createElement("div")
                     $(pref_calendar_pref).addClass("pref-calendar-pref")
-                    $(pref_calendar_col).append(pref_calendar_pref)
+
+                    if (data["prefs"][emp_id][shift_id] == -1000) {
+                        $(pref_calendar_pref).addClass("pref-unavailable")
+                        $(pref_calendar_pref).data("current-pref", "pref-unavailable")
+                    }
+                    else if (data["prefs"][emp_id][shift_id] == 1) {
+                        $(pref_calendar_pref).addClass("pref-available")
+                        $(pref_calendar_pref).data("current-pref", "pref-available")
+                    }
+                    else if (data["prefs"][emp_id][shift_id] == 5) {
+                        $(pref_calendar_pref).addClass("pref-prefer")
+                        $(pref_calendar_pref).data("current-pref", "pref-prefer")
+                    } else {
+                        $(pref_calendar_pref).addClass("pref-empty")
+                        $(pref_calendar_pref).data("current-pref", "pref-empty")
+                    }
+
+                    $(pref_calendar_pref).on("click", togglePrefs)
+
+                    $(pref_calendar_prefs).append(pref_calendar_pref)
                 }
+
+                $(pref_calendar_all_prefs).append(pref_calendar_prefs)
             }
-            $(pref_calendar_content).append(pref_calendar_col)
+
+            $(pref_calendar_role).append(pref_calendar_all_prefs)
+            $(pref_calendar_roles).append(pref_calendar_role)
         }
+
+        $(pref_calendar_day).append(pref_calendar_roles)
+        $(pref_calendar_content).append(pref_calendar_day)
     }
 
     $(".pref-calendar").append(pref_calendar_content)
 
 };
+
+function togglePrefs() {
+    let pref_options = ["pref-unavailable", "pref-available", "pref-prefer", "pref-empty"]
+    let current_pref = $(this).data("current-pref")
+    $(this).removeClass(current_pref)
+    let index = pref_options.indexOf(current_pref)
+    new_pref = pref_options[(index + 1) % pref_options.length]
+    $(this).data("current-pref", new_pref)
+    $(this).addClass(new_pref)
+}
 
 function getPrefCalendarData(data) {
     roles = []
