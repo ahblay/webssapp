@@ -90,8 +90,8 @@ $(document).on("click", "#employee-prefs-tab", function() {
         console.log(data["employees"]);
         renderEmpSelectTabs(data["employees"]);
         renderShiftPrefsTable(data);
-        renderPrefCalendar(data)
     });
+    $.getJSON("/api/get_sorted_schedule/" + schedule_id, renderPrefCalendar)
 })
 
 
