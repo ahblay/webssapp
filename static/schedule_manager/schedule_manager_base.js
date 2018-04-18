@@ -84,6 +84,7 @@ $(document).on("click", "#employee-prefs-tab", function() {
     $(".emp-prefs-select-emp-tab").remove()
     $(".emp-shift-prefs").empty()
     $(".emp-prefs").empty()
+    $(".pref-calendar").empty()
     schedule_id = $(this).data("schedule-id")
     $.getJSON("/api/get_schedule/" + schedule_id, success= function(data) {
         console.log(data);

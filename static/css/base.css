@@ -410,85 +410,90 @@ select {
 }
 
 /* preference calendar */
-.red {
-    background-color: red;
+.pref-unavailable {
+    background-color: grey;
 }
-.green {
-    background-color: teal;
+.pref-available {
+    background-color: yellow;
 }
-.yellow {
-    background-color: orange;
-}
-.blue {
+.pref-prefer {
     background-color: green;
 }
+.pref-empty {
+    background-color: white;
+}
 .pref-calendar {
+    display: flex;
+    flex-direction: row;
     overflow: scroll;
     whitespace: nowrap;
      --cell-size: 30px;
-     --num-days: 10;
-     --num-shifts: 2;
-     --num-roles: 3;
-     --num-emps: 3;
-}
-.pref-calendar-content {
-    display: grid;
-    grid-template-columns: repeat(16, calc(var(--num-shifts) * var(--cell-size)));
-    grid-column-gap: 10px;
-}
-.pref-calendar-days {
-    display: grid;
-    grid-template-columns: calc(var(--num-shifts) * var(--cell-size))
-                           repeat(var(--num-days),
-                                  calc(var(--num-shifts) * var(--cell-size) * var(--num-roles) + (var(--num-roles) - 1) * 10px));
-    grid-column-gap: 10px;
-    align-items: center;
-}
-.pref-calendar-day {
-    justify-self: center;
-    align-self: center;
-    border-bottom: 2px solid;
-}
-.pref-calendar-day-label {
-    font-weight: bold;
+     --num-emps: 5;
 }
 .pref-calendar-labels {
-    display: grid;
-    grid-template-columns: calc(2 * var(--cell-size));
-    grid-template-rows: repeat(calc(var(--num-emps) + 1), var(--cell-size));
-    grid-column-gap: 1px;
-    grid-row-gap: 1px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-right: 5px solid transparent;
+}
+.pref-calendar-label {
     font-weight: bold;
+    height: var(--cell-size);
 }
-.pref-calendar-col {
-    display: grid;
-    grid-template-columns: repeat(var(--num-shifts), var(--cell-size));
-    grid-template-rows: repeat(calc(var(--num-emps) + 1), var(--cell-size));
-    grid-column-gap: 1px;
-    grid-row-gap: 1px;
+.pref-calendar-name-label {
+    font-weight: bold;
+    height: calc(var(--cell-size) + 2px);
+    vertical-align: middle;
 }
-.pref-calendar-text {
-    justify-self: center;
-    align-self: center;
-    font-size: 13px;
+.pref-calendar-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+.pref-calendar-day {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
+.pref-calendar-title {
+    text-align: center;
+    height: var(--cell-size);
+}
+.pref-calendar-roles {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 .pref-calendar-role {
-    grid-column-start: 1;
-    grid-column-end: calc(var(--num-shifts) + 1);
-    justify-self: center;
-    align-self: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
+.pref-calendar-all-prefs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.pref-calendar-prefs {
+    display: grid;
+    grid-template-columns: var(--cell-size);
+    grid-template-rows: repeat(var(--num-emps), var(--cell-size));
+    grid-row-gap: 2px;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
 }
 .pref-calendar-pref {
     border: 1px solid;
     border-radius: 5px;
 }
-.pref-calendar-times {
-    display: grid;
-    grid-template-columns: calc(2 * var(--cell-size)) repeat(3, 260px);
-    grid-column-gap: 10px;
-    align-items: center;
-    justify-content: center;
+.pref-calendar-text {
+    justify-self: center;
+    align-self: center;
+    font-size: 13px;
 }
 
 /* just for funsies */
