@@ -34,7 +34,7 @@ select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background: url("dropdown_arrow.png") 96% / 15% no-repeat #eee;
+    background: url("/static/assets/dropdown_arrow.png") 96% / 15% no-repeat #eee;
 }
 
 /* when added as a class, removes padding from row or col */

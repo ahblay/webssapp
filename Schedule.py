@@ -61,7 +61,6 @@ class ScheduleProcessor:
 
         return dates
 
-    # TODO: Changed
     def build_num_shifts(self):
 
         if self.shifts == []:
@@ -69,7 +68,6 @@ class ScheduleProcessor:
 
         daily_shifts = [0] * self.num_days
 
-        print('Daily Shifts: {}'.format(daily_shifts))
         for index, _ in enumerate(daily_shifts):
             for shift in self.shifts:
                 if shift['date'] == self.days[index].strftime('%m/%d/%Y'):
@@ -88,7 +86,6 @@ class ScheduleProcessor:
         for _ in self.roles:
             role_dict = {}
             day_index = 0
-            # TODO: Changed
             for day in shifts_by_day:
                 day_dict = {
                     "num_employees": [day[shift]['num_employees'] for shift in range(len(day))],
@@ -265,24 +262,28 @@ class ScheduleProcessor:
             time = datetime.time(time_parts['hr'], time_parts['min'])
             return datetime.datetime.combine(date, time)
 
-        attribs = {
+        attributes = {
             'shifts': {'data': self.shifts,
                        'orders': {'chronological': lambda x: chrono_sort(x)}},
             'employees': {'data': self.employees,
-                          'orders': {'alphabetical': lambda x: x.name}}
+                          'orders': {'alphabetical': lambda x: x['name']}}
         }
 
-        if attribute not in attribs.keys():
+        if attribute not in attributes.keys():
             raise ValueError('No sorting is available for that field.')
         else:
-            if order not in attribs[attribute]['orders']:
+            if order not in attributes[attribute]['orders']:
                 raise ValueError('The specified sort order is not defined for the attribute {}. Try {} instead.'
-                                 .format(attribute, attribs[attribute]['orders']))
+                                 .format(attribute, attributes[attribute]['orders']))
 
-        obj_to_sort = attribs[attribute]['data']
+        obj_to_sort = attributes[attribute]['data']
 
-        obj_to_sort.sort(key=attribs[attribute]['orders'][order])
+        obj_to_sort.sort(key=attributes[attribute]['orders'][order])
 
+    def preprocess(self):
+
+        self.sort('shifts', 'chronological')
+        #self.sort('employees', 'alphabetical')
 
 
 

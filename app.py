@@ -5,7 +5,6 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 from bson import json_util, ObjectId
-from collections import defaultdict
 from Schedule import ScheduleProcessor
 import pprint
 from flask_scss import Scss
@@ -73,23 +72,18 @@ def create_account():
     db = get_db()
     users = db.users
 
-    print(list(db.users.find()))
-
     username = request.form.get("username", None)
     email = request.form.get('email', None)
     password = request.form.get('password', None)
-    print(password)
-    print(username)
-    print(email)
+
     pass_hash = generate_password_hash(password, method='pbkdf2:sha256')
-    print(pass_hash)
 
     try:
         users.insert({"username": username, "email": email, "pwd": pass_hash})
-        print("user created")
+        print("User created.")
         return jsonify({"success": True, "message": "User added successfully"})
     except DuplicateKeyError:
-        print("user already created")
+        print("The user {} already exists").format(username)
         return jsonify({"success": False, "message": "User already created"})
 
 
@@ -111,7 +105,6 @@ def login():
         user_obj = User(user['username'])
         login_user(user_obj)
         flash("Logged in successfully", category='success')
-        print("logged in")
         return jsonify({"success": True, "message": "Logged in successfully."})
     else:
         flash("Wrong username or password", category='error')
@@ -153,8 +146,6 @@ def get_employees_dict():
 # adds employee to the database
 @app.route("/_add_employee", methods=["POST"])
 def add_employee():
-    # gets name from form in add employee modal
-    print(request.json)
 
     # if form is empty, return jsonify object indicating failure
     if request.json is None:
@@ -200,6 +191,8 @@ def add_role():
 @app.route("/_save_emp_data", methods=['POST'])
 def save_emp_data():
 
+    print('Saving employee data.')
+
     db = get_db()
 
     data = request.json['serialized_data']
@@ -219,8 +212,6 @@ def save_emp_data():
             field, value = field.split("=")
             db.employees.update({"_id": ObjectId(_id)}, {"$set": {"option_entries." + field: value}})
 
-    print(list(db.employees.find()))
-
     return jsonify({"success": True, "message": "Data saved successfully"})
 
 
@@ -229,19 +220,17 @@ def open_landing_page():
     return render_template("landing_page.html")
 
 
-@app.route("/new_prefs")
-def open_new_prefs():
+@app.route("/select_schedule")
+def select_schedule():
     db = get_db()
-    print(current_user.username)
 
     schedules = list(db.schedules.find({"username": current_user.username}))
 
     for schedule in schedules:
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
-        print(schedule['status'])
 
-    return render_template("employer_prefs.html",
+    return render_template("select_schedule.html",
                            schedules=schedules)
 
 
@@ -260,18 +249,11 @@ def view_schedule(_id=None):
     return jsonify({"success": False, "message": "Schedule id is not in database."})
 
 
-@app.route("/data_entry")
-def add_data():
-    return render_template("data.html")
-
-
 @app.route('/load_html/<path:path_to_html>')
 def load_html(path_to_html=None):
     
     if path_to_html is None:
         return jsonify({"success": False, "message": "No path specified."})
-    
-    print(path_to_html)
 
     return render_template(path_to_html)
 
@@ -299,8 +281,6 @@ def add_schedule():
         emp['master_id'] = emp['_id']
         emp['_id'] = ObjectId()
 
-    print(employee_master)
-
     schedule['employees'] = employee_master
 
     schedule = ScheduleProcessor(schedule)
@@ -316,14 +296,14 @@ def delete_schedule(_id=None):
     db = get_db()
     db.schedules.remove({"_id": ObjectId(_id)}, {"justOne": True})
     schedules = db.schedules.find({"username": current_user.username})
-    return render_template("employer_prefs.html", schedules=schedules)
+    return render_template("select_schedule.html", schedules=schedules)
 
 
 @login_required
 @app.route('/employees')
 def employee_setup():
     employees = get_employees()
-    return render_template("employee_setup.html", employees=employees)
+    return render_template("employee_master.html", employees=employees)
 
 @login_required
 @app.route('/roles')
@@ -335,7 +315,7 @@ def role_setup():
 @app.route('/_edit_employees', methods=['POST'])
 def edit_employees():
     # gets name from form in add employee modal
-    print(request.json)
+
     _ids = request.json['_ids']
 
     # if form is empty, return jsonify object indicating failure
@@ -367,8 +347,6 @@ def edit_employees():
         for _id in _ids:
             print("_id: {} | Key: {} | Value: {}".format(_id, key, filtered_dict[key]))
             db.employees.update({"_id": ObjectId(_id)}, {"$set": {key: filtered_dict[key]}})
-
-    pprint.pprint(db.users.find_one({'_id': current_user.username}))
 
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
@@ -426,7 +404,6 @@ def _get_employees():
     employees = get_employees()
     for emp in employees:
         emp["_id"] = str(emp["_id"])
-    pprint.pprint(employees)
     return jsonify(employees)
 
 
@@ -436,7 +413,6 @@ def _get_roles():
     roles = list(db.roles.find())
     for role in roles:
         role["_id"] = str(role["_id"])
-    pprint.pprint(roles)
     return jsonify(roles)
 
 
@@ -446,7 +422,8 @@ def save_shift_data():
     id = request.json["_id"]
     date = request.json["date"]
     db = get_db()
-    pprint.pprint(db.schedules.find_one({"_id": ObjectId(id)}))
+
+    print('Saving shift data.')
 
     for shift in shift_data:
         entry = {"_id": shift[5],
@@ -458,21 +435,17 @@ def save_shift_data():
                  "date": date,
                  "parent_shift": shift[5]}
 
-        print(entry['_id'])
-        pprint.pprint(list(db.schedules.find({'shifts': {"$elemMatch": {'_id': entry['_id']}}})))
         db.schedules.update({'_id': ObjectId(id)},
                             {'$pull': {'shifts': {'_id': entry['_id']}}})
         db.schedules.update({'_id': ObjectId(id)},
                             {'$push': {"shifts": entry}})
 
-    pprint.pprint(db.schedules.find_one({"_id": ObjectId(id)}))
     return jsonify({"success": True, "message": "Database updated with shifts."})
 
 
 def build_recurring_dates(recurrence_type, schedule_days):
     add_dates = []
-    pprint.pprint(recurrence_type)
-    pprint.pprint(schedule_days)
+
     if recurrence_type == "Weekends":
         for day in schedule_days:
             if day[1] == 5 or day[1] == 6:
@@ -564,7 +537,6 @@ def update_shift_data():
         db.schedules.update({'_id': ObjectId(schedule_id)},
                             {'$push': {"shifts": shift_to_copy}})
 
-    pprint.pprint(list(db.schedules.find({"_id": ObjectId(schedule_id)})))
     return jsonify({"success": True, "message": "Recurring shifts added to database."})
 
 
@@ -577,7 +549,6 @@ def save_pref_data():
     db = get_db()
     db.schedules.update({"_id": ObjectId(_id)},
                         {"$set": {"prefs." + employee: pref_data[employee]}})
-    pprint.pprint(db.schedules.find_one({"_id": ObjectId(_id)}))
     return jsonify({"success": True, "message": "Database updated with prefs."})
 
 
@@ -594,7 +565,7 @@ def clear():
     #db.employees.delete_many({})
     #db.users.delete_many({})
     db.schedules.delete_many({})
-    return render_template('index.html')
+    return render_template('landing_page.html')
 
 
 @app.route('/_remove_schedule_shifts', methods=['POST'])
@@ -603,14 +574,12 @@ def remove_schedule_shifts():
 
     post_data = request.get_json()
 
-    pprint.pprint(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))
-
     for _id in post_data['_ids']:
-        print("Removing {} from {}".format(_id, db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])})))
+        schedule_name = dict(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))['name']
+        print("Removing shift: {} from schedule: {}".format(_id, schedule_name))
         db.schedules.update({"_id": ObjectId(post_data["schedule_id"])},
                             {"$pull": {"shifts": {"_id": _id}}})
 
-    pprint.pprint(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))
     return jsonify({"success": True, "message": "Request received by server."})
 
 
@@ -620,10 +589,9 @@ def remove_schedule_employees():
 
     post_data = request.get_json()
 
-    print(post_data)
-
     for _id in post_data['_ids']:
-        print("Removing {} from {}".format(_id, db.schedules.find_one({"employees._id": ObjectId(_id)})))
+        schedule_name = dict(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))['name']
+        print("Removing emp: {} from schedule: {}".format(_id, schedule_name))
         db.schedules.update({"employees._id": ObjectId(_id)}, {"$unset": {"prefs." + _id: 1}})
         db.schedules.update({"employees._id": ObjectId(_id)}, {"$pull": {"employees": {"_id": ObjectId(_id)}}})
 
@@ -639,7 +607,8 @@ def remove_employees():
     post_data = request.get_json()
 
     for _id in post_data['_ids']:
-        print("Removing {} from {}".format(_id, db.schedules.find_one({"_id": ObjectId(_id)})))
+
+        print("Removing {} from MASTER".format(_id))
         db.employees.remove({"_id": ObjectId(_id)})
 
     return jsonify({"success": True, "message": "Request received by server."})
@@ -653,7 +622,8 @@ def remove_roles():
     post_data = request.get_json()
 
     for _id in post_data['_ids']:
-        print("Removing {} from {}".format(_id, db.roles.find_one({"_id": ObjectId(_id)})))
+        schedule_name = dict(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))['name']
+        print("Removing role: {} from schedule: {}".format(_id, schedule_name))
         db.roles.remove({"_id": ObjectId(_id)})
 
     return jsonify({"success": True, "message": "Request received by server."})
@@ -719,9 +689,6 @@ def edit_schedule_employees():
 @app.route('/_add_emps_to_schedule', methods=['POST'])
 def add_emps_to_schedule():
 
-    print(request.json['schedule_id'])
-    print(request.json['_ids'])
-
     db = get_db()
     employees = list(db.employees.find())
 
@@ -767,9 +734,6 @@ def get_employee_delta(schedule_id=None):
         if emp['_id'] not in schedule_emp_ids:
             delta.append(emp)
 
-    print("The delta is:")
-    print(delta)
-
     for emp in delta:
         emp['_id'] = str(emp['_id'])
 
@@ -793,7 +757,7 @@ def get_schedule_json(schedule_id=None):
         for key in emp.keys():
             if "_id" in key:
                 emp[key] = str(emp[key])
-    print(schedule)
+
     return jsonify(schedule)
 
 
@@ -809,18 +773,14 @@ def create_schedule(schedule_id=None):
     schedule_dict = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
 
     roles = list(db.roles.find())
-    print(roles)
     schedule_dict['roles'] = [role['name'] for role in roles]
-    print(schedule_dict)
 
     schedule = ScheduleProcessor(schedule_dict)
-    print('Sorting shifts chronologically.')
-    print(schedule.shifts)
-    schedule.sort('shifts', 'chronological')
-    print(schedule.shifts)
+    schedule.preprocess()
     output = schedule.build_schedule(schedule)
     schedule.output = output
-    pprint.pprint(output)
+    print('Schedule output created.')
+
     return jsonify(schedule.to_dict())
 
     #Populate schedule object

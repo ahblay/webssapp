@@ -46,14 +46,14 @@ class Schedule:
 
         shifts = schedule.shifts
 
-        print('Management Data ---------------------------')
-        pprint.pprint(management_data)
-        print('Shifts ---------------------')
-        pprint.pprint(shifts)
-        print('Employee Information ----------------------')
-        pprint.pprint(employee_info)
-        print('Schedule ----------------------')
-        pprint.pprint(schedule.to_dict())
+        #print('Management Data ---------------------------')
+        #pprint.pprint(management_data)
+        #print('Shifts ---------------------')
+        #pprint.pprint(shifts)
+        #print('Employee Information ----------------------')
+        #pprint.pprint(employee_info)
+        #print('Schedule ----------------------')
+        #pprint.pprint(schedule.to_dict())
 
         # correct number of employees in each shift
         for day, shift, role in product_range(num_days, num_shifts, num_roles):
@@ -101,17 +101,10 @@ class Schedule:
         '''
         def coeff(employee, role, day, shift):
 
-            print('Employee: {}'.format(employee))
-            print('Role: {}'.format(role))
-            print('Day: {}'.format(day))
-            print('Shift: {}'.format(shift))
-            print('------------------------------------------')
-
             if shift >= len(self.management_data[role][day]["num_employees"]):
                 return -7500
 
             if shift < len(self.management_data[role][day]["num_employees"]):
-                # TODO: Change to shifts[_id][role]
                 if schedule.roles[role] == shifts[shift]['role']:
                     if employee_info[employee]["shift_pref"][day][shift]["lock_in_role"] == role:
                         c = 1000
@@ -160,9 +153,7 @@ class Schedule:
         # employee, day: {"working": True/False, "role": role, "shift": shift}
         schedule = [[{"working": False} for _ in range(self.num_days)] for _ in range(self.num_employees)]
         for employee, role, day, shift in product_range(self.num_employees, self.num_roles, self.num_days, self.num_shifts):
-            print('{} --> {}'.format(self.coeff(employee, role, day, shift), self.x[employee][role][day][shift]))
             if value(self.x[employee][role][day][shift]):
-                print("^^^^^^^^^^^^^^^^^^^")
                 schedule[employee][day]["working"] = True
                 schedule[employee][day]["shift"] = self.management_data[role][day]['shift_times'][shift]
                 schedule[employee][day]["role"] = role
@@ -170,58 +161,3 @@ class Schedule:
 
         self.schedule = schedule
         return schedule
-
-
-if __name__ == "__main__":
-    print("Running sample problem")
-
-    from random import randint, seed
-    import time
-
-    seed(0)
-
-    num_employees = 100
-    num_shifts = 3
-    num_roles = 5
-    num_days = 7
-
-    employee_names = ["employee"+str(e) for e in range(num_employees)]
-    role_names = ["Role "+str(r) for r in range(num_roles)]
-    shift_names = ["Shift "+str(s) for s in range(num_shifts)]
-
-    # employee, day, shift: {"pref": preference (0 to 2), "role": locked in role}
-
-    # day, shift, role
-    management_data = [{day: {"num_employees": [1 for shift in range(num_shifts)],
-                              "shift_times": ["don't matter" for _ in range(num_shifts)]}
-                        for day in range(num_days)}
-                       for role in range(num_roles)]
-
-    max_shifts = [2 for _ in range(num_employees)]
-    min_shifts = [0 for _ in range(num_employees)]
-
-    # employee, role 
-    training = [[False for role in range(num_roles)] for employee in range(num_employees)]
-
-    # employee, role
-    seniority = [[randint(0, 7) for role in range(num_roles)] for employee in range(num_employees)]
-
-    employee_info = [{"min_shifts": min_shifts[employee],
-                      "max_shifts": max_shifts[employee],
-                      "shift_pref": [[{"pref": randint(1, 2), "lock_in_role": None} for shift in range(num_shifts)]
-                                     for day in range(num_days)],
-                      "role_seniority": seniority[employee]}
-                      for employee in range(num_employees)]
-
-    schedule = None
-    s = Schedule(num_employees, num_shifts, num_roles, num_days, employee_info, management_data, training, schedule)
-
-    schedule = s.get_schedule()
-
-    '''
-    with open("./table.html", "w") as f:
-        f.write(html)
-
-    import webbrowser
-    webbrowser.open_new("./table.html")
-    '''
