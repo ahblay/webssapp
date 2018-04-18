@@ -1,4 +1,4 @@
-var schedule_id = 'initial assignment'
+var schedule_id = $("#employee-prefs-tab").data("schedule-id")
 var selected_user_id = 'initial assignment'
 var employee_names = {}
 var shift_dict = {}
@@ -42,7 +42,8 @@ function renderPrefCalendar(data) {
     $(pref_calendar_days).append(pref_calendar_day_label)
     for (i = 0; i < days.length; i ++) {
         let pref_calendar_day = document.createElement("div")
-        $(pref_calendar_day).addClass("pref-calendar-day").text(days[i].split(",")[0])
+        $(pref_calendar_day).addClass("pref-calendar-day").text(days[i])
+        $(pref_calendar_day).attr("data-date", days[i])
         $(pref_calendar_days).append(pref_calendar_day)
     }
     $(".pref-calendar").append(pref_calendar_days)
@@ -64,14 +65,61 @@ function renderPrefCalendar(data) {
     }
     $(pref_calendar_content).append(pref_calendar_labels)
 
+    // content
+    pref_calendar_data = getPrefCalendarData(data)
+    console.log(pref_calendar_data)
+    for (i = 0; i < days.length; i ++) {
+        for (k = 0; k < Object.keys(pref_calendar_data[days[i]]).length; k++) {
+            let pref_calendar_col = document.createElement("div")
+            $(pref_calendar_col).addClass("pref-calendar-col")
+            //$(pref_calendar_col).css("grid-template-columns", "var(--cell-size)")
+            let pref_calendar_role = document.createElement("div")
+            $(pref_calendar_role).addClass("pref-calendar-role").text(Object.keys(pref_calendar_data[days[i]])[k].slice(0, 3) + ".")
+            $(pref_calendar_col).append(pref_calendar_role)
+            for (j = 0; j < employees.length; j++) {
+                for (l = 0; l < pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[k]].length; l++) {
+                    let pref_calendar_pref = document.createElement("div")
+                    $(pref_calendar_pref).addClass("pref-calendar-pref")
+                    $(pref_calendar_col).append(pref_calendar_pref)
+                }
+            }
+            $(pref_calendar_content).append(pref_calendar_col)
+        }
+    }
+
     $(".pref-calendar").append(pref_calendar_content)
+
 };
 
 function getPrefCalendarData(data) {
+    roles = []
+    days = data["days"]
+    shifts = data["shifts"]
     employees = data["employees"]
-    for (j = 0; j < employees.length; j++) {
-        let emp_id = employees[j][_id]
+
+    for (i = 0; i < shifts.length; i++) {
+        if (roles.includes(shifts[i]["role"]) == false) {
+            roles.push(shifts[i]["role"])
+        }
     }
+    prefs = {}
+
+    for (i = 0; i < days.length; i++) {
+        temp_roles = {}
+        for (k = 0; k < roles.length; k++) {
+            day_shifts = []
+            for (j = 0; j < shifts.length; j++) {
+                if (shifts[j]["date"] == days[i] && shifts[j]["role"] == roles[k]) {
+                    day_shifts.push(shifts[j])
+                }
+            }
+            if (day_shifts.length != 0) {
+                temp_roles[roles[k]] = day_shifts
+            }
+        }
+        prefs[days[i]] = temp_roles
+    }
+    return prefs
 }
 
 function renderShiftPrefsTable(data) {
