@@ -64,7 +64,7 @@ class ScheduleProcessor:
     def build_num_shifts(self):
 
         if self.shifts == []:
-            return None
+            return
 
         daily_shifts = [0] * self.num_days
 
@@ -96,6 +96,9 @@ class ScheduleProcessor:
         return management_data
 
     def build_employee_info(self):
+
+        #if self.prefs == {}:
+         #   return
 
         employee_info = []
 
@@ -203,12 +206,6 @@ class ScheduleProcessor:
 
         print("Saved schedule data to database.")
 
-    def get_schedule_data(self):
-        db = self.get_db()
-        schedules = db.schedules
-
-        schedules.find_one({"name": self.name})
-
     def to_dict(self):
 
         schedule_dict = self.__dict__.copy()
@@ -285,5 +282,12 @@ class ScheduleProcessor:
         self.sort('shifts', 'chronological')
         #self.sort('employees', 'alphabetical')
 
+        self._rebuild_alg_data()
+
+    def _rebuild_alg_data(self):
+
+        self.management_data = self.build_management_data()
+        self.employee_info = self.build_employee_info()
+        self.training = self.build_training()
 
 

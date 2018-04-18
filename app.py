@@ -384,6 +384,7 @@ def _get_prefs(_id=None):
     if _id is None:
         return jsonify({"success": False, "message": "No schedule id."})
     prefs = db.schedules.find_one({"_id": ObjectId(_id)})["prefs"]
+    pprint.pprint(prefs)
     return jsonify(prefs)
 
 
@@ -764,7 +765,7 @@ def get_schedule_json(schedule_id=None):
 @app.route('/api/get_sorted_schedule/<schedule_id>')
 def get_sorted_schedule(schedule_id=None):
     if schedule_id is None:
-        return jsonify({"success": False, "message": "You must provide a schedule id to get the associated employees."})
+        return jsonify({"success": False, "message": "You must provide a schedule id to get the associated schedule."})
 
     db = get_db()
     print("Getting schedule JSON for schedule with _id: {}".format(schedule_id))
@@ -777,15 +778,12 @@ def get_sorted_schedule(schedule_id=None):
         for key in emp.keys():
             if "_id" in key:
                 emp[key] = str(emp[key])
-    print(schedule_dict)
 
     for index, day in enumerate(schedule_dict["days"]):
         schedule_dict[index] = day.strftime('%m/%d/%Y')
 
     schedule = ScheduleProcessor(schedule_dict)
-    pprint.pprint(schedule.shifts)
     schedule.sort('shifts', 'chronological')
-    pprint.pprint(schedule.shifts)
     return jsonify(schedule.to_dict())
 
 
