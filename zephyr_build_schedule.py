@@ -15,6 +15,19 @@ def product_range(*args):
     return product(*(range(x) if type(x) is int else range(*x) for x in args))
 
 
+def get_shifts_by_day(days, shifts):
+
+    shifts_by_day = []
+    for day in days:
+        daily_shifts = []
+        for shift in shifts:
+            if shift['date'] == day.strftime("%m/%d/%Y"):
+                daily_shifts.append(shift)
+        shifts_by_day.append(daily_shifts)
+
+    return shifts_by_day
+
+
 class VarMatrix:
     def __init__(self, base_name, dimensions):
 
@@ -44,8 +57,8 @@ class Schedule:
 
         self.prob = prob = LpProblem("Schedule", LpMaximize)
 
-        shifts = schedule.shifts
-
+        shifts_by_day = get_shifts_by_day(schedule.days, schedule.shifts)
+        pprint.pprint(shifts_by_day)
         #print('Management Data ---------------------------')
         #pprint.pprint(management_data)
         #print('Shifts ---------------------')
@@ -58,11 +71,16 @@ class Schedule:
         # correct number of employees in each shift
         for day, shift, role in product_range(num_days, num_shifts, num_roles):
 
+            if day >= len(shifts_by_day):
+                continue
+
+            if shift >= len(shifts_by_day[day]):
+                continue
+
             if shift >= len(self.management_data[role][day]["num_employees"]):
                 continue
 
-            if shift < len(self.management_data[role][day]["num_employees"]) and \
-                schedule.roles[role] == shifts[shift]['role']:
+            if schedule.roles[role] == shifts_by_day[day][shift]['role']:
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
                     == self.management_data[role][day]["num_employees"][shift]
 
@@ -103,9 +121,13 @@ class Schedule:
 
             if shift >= len(self.management_data[role][day]["num_employees"]):
                 return -7500
+            elif day >= len(shifts_by_day):
+                return -7500
+            elif shift >= len(shifts_by_day[day]):
+                return -7500
+            else:
+                if schedule.roles[role] == shifts_by_day[day][shift]['role']:
 
-            if shift < len(self.management_data[role][day]["num_employees"]):
-                if schedule.roles[role] == shifts[shift]['role']:
                     if employee_info[employee]["shift_pref"][day][shift]["lock_in_role"] == role:
                         c = 1000
                     else:
@@ -120,7 +142,6 @@ class Schedule:
                     c *= employee_info[employee]["role_seniority"][role]
                 else:
                     c = -7500
-
                 return c
 
         self.coeff = coeff

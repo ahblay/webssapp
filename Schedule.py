@@ -249,6 +249,9 @@ class ScheduleProcessor:
             time_parts = {'hr': int(parts[0]), 'min': int(parts[1][:2]), 'am_pm': parts[1][-2:]}
             if time_parts['am_pm'] == 'pm':
                 time_parts['hr'] += 12
+            if time_parts['am_pm'] == 'am' and time_parts['hr'] == 12:
+                time_parts['hr'] = 0
+
             date_parts = {
                             'yr': int(shift['date'][-4:]),
                             'mo': int(shift['date'][:2]),
@@ -288,5 +291,6 @@ class ScheduleProcessor:
         self.management_data = self.build_management_data()
         self.employee_info = self.build_employee_info()
         self.training = self.build_training()
+
 
 
