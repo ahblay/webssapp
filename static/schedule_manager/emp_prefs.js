@@ -73,7 +73,7 @@ function renderPrefCalendar(data) {
             $(pref_calendar_role).addClass("pref-calendar-role")
 
             let pref_calendar_role_title = document.createElement("div")
-            $(pref_calendar_role_title).addClass("pref-calendar-title").text(Object.keys(pref_calendar_data[days[i]])[j])
+            $(pref_calendar_role_title).addClass("pref-calendar-title").text(Object.keys(pref_calendar_data[days[i]])[j].slice(0, 3) + ".")
             $(pref_calendar_role).append(pref_calendar_role_title)
 
             let pref_calendar_all_prefs = document.createElement("div")
@@ -88,8 +88,10 @@ function renderPrefCalendar(data) {
                     shift_id = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["_id"]
 
                     let pref_calendar_pref = document.createElement("div")
-                    $(pref_calendar_pref).addClass("pref-calendar-pref")
-                    console.log(data['prefs'])
+                    $(pref_calendar_pref).addClass("pref-calendar-pref").addClass("popup")
+
+                    let pop_up_window = document.createElement("span")
+                    $(pop_up_window).addClass("popuptext").text("<p><b>Start: </b>4:15</p>").text("<p><b>End: </b>6:15</p>")
 
                     if (Object.keys(data['prefs']).length === 0) {
                         $(pref_calendar_pref).addClass("pref-empty")
@@ -115,7 +117,9 @@ function renderPrefCalendar(data) {
                     }
 
                     $(pref_calendar_pref).on("click", togglePrefs)
+                    $(pref_calendar_pref).hover(loadPopup)
 
+                    $(pref_calendar_pref).append(pop_up_window)
                     $(pref_calendar_prefs).append(pref_calendar_pref)
                 }
 
@@ -142,6 +146,10 @@ function togglePrefs() {
     new_pref = pref_options[(index + 1) % pref_options.length]
     $(this).data("current-pref", new_pref)
     $(this).addClass(new_pref)
+}
+
+function loadPopup() {
+    $(this).find(".popuptext").toggleClass("show");
 }
 
 function getPrefCalendarData(data) {

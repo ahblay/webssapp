@@ -25,7 +25,7 @@ $("#log-me-in").on("click", function() {
         success: function(json_response) {
             console.log(json_response);
                 if (json_response["success"] == true) {
-                    location.assign("/new_prefs");
+                    location.assign("/select_schedule");
                 }
                 else {
                     location.assign("/login_page");

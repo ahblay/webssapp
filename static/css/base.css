@@ -411,24 +411,24 @@ select {
 
 /* preference calendar */
 .pref-unavailable {
-    background-color: grey;
+    background-color: red;
 }
 .pref-available {
-    background-color: yellow;
-}
-.pref-prefer {
     background-color: green;
 }
+.pref-prefer {
+    background-color: #d4af37;
+}
 .pref-empty {
-    background-color: white;
+    background-color: grey;
 }
 .pref-calendar {
     display: flex;
     flex-direction: row;
-    overflow: scroll;
+
     whitespace: nowrap;
      --cell-size: 30px;
-     --num-emps: 5;
+     --num-emps: 7;
 }
 .pref-calendar-labels {
     display: flex;
@@ -446,6 +446,7 @@ select {
     vertical-align: middle;
 }
 .pref-calendar-content {
+    overflow: scroll;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -494,6 +495,58 @@ select {
     justify-self: center;
     align-self: center;
     font-size: 13px;
+}
+
+/* pop-up styling */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* The actual pop-up */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Pop-up arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the pop-up */
+.popup .show {
+    visibility: visible;
+    animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the pop-up) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
 }
 
 /* just for funsies */
