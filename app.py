@@ -623,7 +623,7 @@ def remove_roles():
     post_data = request.get_json()
 
     for _id in post_data['_ids']:
-        schedule_name = dict(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])}))['name']
+        schedule_name = dict(db.schedules.find_one({"_id": ObjectId(_id)}))['name']
         print("Removing role: {} from schedule: {}".format(_id, schedule_name))
         db.roles.remove({"_id": ObjectId(_id)})
 

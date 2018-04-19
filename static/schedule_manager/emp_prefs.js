@@ -89,16 +89,24 @@ function renderPrefCalendar(data) {
 
                     let pref_calendar_pref = document.createElement("div")
                     $(pref_calendar_pref).addClass("pref-calendar-pref")
+                    console.log(data['prefs'])
 
-                    if (data["prefs"][emp_id][shift_id] == -1000) {
+                    if (Object.keys(data['prefs']).length === 0) {
+                        $(pref_calendar_pref).addClass("pref-empty")
+                        $(pref_calendar_pref).data("current-pref", "pref-empty")
+                    } else if (!Object.keys(data['prefs']).includes(emp_id)) {
+                        $(pref_calendar_pref).addClass("pref-empty")
+                        $(pref_calendar_pref).data("current-pref", "pref-empty")
+                    } else if (!Object.keys(data['prefs'][emp_id]).includes(shift_id)) {
+                        $(pref_calendar_pref).addClass("pref-empty")
+                        $(pref_calendar_pref).data("current-pref", "pref-empty")
+                    } else if (data["prefs"][emp_id][shift_id] == -1000) {
                         $(pref_calendar_pref).addClass("pref-unavailable")
                         $(pref_calendar_pref).data("current-pref", "pref-unavailable")
-                    }
-                    else if (data["prefs"][emp_id][shift_id] == 1) {
+                    } else if (data["prefs"][emp_id][shift_id] == 1) {
                         $(pref_calendar_pref).addClass("pref-available")
                         $(pref_calendar_pref).data("current-pref", "pref-available")
-                    }
-                    else if (data["prefs"][emp_id][shift_id] == 5) {
+                    } else if (data["prefs"][emp_id][shift_id] == 5) {
                         $(pref_calendar_pref).addClass("pref-prefer")
                         $(pref_calendar_pref).data("current-pref", "pref-prefer")
                     } else {
