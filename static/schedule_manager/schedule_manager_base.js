@@ -86,7 +86,7 @@ $(document).on("click", "#employee-prefs-tab", function() {
     $(".emp-prefs").empty()
     $(".pref-calendar").empty()
     schedule_id = $(this).data("schedule-id")
-    $.getJSON("/api/get_schedule/" + schedule_id, success= function(data) {
+    $.getJSON("/api/get_sorted_schedule/" + schedule_id, success= function(data) {
         console.log(data);
         console.log(data["employees"]);
         renderEmpSelectTabs(data["employees"]);

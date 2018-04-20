@@ -7,6 +7,10 @@ var schedule_dates = "default assignment";
 var master_roles = []
 var day_index = 0;
 
+$.fn.exists = function () {
+    return this.length !== 0;
+}
+
 $(function () {
     Date.prototype.addDays = function(days)
         {
@@ -23,11 +27,33 @@ $(function () {
     //the code below runs, although pycharm interprets it as being commented out
     //$.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
     $.getJSON("/api/get_all_shift_data/" + schedule_id, loadShiftCalendar)
-})
+        .done(function () {
+                console.log('Checking for selection.');
+                console.log($('.calendar-selected'));
+                console.log($('.calendar-selected').exists());
+                if (!$('.calendar-highlighted').exists()){
+                    console.log('Clicking calendar day!');
+                    $("*[data-calendar-date='"+ schedule_dates[0] + "']").click();
+                }
+        });
+});
+
+$(function () {
+    console.log('Checking for selection.');
+    console.log($('.calendar-selected'));
+    console.log($('.calendar-selected').exists());
+    if (!$('.calendar-highlighted').exists()){
+        console.log('Clicking calendar day!');
+        console.log(schedule_dates);
+        console.log(schedule_dates[0]);
+        console.log($('.big-calendar-day'));
+        $("*[data-calendar-date='"+ schedule_dates[0] + "']").click();
+    };
+});
 
 $(() => {
     schedule_length = [... new Set(schedule_dates)].length;
-    console.log('SChedule Length')
+    console.log('Schedule Length')
     console.log(schedule_length)
     if (schedule_length > 1){
         $("#page-right").prop("disabled", false);
@@ -292,6 +318,7 @@ function loadShiftCalendar (data) {
 
 function highlightDay () {
     var allDates = createDates(schedule_dates)
+    $('#check-all-shifts').prop('checked', false);
     $(".big-calendar").find(".calendar-highlighted").removeClass("calendar-highlighted")
     $(this).addClass("calendar-highlighted")
     var date = $(this).data("calendar-date")
