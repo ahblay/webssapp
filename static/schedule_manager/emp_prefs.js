@@ -86,12 +86,20 @@ function renderPrefCalendar(data) {
                 for (l = 0; l < employees.length; l ++) {
                     emp_id = employees[l]["_id"]
                     shift_id = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["_id"]
+                    start = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["start"]
+                    end = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["end"]
+                    num_employees = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["num_employees"]
+                    role = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["role"]
 
                     let pref_calendar_pref = document.createElement("div")
                     $(pref_calendar_pref).addClass("pref-calendar-pref").addClass("popup")
 
                     let pop_up_window = document.createElement("span")
-                    $(pop_up_window).addClass("popuptext").text("<p><b>Start: </b>4:15</p>").text("<p><b>End: </b>6:15</p>")
+                    $(pop_up_window).addClass("popuptext")
+                    $(pop_up_window).append("Start: " + start + "<br>")
+                    $(pop_up_window).append("End: " + end + "<br>")
+                    $(pop_up_window).append("Employees: " + num_employees + "<br>")
+                    $(pop_up_window).append("Role: " + role + "<br>")
 
                     if (Object.keys(data['prefs']).length === 0) {
                         $(pref_calendar_pref).addClass("pref-empty")

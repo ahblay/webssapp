@@ -272,8 +272,8 @@ function loadShiftCalendar (data) {
 
     var allDates = createDates(schedule_dates)
     console.log(data)
-    console.log(allDates)
     calendar_dates = findCalendarDates()
+    console.log(calendar_dates)
 
     $(".big-calendar").children().each(function () {
         if ($(this).hasClass("big-calendar-week")) {
@@ -335,7 +335,13 @@ function findCalendarDates () {
     start_date = Number(allDates[0][1].split("/")[1])
     var month = []
     var date_counter = 1
-    var length = (allDates.length + 6) - ((allDates.length + 6) % 7)
+    //var length = (allDates.length + 6) - ((allDates.length + 6) % 7)
+    if (start_date_day_index + allDates.length <= 7) {
+        var length = 7;
+    } else {
+        var length = (start_date_day_index + allDates.length + 6) - ((start_date_day_index + allDates.length + 6) % 7)
+    }
+    console.log(length)
     for (i = 0; i < length; i++) {
         if (i < start_date_day_index) {
             month.push("")
@@ -351,12 +357,12 @@ function findCalendarDates () {
             date_counter++
         }
     }
-    console.log(month)
     var for_calendar = []
+    console.log(month)
     for (i = 0; i < month.length - 6; i += 7) {
-        console.log(month.slice(i, i + 7))
         for_calendar.push(month.slice(i, i + 7))
     }
+    console.log(for_calendar)
     return for_calendar
 }
 
