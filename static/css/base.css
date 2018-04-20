@@ -536,7 +536,7 @@ select {
 /* Toggle this class - hide and show the pop-up */
 .popup .show {
     visibility: visible;
-    animation: fadeIn 1s;
+    animation: fadeIn 0.75s;
 }
 
 /* Add animation (fade in the pop-up) */
