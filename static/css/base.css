@@ -425,8 +425,7 @@ select {
 .pref-calendar {
     display: flex;
     flex-direction: row;
-
-    whitespace: nowrap;
+    overflow-y: visible;
      --cell-size: 30px;
      --num-emps: 7;
 }
@@ -446,7 +445,7 @@ select {
     vertical-align: middle;
 }
 .pref-calendar-content {
-    overflow: scroll;
+    overflow-x: scroll;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -521,16 +520,29 @@ select {
     margin-left: -80px;
 }
 
-/* Pop-up arrow */
-.popup .popuptext::after {
-    content: "";
+/* makes triangle */
+.popup .popuptext::after,
+.popup .popuptext::before {
+    content: '';
+    display: block;
     position: absolute;
     top: 100%;
     left: 50%;
     margin-left: -5px;
-    border-width: 5px;
     border-style: solid;
+}
+
+/* this border color controls the color of the triangle (what looks like the fill of the triangle) */
+.popup .popuptext::after {
     border-color: #fff transparent transparent transparent;
+    border-width: 5px;
+}
+
+/* this border color controls the outside, thin border */
+.popup .popuptext::before {
+    left: calc(50% - 1px);
+    border-color: #000 transparent transparent transparent;
+    border-width: 6px;
 }
 
 /* Toggle this class - hide and show the pop-up */

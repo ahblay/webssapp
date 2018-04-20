@@ -93,6 +93,8 @@ function renderPrefCalendar(data) {
 
                     let pref_calendar_pref = document.createElement("div")
                     $(pref_calendar_pref).addClass("pref-calendar-pref").addClass("popup")
+                    $(pref_calendar_pref).data("shift-id", shift_id)
+                    $(pref_calendar_pref).data("emp-id", emp_id)
 
                     let pop_up_window = document.createElement("span")
                     $(pop_up_window).addClass("popuptext")
@@ -125,7 +127,18 @@ function renderPrefCalendar(data) {
                     }
 
                     $(pref_calendar_pref).on("click", togglePrefs)
-                    $(pref_calendar_pref).hover(loadPopup)
+
+                    var timer;
+                    $(pref_calendar_pref).hover(function () {
+                        var _this = this;
+                        timer = setTimeout(function () {
+                            $(_this).find(".popuptext").addClass("show");
+                        }, 1000);
+                    },
+                    function () {
+                        clearTimeout(timer);
+                        $(this).find(".popuptext").removeClass("show");
+                    });
 
                     $(pref_calendar_pref).append(pop_up_window)
                     $(pref_calendar_prefs).append(pref_calendar_pref)
@@ -154,10 +167,30 @@ function togglePrefs() {
     new_pref = pref_options[(index + 1) % pref_options.length]
     $(this).data("current-pref", new_pref)
     $(this).addClass(new_pref)
-}
 
-function loadPopup() {
-    $(this).find(".popuptext").toggleClass("show");
+    data = {"schedule_id": schedule_id,
+            "shift_id": $(this).data("shift-id"),
+            "emp_id": $(this).data("emp-id")}
+
+    if (new_pref == "pref-unavailable") {
+        data["value"] = -1000;
+    }
+    else if (new_pref == "pref-available") {
+        data["value"] = 1;
+    }
+    else if (new_pref == "pref-prefer") {
+        data["value"] = 5;
+    } else {
+        data["value"] = "empty";
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/update_pref",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        dataType: "json",
+    })
 }
 
 function getPrefCalendarData(data) {

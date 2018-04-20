@@ -553,6 +553,31 @@ def save_pref_data():
     return jsonify({"success": True, "message": "Database updated with prefs."})
 
 
+@app.route('/update_pref', methods=['POST'])
+def update_pref():
+    pref_value = request.json["value"]
+    emp_id = request.json["emp_id"]
+    shift_id = request.json["shift_id"]
+    schedule_id = request.json["schedule_id"]
+
+    print(pref_value)
+    print(emp_id)
+    print(shift_id)
+    print(schedule_id)
+
+    db = get_db()
+
+    if pref_value != "empty":
+        db.schedules.update({"_id": ObjectId(schedule_id)},
+                            {"$set": {"prefs." + emp_id + "." + shift_id: pref_value}})
+
+    else:
+        db.schedules.update({"_id": ObjectId(schedule_id)},
+                            {"$unset": {"prefs." + emp_id + "." + shift_id: ""}})
+
+    pprint.pprint(dict(db.schedules.find_one({"_id": ObjectId(schedule_id)})))
+    return jsonify({"success": True, "message": "Database updated on pref click."})
+
 
 @login_required
 @app.route('/settings')
