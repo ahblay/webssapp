@@ -83,7 +83,7 @@ function renderPrefCalendar(data) {
                 let pref_calendar_prefs = document.createElement("div")
                 $(pref_calendar_prefs).addClass("pref-calendar-prefs")
 
-                for (l = 0; l < employees.length; l ++) {
+                for (l = 0; l < employees.length; l++) {
                     emp_id = employees[l]["_id"]
                     shift_id = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["_id"]
                     start = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["start"]
@@ -103,7 +103,12 @@ function renderPrefCalendar(data) {
                     $(pop_up_window).append("Employees: " + num_employees + "<br>")
                     $(pop_up_window).append("Role: " + role + "<br>")
 
-                    if (Object.keys(data['prefs']).length === 0) {
+                    let eligible_employees = $(".emp-shift-prefs").find("#" + shift_id).data("eligible")
+
+                    if (!eligible_employees.includes(emp_id)) {
+                        $(pref_calendar_pref).addClass("pref-ineligible")
+                    }
+                    else if (Object.keys(data['prefs']).length === 0) {
                         $(pref_calendar_pref).addClass("pref-empty")
                         $(pref_calendar_pref).data("current-pref", "pref-empty")
                     } else if (!Object.keys(data['prefs']).includes(emp_id)) {
@@ -274,6 +279,8 @@ function createRow(attribute, name, id) {
 }
 
 function createDayShiftPrefs(attribute, shifts, start, employees) {
+    console.log(shifts)
+
     let date_row = document.createElement("tr");
     $(date_row).addClass("table-active")
     date_cell = document.createElement("td");
@@ -299,6 +306,7 @@ function createDayShiftPrefs(attribute, shifts, start, employees) {
             }
         }
         $(shift_row).attr("data-eligible", JSON.stringify(eligible_employees))
+        $(shift_row).attr("id", shifts[j]["_id"])
 
         //shift name
         let shift_name = document.createElement("td");

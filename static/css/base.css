@@ -422,6 +422,11 @@ select {
 .pref-empty {
     background-color: grey;
 }
+.pref-ineligible {
+    pointer-events: none;
+    background-color: #eeeeee;
+    border-color: #dadada !important;
+}
 .pref-calendar {
     display: flex;
     flex-direction: row;
