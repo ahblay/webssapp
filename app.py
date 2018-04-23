@@ -227,6 +227,12 @@ def select_schedule():
     schedules = list(db.schedules.find({"username": current_user.username}))
 
     for schedule in schedules:
+        if schedule['start_date'].date() <= today <= schedule['end_date'].date():
+            schedule['status'] = 'active'
+        elif schedule['start_date'].date() >= today:
+            schedule['status'] = 'upcoming'
+        else:
+            schedule['status'] = 'default'
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
 
