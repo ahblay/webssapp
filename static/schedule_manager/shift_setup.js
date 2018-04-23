@@ -306,6 +306,7 @@ function loadShiftCalendar (data) {
                         console.log(master_roles_color_data[shift_role])
                         $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[shift_role])
                         $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
+                        $(calendar_shift).attr("id", data[k]["_id"])
                         $(calendar_day).append(calendar_shift)
                     }
                 }
@@ -650,6 +651,9 @@ $(document).on("click", "#remove-shifts", function() {
         console.log("Attempting to remove the following shifts from schedule:")
         console.log(data["_ids"])
         let success = function() {
+                for (i = 0; i < data["_ids"].length; i++) {
+                    $(".big-calendar").find("#" + data["_ids"][i]).remove()
+                }
                 $("#remove-shifts").attr("disabled", "disabled");
                 $(".shift-table-body").empty();
                 $.getJSON("/api/get_shift_data/" + createDates(schedule_dates)[day_index][1].replace(/\//g, "") + "/" + schedule_id,
