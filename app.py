@@ -531,6 +531,8 @@ def update_shift_data():
 
     recurrence_days = list(set(recurrence_days))
 
+    recurrence_days.remove(dates[0])
+
     for date in recurrence_days:
         shift_to_copy["parent_shift"] = shift_id
         shift_to_copy["date"] = date
@@ -658,17 +660,7 @@ def edit_schedule_employees():
     emps_to_edit = [emp for emp in schedule['employees'] if str(emp['_id']) in _ids]
 
     filtered_dict = {}
-    no_change = request.json['no_change']
     for key in request.json.keys():
-        if key == 'training' or key == "inactive":
-            if no_change:
-                continue
-            else:
-                filtered_dict[key] = request.json[key]
-                continue
-
-        if key == 'no_change' or key == '_ids':
-            continue
 
         if request.json[key] != "":
             if request.json[key][0] == "":

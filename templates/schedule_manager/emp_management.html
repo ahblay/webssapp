@@ -40,7 +40,6 @@
                             <th data-dbkey="min_shifts" scope="col">Min. Shifts</th>
                             <th data-dbkey="max_shifts" scope="col">Max. Shifts</th>
                             <th data-dbkey="seniority" scope="col">Seniority</th>
-                            <th data-dbkey="inactive" scope="col">Inactive</th>
                         </tr>
                     </thead>
                     <tbody id="employee-table-body">
@@ -110,8 +109,6 @@
               Modifying the name field with multiple selections is not recommended.</div>
           <form>
           <div class="form-group">
-              <label for="edit-emps-name-input">Employee Name</label>
-              <input type="text" class="form-control" id="edit-emps-name-input" placeholder="Employee Name">
               <div class="row">
                   <div class="col-md-4">
                       <label for="edit-emps-min-shifts-input">Minimum Shifts</label>
@@ -150,24 +147,6 @@
                       <input type="text" class="form-control" placeholder="e.g Host, Waiter, Bartender" id="edit-emps-role-input">
                   </div>
               </div>
-              <div class="row">
-                  <div class="col-md-12">
-                      <p>Additional Options</p>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="edit-emps-no-change-flag" value="no-change">
-                          <label class="form-check-input" for="edit-emps-no-change-flag">No change</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="edit-emps-training-flag" value="training">
-                          <label class="form-check-input" for="edit-emps-training-flag">Training</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="edit-emps-inactive-flag" value="inactive">
-                          <label class="form-check-input" for="edit-emps-inactive-flag">Inactive</label>
-                      </div>
-                  </div>
-              </div>
-              <div class="alert alert-warning">You must select "No Change" if you do not want unselected options to be toggled off.</div>
           </div>
           </form>
       </div>

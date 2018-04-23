@@ -235,7 +235,7 @@ select {
     background-color: #dd4245;
 }
 
-#schedule-output.items td{
+#schedule-output-table.items td{
     text-align: center;
 }
 

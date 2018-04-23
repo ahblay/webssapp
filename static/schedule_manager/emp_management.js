@@ -63,9 +63,13 @@ function refresh_table_data(employees){
                 continue;
             };
 
-            if (db_keys[key] == "training" || db_keys[key] == "inactive"){
-                let html = render_boolean(employees[i][db_keys[key]]);
-                $(td).append(html);
+            if (db_keys[key] == "training"){
+                let toggle = $(document.createElement("input"));
+                toggle.prop("type", "checkbox")
+                toggle.attr("data-toggle", "toggle")
+                let value = employees[i][db_keys[key]];
+                toggle.prop("checked", value)
+                $(td).append(toggle);
                 $(tr).append(td);
                 continue;
             };
@@ -80,6 +84,10 @@ function refresh_table_data(employees){
                 $(tr).append(td);
                 continue;
             };
+
+            if (db_keys[key] == "inactive"){
+                continue;
+            }
 
             $(td).append(employees[i][db_keys[key]]);
             $(tr).append(td);
@@ -197,14 +205,10 @@ $(document).on("click", "#edit-emps-submit", function() {
     var data = {
                     schedule_id: SCHEDULE_ID,
                     _ids: $(".row-select-checkbox:checked").map(function(){return this.id}).get(),
-                    name: $("#edit-emps-name-input").val(),
                     min_shifts: $("#edit-emps-min-shifts-input").val(),
                     max_shifts: $("#edit-emps-max-shifts-input").val(),
                     seniority: $("#edit-emps-seniority-input").val(),
                     roles: $("#edit-emps-role-input").val().split(",").map(function(item){return item.trim()}),
-                    training: document.getElementById("edit-emps-training-flag").checked,
-                    inactive: document.getElementById("edit-emps-inactive-flag").checked,
-                    no_change: document.getElementById("edit-emps-no-change-flag").checked
                };
     console.log(data);
     $.ajax({

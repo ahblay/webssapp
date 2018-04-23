@@ -1,37 +1,33 @@
-
+var SCHEDULE = [];
 
 $(document).on("click", "#create-schedule", function(){
     $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
-        render_schedule(data, start_index=0);
+        SCHEDULE = data;
+        render_schedule(SCHEDULE, start_date_index=0);
     });
 });
 
-
 function render_schedule(schedule, start_date_index, duration=7){
+    console.log("Rendering view-schedule page.")
+    console.log(start_date_index);
+    console.log(duration);
 
     $("#schedule-output-header").empty();
     $("#schedule-output-body").empty();
 
     days = schedule["days"]
-    remaining_days = days.slice(start_date_index)
-
-    if (remaining_days.length > duration){
-        max_day = start_date_index + duration;
-    } else {
-        max_day = start_date_index + remaining_days.length
-    };
 
     let header_row = document.createElement("tr");
     $(header_row).append($('<th />', {text: "Employees"}));
-    for (i=0; i<max_day; i++){
+    for (i=0; i<days.length; i++){
         $(header_row).append( $('<th />', {text: days[i]}) );
     };
     $("#schedule-output-header").append(header_row);
 
     for (emp=0; emp<schedule["employees"].length; emp++){
         let row = document.createElement('tr');
-        $(row).append($('<th />', {text: schedule["employees"][emp]["name"]}).css("border-top", "1px solid"));
-        for (day=start_date_index; day<max_day; day++){
+        $(row).append($('<td />', {text: schedule["employees"][emp]["name"]}).css("border-top", "1px solid"));
+        for (day=0; day<days.length; day++){
             let td = $('<td />')
             $(td).css("border-top", "1px solid")
             emps_work_for_day = schedule.output[emp][day];
@@ -52,4 +48,18 @@ function render_schedule(schedule, start_date_index, duration=7){
 
         $("#schedule-output-body").append(row);
     };
+
+    col_modal = [];
+
+    for(i=0; i<days.length+1; i++){
+        col_modal.push({width: 175, align: "center"})
+    };
+    console.log(col_modal);
+
+    $("#schedule-output-table").fxdHdrCol({
+        fixedCols: 1,
+        width: "100%",
+        height: (SCHEDULE['employees'].length > 15) ? 15*46 : 46*SCHEDULE['employees'].length+50,
+        colModal: col_modal
+    });
 };
