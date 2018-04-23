@@ -233,9 +233,16 @@ def select_schedule():
             schedule['status'] = 'upcoming'
         else:
             schedule['status'] = 'default'
+
+        db.schedules.update({"_id": schedule["_id"]},
+                            {"$set": {
+                                "status": schedule["status"]
+                            }})
+
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
 
+    pprint.pprint(schedules)
     return render_template("select_schedule.html",
                            schedules=schedules)
 
@@ -251,6 +258,7 @@ def view_schedule(_id=None):
         if schedule["_id"] == ObjectId(_id):
             schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
             schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+            pprint.pprint(dict(schedule))
             return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
     return jsonify({"success": False, "message": "Schedule id is not in database."})
 
