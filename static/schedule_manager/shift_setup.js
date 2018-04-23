@@ -570,9 +570,9 @@ $(document).on("click", "#save-shifts", function () {
         })
         for (j = 0; j < roles.length; j++) {
             var calendar_shift = document.createElement("div")
-            $(calendar_shift).addClass("big-calendar-shift")
+            $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[roles[j]])
             $(calendar_shift).text(roles[j] + " " + starts[j])
-            $('*[data-calendar-date="' + date + '"]').prepend(calendar_shift)
+            $(calendar_shift).insertBefore('*[data-calendar-date="' + date + '"] .calendar-date-label')
         }
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
