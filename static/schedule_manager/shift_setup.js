@@ -5,6 +5,7 @@ $.getScript("/static/ObjectId.js").fail("Script 'ObjectId.js' failed to load.")
 var schedule_id = "default assignment";
 var schedule_dates = "default assignment";
 var master_roles = []
+var master_roles_color_data = {}
 var day_index = 0;
 
 $.fn.exists = function () {
@@ -64,6 +65,7 @@ $(() => {
 function getRoles(data) {
     for (i = 0; i < data.length; i++) {
         master_roles.push(data[i]["name"])
+        master_roles_color_data[data[i]["name"]] = data[i]["color"]
     }
 }
 
@@ -298,7 +300,11 @@ function loadShiftCalendar (data) {
                 for (k = 0; k < data.length; k++) {
                     if (data[k]["date"] == allDates[date_counter][1]) {
                         var calendar_shift = document.createElement("div")
-                        $(calendar_shift).addClass("big-calendar-shift")
+                        var shift_role = data[k]["role"]
+                        console.log(shift_role)
+                        console.log(master_roles_color_data)
+                        console.log(master_roles_color_data[shift_role])
+                        $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[shift_role])
                         $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
                         $(calendar_day).append(calendar_shift)
                     }

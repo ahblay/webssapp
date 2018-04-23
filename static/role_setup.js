@@ -29,7 +29,7 @@ $(document).on("change", ".row-select-checkbox", function(){
 });
 
 $(document).on("click", "#add-role-submit", function () {
-    var data = {name: $("#add-role").val()}
+    var data = {name: $("#add-role").val(), color: $("#role-color-select").val()}
     console.log(data)
     $.ajax({
         type: "POST",
@@ -75,14 +75,22 @@ function refresh_table_data(data) {
         $(name_td).css("border-top", "1px solid")
         $(name_td).append(data[i]["name"])
         $(tr).append(name_td)
+
+        let color_td = document.createElement("td")
+        $(color_td).css("border-top", "1px solid")
+        let color_box = document.createElement("div")
+        $(color_box).addClass("role-color-box").addClass(data[i]["color"])
+        $(color_td).append(color_box)
+        $(tr).append(color_td)
+
         $("#roles-table-master tbody").append(tr)
     }
 }
 
 //Remove role functions
 $(document).on("click", "#remove-roles", function() {
-    var message = "Are you sure that you wish to remove these roles from the master list? All data associated" +
-     " with these roles will be deleted."
+    var message = "Are you sure that you wish to remove these roles from the master list? All schedules will " +
+                  "no longer include these roles. This will BREAK THE ALGORITHM."
     var confirmed = confirm(message);
     if (confirmed){
 

@@ -303,9 +303,18 @@ select {
     background: #dd4245;
     color: #000000;
 }
+.calendar-highlighted > .calendar-date-label {
+    box-shadow: inset 2px 2px 4px #272727;
+}
+.calendar-highlighted > .big-calendar-shift:first-child {
+    box-shadow: inset -2px 2px 4px #272727 !important;
+}
+.calendar-highlighted > .big-calendar-shift {
+    box-shadow: inset 6px 0px 4px -4px #272727,
+                inset -6px 0px 4px -4px #272727;
+}
 .calendar-highlighted {
-    background: #dadada;
-    box-shadow: inset 0 0 10px #000000;
+    box-shadow: inset 0 0 15px #000000;
 }
 
 /* calendar */
@@ -560,6 +569,35 @@ select {
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
+}
+
+/* role color box */
+.role-color-box {
+    width: 30px;
+    height: 30px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+.red {
+    background-color: red;
+}
+.blue {
+    background-color: blue;
+}
+.orange {
+    background-color: orange;
+}
+.green {
+    background-color: green;
+}
+.yellow {
+    background-color: yellow;
+}
+.purple {
+    background-color: purple;
+}
+.pink {
+    background-color: pink;
 }
 
 /* just for funsies */
