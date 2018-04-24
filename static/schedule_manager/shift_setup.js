@@ -454,10 +454,12 @@ $(document).on("click", "#create-template-submit", function () {
             })
         }
     })
+    console.log($("#calendar-highlighted").attr("data-calendar-date"));
     var data = {"dates": selectedDates,
                 "shift_id": $("#recurrence-options").data("shift-id"),
                 "schedule_id": schedule_id,
-                "recurrenceType": recurrenceType}
+                "recurrenceType": recurrenceType,
+                "parent_shift_date": $(".calendar-highlighted").attr("data-calendar-date")}
     console.log(data);
     $.ajax({
         type: "POST",

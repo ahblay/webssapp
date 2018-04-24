@@ -525,6 +525,7 @@ def update_shift_data():
     shift_id = request.json["shift_id"]
     schedule_id = request.json["schedule_id"]
     recurrence_type = request.json["recurrenceType"]
+    parent_shift_date = request.json["parent_shift_date"]
     shift_to_copy = None
 
     db = get_db()
@@ -545,7 +546,7 @@ def update_shift_data():
 
     recurrence_days = list(set(recurrence_days))
 
-    recurrence_days.remove(dates[0])
+    recurrence_days.remove(parent_shift_date)
 
     for date in recurrence_days:
         shift_to_copy["parent_shift"] = shift_id
@@ -805,14 +806,6 @@ def get_sorted_schedule(schedule_id=None):
     # TODO: Make this traverse the schedule to find and change any objectids rather than hardcoding
     schedule_dict['_id'] = str(schedule_dict['_id'])
 
-    for emp in schedule_dict['employees']:
-        for key in emp.keys():
-            if "_id" in key:
-                emp[key] = str(emp[key])
-
-    for index, day in enumerate(schedule_dict["days"]):
-        schedule_dict[index] = day.strftime('%m/%d/%Y')
-
     schedule = ScheduleProcessor(schedule_dict)
     schedule.sort('shifts', 'chronological')
     return jsonify(schedule.to_dict())
@@ -833,10 +826,13 @@ def create_schedule(schedule_id=None):
     schedule_dict['roles'] = [role['name'] for role in roles]
 
     schedule = ScheduleProcessor(schedule_dict)
+    print("Pre-Output")
+    pprint.pprint(schedule.to_dict())
     schedule.preprocess()
-    output = schedule.build_schedule(schedule)
-    schedule.output = output
+    schedule.build_schedule()
     print('Schedule output created.')
+    print("+++O")
+    pprint.pprint(schedule.to_dict())
 
     return jsonify(schedule.to_dict())
 

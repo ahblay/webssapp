@@ -1,21 +1,35 @@
 var SCHEDULE = [];
 
+$(document).on("click", "button[data-view-id='view-schedule']", () => {
+    $.getJSON("/api/get_sorted_schedule/" + SCHEDULE_ID, function(data){
+        SCHEDULE = data;
+        console.log(SCHEDULE);
+        if (SCHEDULE["output"] != null){
+            console.log("Rendering saved output.")
+            render_schedule(SCHEDULE);
+        };
+    });
+
+});
+
 $(document).on("click", "#create-schedule", function(){
     $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
         SCHEDULE = data;
-        render_schedule(SCHEDULE, start_date_index=0);
+        render_schedule(SCHEDULE);
     });
 });
 
-function render_schedule(schedule, start_date_index, duration=7){
+function render_schedule(schedule){
     console.log("Rendering view-schedule page.")
-    console.log(start_date_index);
-    console.log(duration);
 
-    $("#schedule-output-header").empty();
-    $("#schedule-output-body").empty();
+    schedule_output_table = $("#schedule_output_table");
+    schedule_output_table.empty();
+    schedule_output_table.append($('<thead />', {id: "#schedule-output-header"}));
+    schedule_output_table.append($('<tbody />', {id: "#schedule-output-body"}));
 
     days = schedule["days"]
+
+    console.log(days);
 
     let header_row = document.createElement("tr");
     $(header_row).append($('<th />', {text: "Employees"}));

@@ -23,6 +23,7 @@ class ScheduleProcessor:
 
     def __init__(self, schedule):
 
+        self._id = schedule['_id'] if '_id' in schedule.keys() else None
         self.status = schedule['status'] if 'status' in schedule.keys() else None
         self.name = schedule['name'] if 'name' in schedule.keys() else None
         self.employees = schedule['employees'] if 'employees' in schedule.keys() else None
@@ -42,7 +43,7 @@ class ScheduleProcessor:
         self.employee_info = []
         self.training = []
 
-        self.output = None
+        self.output = schedule['output'] if 'output' in schedule.keys() else None
 
     def get_length(self, item):
         if item is not None:
@@ -162,16 +163,18 @@ class ScheduleProcessor:
 
         return training
 
-    def build_schedule(self, schedule):
+    def build_schedule(self):
         s = scheduling_algorithm.Schedule(self.num_employees,
-                                    self.num_shifts,
-                                    self.num_roles,
-                                    self.num_days,
-                                    self.employee_info,
-                                    self.management_data,
-                                    self.training,
-                                    schedule)
-        return s.get_schedule()
+                                            self.num_shifts,
+                                            self.num_roles,
+                                            self.num_days,
+                                            self.employee_info,
+                                            self.management_data,
+                                            self.training,
+                                            self)
+
+        self.output = s.get_schedule()
+        self.save_output_to_db()
 
     def build_employer_setup_dict(self):
         employer_setup = {day: self._get_shifts_by_day()[day]
@@ -182,8 +185,6 @@ class ScheduleProcessor:
         employee_setup = self.employees
         return employee_setup
 
-    #def build_availability_dict(self):
-
     def get_db(self):
         if not hasattr(g, "db_connection"):
             g.db_connection = MongoClient("localhost", 27017)["test"]
@@ -192,18 +193,28 @@ class ScheduleProcessor:
     def save_schedule_data(self, username):
         db = self.get_db()
 
-        db.schedules.insert({"username": username,
-                             "name": self.name,
-                             "start_date": self.start_date,
-                             "end_date": self.end_date,
-                             "employees": self.employees,
-                             "shifts": self.shifts,
-                             "days": self.days,
-                             "roles": self.roles,
-                             "prefs": self.prefs,
-                             "status": self.status})
+        payload = {
+                    "username": username,
+                     "name": self.name,
+                     "start_date": self.start_date,
+                     "end_date": self.end_date,
+                     "employees": self.employees,
+                     "shifts": self.shifts,
+                     "days": self.days,
+                     "roles": self.roles,
+                     "prefs": self.prefs,
+                     "status": self.status
+        }
+
+        db.schedules.insert(payload)
 
         print("Saved schedule data to database.")
+
+    def save_output_to_db(self):
+        db = self.get_db()
+        print("saving output to db")
+        db.schedules.update({"_id": self._id}, {"$set": {"output": self.output}})
+        pprint.pprint(dict(db.schedules.find_one({"_id": self._id})))
 
     def to_dict(self):
 
@@ -211,6 +222,7 @@ class ScheduleProcessor:
 
         schedule_dict['employees'] = self._emps_to_str()
         schedule_dict['days'] = self._days_to_str()
+        schedule_dict['_id'] = str(self._id)
 
         return schedule_dict
 
