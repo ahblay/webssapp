@@ -136,7 +136,7 @@ function refresh_add_emps_table(available_emps){
         input.val("");
 
         name_td.append(available_emps[i]['name']);
-        status_td.append(render_boolean(available_emps[i]['inactive']));
+        status_td.innerHTML = render_boolean(available_emps[i]['inactive']);
 
         $(checkbox_td).append(input);
         $(name_td).append();
