@@ -826,13 +826,10 @@ def create_schedule(schedule_id=None):
     schedule_dict['roles'] = [role['name'] for role in roles]
 
     schedule = ScheduleProcessor(schedule_dict)
-    print("Pre-Output")
-    pprint.pprint(schedule.to_dict())
     schedule.preprocess()
-    schedule.build_schedule()
+    output = schedule.build_schedule(schedule)
+    schedule.output = output
     print('Schedule output created.')
-    print("+++O")
-    pprint.pprint(schedule.to_dict())
 
     return jsonify(schedule.to_dict())
 
