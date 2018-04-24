@@ -463,7 +463,7 @@ $(document).on("click", "#create-template-submit", function () {
                 "shift_id": $("#recurrence-options").data("shift-id"),
                 "schedule_id": schedule_id,
                 "recurrenceType": recurrenceType,
-                "parent_shift_date": $(".calendar-highlighted").attr("data-calendar-date")}
+                "parent_shift_date": $(".calendar-highlighted").data("calendar-date")}
     console.log(data);
     $.ajax({
         type: "POST",
