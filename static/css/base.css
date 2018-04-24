@@ -303,9 +303,18 @@ select {
     background: #dd4245;
     color: #000000;
 }
+.calendar-highlighted > .calendar-date-label {
+    box-shadow: inset 2px 2px 4px #272727;
+}
+.calendar-highlighted > .big-calendar-shift:first-child {
+    box-shadow: inset -2px 2px 4px #272727 !important;
+}
+.calendar-highlighted > .big-calendar-shift {
+    box-shadow: inset 6px 0px 4px -4px #272727,
+                inset -6px 0px 4px -4px #272727;
+}
 .calendar-highlighted {
-    background: #dadada;
-    box-shadow: inset 0 0 10px #000000;
+    box-shadow: inset 0 0 15px #000000;
 }
 
 /* calendar */
@@ -422,11 +431,15 @@ select {
 .pref-empty {
     background-color: grey;
 }
+.pref-ineligible {
+    pointer-events: none;
+    background-color: #eeeeee;
+    border-color: #dadada !important;
+}
 .pref-calendar {
     display: flex;
     flex-direction: row;
-
-    whitespace: nowrap;
+    overflow-y: visible;
      --cell-size: 30px;
      --num-emps: 7;
 }
@@ -446,7 +459,7 @@ select {
     vertical-align: middle;
 }
 .pref-calendar-content {
-    overflow: scroll;
+    overflow-x: scroll;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -521,16 +534,29 @@ select {
     margin-left: -80px;
 }
 
-/* Pop-up arrow */
-.popup .popuptext::after {
-    content: "";
+/* makes triangle */
+.popup .popuptext::after,
+.popup .popuptext::before {
+    content: '';
+    display: block;
     position: absolute;
     top: 100%;
     left: 50%;
     margin-left: -5px;
-    border-width: 5px;
     border-style: solid;
+}
+
+/* this border color controls the color of the triangle (what looks like the fill of the triangle) */
+.popup .popuptext::after {
     border-color: #fff transparent transparent transparent;
+    border-width: 5px;
+}
+
+/* this border color controls the outside, thin border */
+.popup .popuptext::before {
+    left: calc(50% - 1px);
+    border-color: #000 transparent transparent transparent;
+    border-width: 6px;
 }
 
 /* Toggle this class - hide and show the pop-up */
@@ -543,6 +569,35 @@ select {
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
+}
+
+/* role color box */
+.role-color-box {
+    width: 30px;
+    height: 30px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+.red {
+    background-color: red;
+}
+.blue {
+    background-color: blue;
+}
+.orange {
+    background-color: orange;
+}
+.green {
+    background-color: green;
+}
+.yellow {
+    background-color: yellow;
+}
+.purple {
+    background-color: purple;
+}
+.pink {
+    background-color: pink;
 }
 
 /* just for funsies */

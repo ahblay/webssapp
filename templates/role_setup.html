@@ -58,6 +58,7 @@
                                     </label>
                                 </th>
                                 <th>Name</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="role-table-body">
@@ -91,7 +92,20 @@
                         <form>
                             <div class="form-group">
                                 <label for="add-role">Name</label>
-                                <input type="text" class="form-control" id="add-role" placeholder="Role Name">
+                                <input type="text" class="form-control" id="add-role" placeholder="Role Name"
+                                       style="border: 1px solid;">
+                                <br>
+                                <label for="role-color-select">Color</label>
+                                <br>
+                                <select id="role-color-select">
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="orange">Orange</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="pink">Pink</option>
+                                </select>
                             </div>
                         </form>
                     </div>

@@ -5,6 +5,7 @@ $.getScript("/static/ObjectId.js").fail("Script 'ObjectId.js' failed to load.")
 var schedule_id = "default assignment";
 var schedule_dates = "default assignment";
 var master_roles = []
+var master_roles_color_data = {}
 var day_index = 0;
 
 $.fn.exists = function () {
@@ -64,6 +65,7 @@ $(() => {
 function getRoles(data) {
     for (i = 0; i < data.length; i++) {
         master_roles.push(data[i]["name"])
+        master_roles_color_data[data[i]["name"]] = data[i]["color"]
     }
 }
 
@@ -298,8 +300,13 @@ function loadShiftCalendar (data) {
                 for (k = 0; k < data.length; k++) {
                     if (data[k]["date"] == allDates[date_counter][1]) {
                         var calendar_shift = document.createElement("div")
-                        $(calendar_shift).addClass("big-calendar-shift")
+                        var shift_role = data[k]["role"]
+                        console.log(shift_role)
+                        console.log(master_roles_color_data)
+                        console.log(master_roles_color_data[shift_role])
+                        $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[shift_role])
                         $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
+                        $(calendar_shift).attr("id", data[k]["_id"])
                         $(calendar_day).append(calendar_shift)
                     }
                 }
@@ -563,9 +570,9 @@ $(document).on("click", "#save-shifts", function () {
         })
         for (j = 0; j < roles.length; j++) {
             var calendar_shift = document.createElement("div")
-            $(calendar_shift).addClass("big-calendar-shift")
+            $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[roles[j]])
             $(calendar_shift).text(roles[j] + " " + starts[j])
-            $('*[data-calendar-date="' + date + '"]').prepend(calendar_shift)
+            $(calendar_shift).insertBefore('*[data-calendar-date="' + date + '"] .calendar-date-label')
         }
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
@@ -644,6 +651,9 @@ $(document).on("click", "#remove-shifts", function() {
         console.log("Attempting to remove the following shifts from schedule:")
         console.log(data["_ids"])
         let success = function() {
+                for (i = 0; i < data["_ids"].length; i++) {
+                    $(".big-calendar").find("#" + data["_ids"][i]).remove()
+                }
                 $("#remove-shifts").attr("disabled", "disabled");
                 $(".shift-table-body").empty();
                 $.getJSON("/api/get_shift_data/" + createDates(schedule_dates)[day_index][1].replace(/\//g, "") + "/" + schedule_id,

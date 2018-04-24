@@ -177,10 +177,12 @@ def add_role():
         return jsonify({"success": False, "message": "No JSON received by the server."})
 
     db = get_db()
-    roles = db.roles
-    roles.insert({
-        "name": request.json['name']
+    db.roles.insert({
+        "name": request.json['name'],
+        "color": request.json["color"]
     })
+
+    print(list(db.roles.find()))
 
     print("Role {} has been added to the database.".format(request.json['name']))
 
@@ -227,6 +229,18 @@ def select_schedule():
     schedules = list(db.schedules.find({"username": current_user.username}))
 
     for schedule in schedules:
+        if schedule['start_date'].date() <= today <= schedule['end_date'].date():
+            schedule['status'] = 'active'
+        elif schedule['start_date'].date() >= today:
+            schedule['status'] = 'upcoming'
+        else:
+            schedule['status'] = 'default'
+
+        db.schedules.update({"_id": schedule["_id"]},
+                            {"$set": {
+                                "status": schedule["status"]
+                            }})
+
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
 
@@ -555,6 +569,31 @@ def save_pref_data():
     return jsonify({"success": True, "message": "Database updated with prefs."})
 
 
+@app.route('/update_pref', methods=['POST'])
+def update_pref():
+    pref_value = request.json["value"]
+    emp_id = request.json["emp_id"]
+    shift_id = request.json["shift_id"]
+    schedule_id = request.json["schedule_id"]
+
+    print(pref_value)
+    print(emp_id)
+    print(shift_id)
+    print(schedule_id)
+
+    db = get_db()
+
+    if pref_value != "empty":
+        db.schedules.update({"_id": ObjectId(schedule_id)},
+                            {"$set": {"prefs." + emp_id + "." + shift_id: pref_value}})
+
+    else:
+        db.schedules.update({"_id": ObjectId(schedule_id)},
+                            {"$unset": {"prefs." + emp_id + "." + shift_id: ""}})
+
+    pprint.pprint(dict(db.schedules.find_one({"_id": ObjectId(schedule_id)})))
+    return jsonify({"success": True, "message": "Database updated on pref click."})
+
 
 @login_required
 @app.route('/settings')
@@ -623,10 +662,10 @@ def remove_roles():
     db = get_db()
 
     post_data = request.get_json()
+    print(post_data)
 
     for _id in post_data['_ids']:
-        schedule_name = dict(db.schedules.find_one({"_id": ObjectId(_id)}))['name']
-        print("Removing role: {} from schedule: {}".format(_id, schedule_name))
+        print("Removing role: {}".format(_id))
         db.roles.remove({"_id": ObjectId(_id)})
 
     return jsonify({"success": True, "message": "Request received by server."})
