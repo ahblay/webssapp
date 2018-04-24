@@ -836,8 +836,6 @@ def create_schedule(schedule_id=None):
 
     return jsonify(schedule.to_dict())
 
-    #Populate schedule object
-
 
 if __name__ == '__main__':
     app.run(debug=True)

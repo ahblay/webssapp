@@ -22,10 +22,17 @@ $(document).on("click", "#create-schedule", function(){
 function render_schedule(schedule){
     console.log("Rendering view-schedule page.")
 
-    schedule_output_table = $("#schedule_output_table");
-    schedule_output_table.empty();
-    schedule_output_table.append($('<thead />', {id: "#schedule-output-header"}));
-    schedule_output_table.append($('<tbody />', {id: "#schedule-output-body"}));
+    $("#schedule-output-div").empty().addClass("col-md-12");
+    console.log($("#schedule-output-div"));
+    $("#schedule-output-div").append($("<table />")
+                              .attr("id", "schedule-output-table")
+                              .addClass("table rounded-table-basic table-hover"));
+
+    $("#schedule-output-table").append($("<thead />")
+                                .attr("id", "schedule-output-header"));
+
+    $("#schedule-output-table").append($("<tbody />")
+                                .attr("id", "schedule-output-body"));
 
     days = schedule["days"]
 
