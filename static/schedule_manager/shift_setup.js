@@ -7,6 +7,7 @@ var schedule_dates = "default assignment";
 var master_roles = []
 var master_roles_color_data = {}
 var day_index = 0;
+var all_schedule_data = "default assignment";
 
 $.fn.exists = function () {
     return this.length !== 0;
@@ -23,6 +24,9 @@ $(function () {
 
 $(function () {
     schedule_id = $("#shift-setup-tab").data("schedule-id")
+    $.getJSON("/api/get_schedule/" + schedule_id, function(data){
+        all_schedule_data = data;
+    });
     schedule_dates = $("#shift-setup-tab").data("schedule-dates").split(" ")
     $.getJSON("/_api/get_roles", getRoles)
     //the code below runs, although pycharm interprets it as being commented out
@@ -467,6 +471,26 @@ $(document).on("click", "#create-template-submit", function () {
         dataType: "json",
     }).done(function(){
         console.log("Sent to server.")
+        var role = "";
+        var start = "";
+        console.log(all_schedule_data)
+        for (i in all_schedule_data["shifts"]) {
+            console.log(0)
+            if (all_schedule_data["shifts"][i]["_id"] == data["shift_id"]) {
+                role = all_schedule_data["shifts"][i]["role"]
+                start = all_schedule_data["shifts"][i]["start"]
+                break;
+            }
+        }
+        console.log(role)
+        console.log(start)
+        for (i = 0; i < data["dates"].length; i++) {
+            var recurring_shift = document.createElement("div")
+            $(recurring_shift).addClass("big-calendar-shift").attr("id", data["shift_id"])
+            $(recurring_shift).text(role + " " + start)
+            $(recurring_shift).addClass(master_roles_color_data[role])
+            $(recurring_shift).insertBefore("*[data-calendar-date='" + data["dates"][i] + "'] .calendar-date-label")
+        }
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
     });

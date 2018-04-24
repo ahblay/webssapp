@@ -545,8 +545,6 @@ def update_shift_data():
 
     recurrence_days = list(set(recurrence_days))
 
-    recurrence_days.remove(dates[0])
-
     for date in recurrence_days:
         shift_to_copy["parent_shift"] = shift_id
         shift_to_copy["date"] = date
