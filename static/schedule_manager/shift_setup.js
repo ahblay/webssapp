@@ -390,6 +390,22 @@ function openShiftModal () {
         }
     })
 
+    var select_day_previous = "";
+    $("#select-day").click(function () {
+        select_day_previous = $(this).val()
+    }).change(function () {
+        removeRecurrence(select_day_previous)
+        applyRecurrence($(this).val())
+    })
+
+    var select_frequency_previous = "";
+    $("#select-frequency").click(function () {
+        select_frequency_previous = $(this).val()
+    }).change(function () {
+        removeRecurrence(select_frequency_previous)
+        applyRecurrence($(this).val())
+    })
+
     date_counter = 0
     for (i = 0; i < calendar_dates.length; i++) {
         var calendar_week = document.createElement("div")
@@ -399,7 +415,7 @@ function openShiftModal () {
             $(calendar_day).addClass("calendar_day").addClass("day")
             $(calendar_day).text(calendar_dates[i][j])
             if (calendar_dates[i][j] == "") {
-                $(calendar_day).css("background-color", "#72777a")
+                $(calendar_day).addClass("calendar-empty-day")
             }
             else {
                 $(calendar_day).click(selectDay)
@@ -422,14 +438,200 @@ function selectDay () {
     }
 }
 
-$(document).on("click", "#recurrence-options tr", function () {
-    if ($(this).hasClass("selected")) {
-        $(this).removeClass("selected").siblings().removeClass("selected")
+function selectDayNoDeselect (element) {
+    if ($(element).hasClass("calendar-selected") || $(element).hasClass("calendar-empty-day")) {
+        return;
     }
     else {
-        $(this).addClass("selected").siblings().removeClass("selected")
+        $(element).addClass("calendar-selected")
+    }
+}
+
+function deselectDayNoSelect (element) {
+    if (!$(element).hasClass("calendar-selected") || $(element).hasClass("calendar-empty-day")) {
+        return;
+    }
+    else {
+        $(element).removeClass("calendar-selected")
+    }
+}
+
+$(document).on("click", "#recurrence-options tr", function () {
+    var recurrence_type = $(this).children().text()
+
+    if ($(this).hasClass("selected")) {
+        $(this).removeClass("selected")
+        removeRecurrence(recurrence_type)
+    }
+    else {
+        $(this).addClass("selected")
+        applyRecurrence(recurrence_type)
     }
 })
+
+function applyRecurrence(recurrence_type) {
+    if (recurrence_type == "Select day") {
+        return
+    }
+    if (recurrence_type == "Weekends") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(1)"))
+            selectDayNoDeselect($(this).find(":nth-child(7)"))
+        })
+    }
+    if (recurrence_type == "Weekdays") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(2)"))
+            selectDayNoDeselect($(this).find(":nth-child(3)"))
+            selectDayNoDeselect($(this).find(":nth-child(4)"))
+            selectDayNoDeselect($(this).find(":nth-child(5)"))
+            selectDayNoDeselect($(this).find(":nth-child(6)"))
+        })
+    }
+    if (recurrence_type == "Sunday") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(1)"))
+        })
+    }
+    if (recurrence_type == "Monday") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(2)"))
+        })
+    }
+    if (recurrence_type == "Tuesday") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(3)"))
+        })
+    }
+    if (recurrence_type == "Wednesday") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(4)"))
+        })
+    }
+    if (recurrence_type == "Thursday") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(5)"))
+        })
+    }
+    if (recurrence_type == "Friday") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(6)"))
+        })
+    }
+    if (recurrence_type == "Saturday") {
+        $(".calendar .calendar_week").each(function() {
+            selectDayNoDeselect($(this).find(":nth-child(7)"))
+        })
+    }
+    if (recurrence_type == "Every day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(n)").length; i++) {
+                selectDayNoDeselect($(this).find(":nth-child(n)")[i])
+            }
+        })
+    }
+    if (recurrence_type == "Every 2nd day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(2n)").length; i++) {
+                selectDayNoDeselect($(this).find(":nth-child(2n)")[i])
+            }
+        })
+    }if (recurrence_type == "Every 3rd day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(3n)").length; i++) {
+                selectDayNoDeselect($(this).find(":nth-child(3n)")[i])
+            }
+        })
+    }if (recurrence_type == "Every 4th day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(4n)").length; i++) {
+                selectDayNoDeselect($(this).find(":nth-child(4n)")[i])
+            }
+        })
+    }
+}
+
+function removeRecurrence(recurrence_type) {
+    if (recurrence_type == "Select day") {
+        return
+    }
+    if (recurrence_type == "Weekends") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(1)"))
+            deselectDayNoSelect($(this).find(":nth-child(7)"))
+        })
+    }
+    if (recurrence_type == "Weekdays") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(2)"))
+            deselectDayNoSelect($(this).find(":nth-child(3)"))
+            deselectDayNoSelect($(this).find(":nth-child(4)"))
+            deselectDayNoSelect($(this).find(":nth-child(5)"))
+            deselectDayNoSelect($(this).find(":nth-child(6)"))
+        })
+    }
+    if (recurrence_type == "Sunday") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(1)"))
+        })
+    }
+    if (recurrence_type == "Monday") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(2)"))
+        })
+    }
+    if (recurrence_type == "Tuesday") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(3)"))
+        })
+    }
+    if (recurrence_type == "Wednesday") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(4)"))
+        })
+    }
+    if (recurrence_type == "Thursday") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(5)"))
+        })
+    }
+    if (recurrence_type == "Friday") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(6)"))
+        })
+    }
+    if (recurrence_type == "Saturday") {
+        $(".calendar .calendar_week").each(function() {
+            deselectDayNoSelect($(this).find(":nth-child(7)"))
+        })
+    }
+    if (recurrence_type == "Every day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(n)").length; i++) {
+                deselectDayNoSelect($(this).find(":nth-child(n)")[i])
+            }
+        })
+    }
+    if (recurrence_type == "Every 2nd day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(2n)").length; i++) {
+                deselectDayNoSelect($(this).find(":nth-child(2n)")[i])
+            }
+        })
+    }if (recurrence_type == "Every 3rd day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(3n)").length; i++) {
+                deselectDayNoSelect($(this).find(":nth-child(3n)")[i])
+            }
+        })
+    }if (recurrence_type == "Every 4th day") {
+        $(".calendar .calendar_week").each(function() {
+            for (i = 0; i < $(this).find(":nth-child(4n)").length; i++) {
+                deselectDayNoSelect($(this).find(":nth-child(4n)")[i])
+            }
+        })
+    }
+}
 
 $(document).on("click", "#create-template-submit", function () {
     var selectedDates = [];
@@ -445,24 +647,10 @@ $(document).on("click", "#create-template-submit", function () {
             })
         }
     })
-    var recurrenceType = "";
-    $("#recurrence-options tbody").children().each(function () {
-        if ($(this).hasClass("selected")) {
-            $(this).children().each(function () {
-                if ($(this).find("select").length > 0) {
-                    recurrenceType = $(this).find("select").val()
-                }
-                else {
-                    recurrenceType = $(this).text()
-                }
-            })
-        }
-    })
-    console.log($("#calendar-highlighted").attr("data-calendar-date"));
+
     var data = {"dates": selectedDates,
                 "shift_id": $("#recurrence-options").data("shift-id"),
                 "schedule_id": schedule_id,
-                "recurrenceType": recurrenceType,
                 "parent_shift_date": $(".calendar-highlighted").data("calendar-date")}
     console.log(data);
     $.ajax({
@@ -475,23 +663,13 @@ $(document).on("click", "#create-template-submit", function () {
         console.log("Sent to server.")
         var role = "";
         var start = "";
-        console.log(all_schedule_data)
-        for (i in all_schedule_data["shifts"]) {
-            console.log(0)
-            if (all_schedule_data["shifts"][i]["_id"] == data["shift_id"]) {
-                role = all_schedule_data["shifts"][i]["role"]
-                start = all_schedule_data["shifts"][i]["start"]
-                break;
-            }
-        }
-        console.log(role)
-        console.log(start)
+
+        //var shift_to_copy = $(".big-calendar").find(".calendar-highlighted").find("#" + data["shift_id"]).clone()
+        //console.log(shift_to_copy)
+
         for (i = 0; i < data["dates"].length; i++) {
-            var recurring_shift = document.createElement("div")
-            $(recurring_shift).addClass("big-calendar-shift").attr("id", data["shift_id"])
-            $(recurring_shift).text(role + " " + start)
-            $(recurring_shift).addClass(master_roles_color_data[role])
-            $(recurring_shift).insertBefore("*[data-calendar-date='" + data["dates"][i] + "'] .calendar-date-label")
+            var shift_to_copy = $(".big-calendar").find(".calendar-highlighted").find("#" + data["shift_id"]).clone()
+            $(shift_to_copy).insertBefore("*[data-calendar-date='" + data["dates"][i] + "'] .calendar-date-label")
         }
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
@@ -575,11 +753,12 @@ $(document).on("click", "#save-shifts", function () {
     shift_data = {"_id": schedule_id, "shift_data": collectShiftData(), "date": date}
     roles = []
     starts = []
+    ids = []
     for (i = 0; i < shift_data["shift_data"].length; i++) {
         roles.push(shift_data["shift_data"][i][4])
         starts.push(shift_data["shift_data"][i][2])
+        ids.push(shift_data["shift_data"][i][5])
     }
-    console.log(role)
 
     $.ajax({
         type: "POST",
@@ -598,6 +777,7 @@ $(document).on("click", "#save-shifts", function () {
             var calendar_shift = document.createElement("div")
             $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[roles[j]])
             $(calendar_shift).text(roles[j] + " " + starts[j])
+            $(calendar_shift).attr("id", ids[j])
             $(calendar_shift).insertBefore('*[data-calendar-date="' + date + '"] .calendar-date-label')
         }
     }).fail(function(jqXHR, status, error){

@@ -328,6 +328,9 @@ select {
 .calendar-highlighted {
     box-shadow: inset 0 0 15px #000000;
 }
+.calendar-empty-day {
+    background-color: #72777a;
+}
 
 /* calendar */
 .calendar_week,
@@ -610,6 +613,11 @@ select {
 }
 .pink {
     background-color: pink;
+}
+
+/* flip */
+.flip {
+    transform: scaleX(-1);
 }
 
 /* just for funsies */

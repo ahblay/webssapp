@@ -1,3 +1,17 @@
+$(document).ready(function () {
+    new jBox('Tooltip', {
+        attach: '#previous-schedule-icon',
+        content: $("#previous-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+    new jBox('Tooltip', {
+        attach: '#current-schedule-icon'
+    });
+    new jBox('Tooltip', {
+        attach: '#upcoming-schedule-icon'
+    });
+})
+
 function dateToString(date) {
     var date_array = date.split("/");
     date_array[0] = Number(date_array[0])
