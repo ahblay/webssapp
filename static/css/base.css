@@ -244,6 +244,18 @@ select {
     padding-bottom: 10px;
 }
 
+.vs-shifts-dropdown {
+    position: relative;
+    z-index: 10;
+}
+
+.vs-table-cell {
+    border-top: 1px solid;
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+}
+
 /* schedule tabs */
 #tab-select {
     border-bottom: 1px solid black;
