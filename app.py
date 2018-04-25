@@ -524,15 +524,11 @@ def update_shift_data():
     dates = request.json["dates"]
     shift_id = request.json["shift_id"]
     schedule_id = request.json["schedule_id"]
-    recurrence_type = request.json["recurrenceType"]
     parent_shift_date = request.json["parent_shift_date"]
     shift_to_copy = None
 
     db = get_db()
     all_shifts = list(db.schedules.find({"_id": ObjectId(schedule_id)}, {"shifts": 1, "days": 1}))[0]["shifts"]
-    schedule_days = list(db.schedules.find({"_id": ObjectId(schedule_id)}, {"shifts": 1, "days": 1}))[0]["days"]
-    for i in range(len(schedule_days)):
-        schedule_days[i] = [schedule_days[i], schedule_days[i].weekday()]
 
     for shift in all_shifts:
         if shift["_id"] == shift_id:
@@ -540,9 +536,6 @@ def update_shift_data():
             break
 
     recurrence_days = dates
-    add_dates = build_recurring_dates(recurrence_type, schedule_days)
-    for day in add_dates:
-        recurrence_days.append(day)
 
     recurrence_days = list(set(recurrence_days))
 
