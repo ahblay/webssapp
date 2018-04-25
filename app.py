@@ -226,6 +226,8 @@ def open_landing_page():
 def select_schedule():
     db = get_db()
 
+    reformatted_today = today.strftime('%m/%d/%Y')
+
     schedules = list(db.schedules.find({"username": current_user.username}))
 
     for schedule in schedules:
@@ -244,8 +246,7 @@ def select_schedule():
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
 
-    return render_template("select_schedule.html",
-                           schedules=schedules)
+    return render_template("select_schedule.html", schedules=schedules, today=reformatted_today)
 
 
 @app.route("/view_schedule/<_id>", methods=['GET'])

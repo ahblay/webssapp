@@ -603,6 +603,11 @@ select {
     background-color: pink;
 }
 
+/* flip */
+.flip {
+    transform: scaleX(-1);
+}
+
 /* just for funsies */
 .ugly {
     font-family: "Times New Roman", Times, serif;

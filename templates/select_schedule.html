@@ -13,6 +13,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.standalone.min.css" />
 
     <meta name="user_schedules" content="{{ schedules }}">
+    <meta content="{{ today }}">
     <style>
         .wrapper {
             height: 100%;
@@ -81,12 +82,14 @@
                             <h2>Schedules</h2>
                         </div>
                         <div class="col-md-8">
-                            <span title="Previous schedule" class="fas fa-share-square fa-flip-horizontal fa-2x"></span>
-                            <span>Previous</span>
-                            <span title="Current schedule" class="fas fa-flag fa-2x"></span>
-                            <span>Current</span>
-                            <span title="Upcoming schedule" class="fas fa-share-square fa-2x float-right"></span>
-                            <span>Upcoming</span>
+                            <span id="previous-schedule-icon"
+                                  class="fas fa-share-square fa-flip-horizontal fa-2x"></span>
+                            <span title="Current schedule"
+                                  id="current-schedule-icon"
+                                  class="fas fa-flag fa-2x"></span>
+                            <span title="Upcoming schedule"
+                                  id="upcoming-schedule-icon"
+                                  class="fas fa-share-square fa-2x float-right"></span>
                         </div>
                     </div>
                     <div class="row">
@@ -244,6 +247,23 @@
                                 <br>
                             </div>
                         </div>
+                    </div>
+
+                    <div id="previous-schedules-tooltip" style="display: none;">
+                        <table class="table table-hover">
+                            <thead></thead>
+                            <tbody>
+                                <tr>
+                                    <td style="border-top: none;">Schedule 1</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ today }} 2</td>
+                                </tr>
+                                <tr>
+                                    <td>Schedule 3</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                 </div>
