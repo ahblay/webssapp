@@ -828,8 +828,7 @@ def create_schedule(schedule_id=None):
 
     schedule = ScheduleProcessor(schedule_dict)
     schedule.preprocess()
-    output = schedule.build_schedule(schedule)
-    schedule.output = output
+    schedule.build_schedule()
     print('Schedule output created.')
 
     return jsonify(schedule.to_dict())

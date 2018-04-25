@@ -2,12 +2,21 @@ from flask import g
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 from bson import json_util, ObjectId
+import pprint
 
 # opens/makes a connection to the database
 def get_db():
     if not hasattr(g, "db_connection"):
         g.db_connection = MongoClient("localhost", 27017)["test"]
     return g.db_connection
+
+def get_roles():
+
+    db = get_db()
+
+    roles = list(db.roles.find())
+
+    return {index: role for index, role in enumerate([role_dict['name'] for role_dict in roles])}
 
 
 def get_schedule(schedule_id):
