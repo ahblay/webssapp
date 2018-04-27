@@ -207,6 +207,7 @@ class ScheduleProcessor:
                      "status": self.status
         }
 
+        pprint.pprint(payload)
         db.schedules.insert(payload)
 
         print("Saved schedule data to database.")

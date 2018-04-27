@@ -2,17 +2,23 @@
 
 {% block optionalmeta %}
 <title>Employees</title>
+<meta name="user_schedules" content="{{ schedules }}">
 {% endblock %}
 
 {% block containedcontent %}
 <div class="container-fluid">
 
     <div class="row line-default">
-        <div class="col-md-4" style="padding-top: 1em; padding-bottom: .75em;">
+        <div class="col-md-10" style="padding-top: 1em; padding-bottom: .75em;">
             <h2>Employees</h2>
         </div>
-        <div class="col-md-8">
-
+        <div class="col-md-2" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+            <span id="previous-schedule-icon"
+                  class="fas fa-share-square fa-flip-horizontal fa-2x"></span>
+            <span id="current-schedule-icon"
+                  class="fas fa-flag fa-2x"></span>
+            <span id="upcoming-schedule-icon"
+                  class="fas fa-share-square fa-2x float-right"></span>
         </div>
     </div>
     <div class="row">
@@ -63,6 +69,69 @@
                     </table>
                 </div>
             </div>
+        </div>
+
+        <div id="previous-schedules-tooltip" style="display: none;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="border-top: none;">Previous Schedules</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                        {% if schedule['status'] == 'default' %}
+                        <tr>
+                            <td id="{{ schedule['_id'] }}"
+                                onclick="openSchedule(this.id)"
+                                style="border-top: none;">{{ schedule['name'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="current-schedules-tooltip" style="display: none;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="border-top: none;">Current Schedules</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                        {% if schedule['status'] == 'active' %}
+                        <tr>
+                            <td id="{{ schedule['_id'] }}"
+                                onclick="openSchedule(this.id)"
+                                style="border-top: none;">{{ schedule['name'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="upcoming-schedules-tooltip" style="display: none;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="border-top: none;">Upcoming Schedules</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                        {% if schedule['status'] == 'upcoming' %}
+                        <tr>
+                            <td id="{{ schedule['_id'] }}"
+                                onclick="openSchedule(this.id)"
+                                style="border-top: none;">{{ schedule['name'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
         <div class="col-md-1">

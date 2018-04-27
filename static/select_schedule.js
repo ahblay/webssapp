@@ -5,12 +5,22 @@ $(document).ready(function () {
         closeOnMouseleave: true
     });
     new jBox('Tooltip', {
-        attach: '#current-schedule-icon'
+        attach: '#current-schedule-icon',
+        content: $("#current-schedules-tooltip"),
+        closeOnMouseleave: true
     });
     new jBox('Tooltip', {
-        attach: '#upcoming-schedule-icon'
+        attach: '#upcoming-schedule-icon',
+        content: $("#upcoming-schedules-tooltip"),
+        closeOnMouseleave: true
     });
 })
+
+function openSchedule(id) {
+    console.log(id)
+    //var scheduleID = $(this).data("schedule-id")
+    window.location.href = "/view_schedule/" + id
+}
 
 function dateToString(date) {
     var date_array = date.split("/");

@@ -3,6 +3,30 @@ $.getJSON("/_api/get_roles", function(data) {
     refresh_table_data(data);
 });
 
+$(document).ready(function () {
+    new jBox('Tooltip', {
+        attach: '#previous-schedule-icon',
+        content: $("#previous-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+    new jBox('Tooltip', {
+        attach: '#current-schedule-icon',
+        content: $("#current-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+    new jBox('Tooltip', {
+        attach: '#upcoming-schedule-icon',
+        content: $("#upcoming-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+})
+
+function openSchedule(id) {
+    console.log(id)
+    //var scheduleID = $(this).data("schedule-id")
+    window.location.href = "/view_schedule/" + id
+}
+
 //Main table functions
 $(document).on("click", "#check-all-roles", function(){
     $(".row-select-checkbox").not(this).prop("checked", this.checked)
