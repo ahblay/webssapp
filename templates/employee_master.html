@@ -6,21 +6,28 @@
 {% endblock %}
 
 {% block containedcontent %}
-<div class="container-fluid">
+<div class="container-fluid alert-default">
 
-    <div class="row line-default">
-        <div class="col-md-10" style="padding-top: 1em; padding-bottom: .75em;">
-            <h2>Employees</h2>
+    <div class="row line-default" id="title-row" style="border-bottom: 1px solid;">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 no-padding">
+            <div class="row">
+                <div class="col-md-10" style="padding-top: 1em; padding-bottom: .75em;">
+                    <h4>Employees</h4>
+                </div>
+                <div class="col-md-2" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                    <span id="previous-schedule-icon"
+                          class="fas fa-share-square fa-flip-horizontal fa-2x"></span>
+                    <span id="current-schedule-icon"
+                          class="fas fa-flag fa-2x"></span>
+                    <span id="upcoming-schedule-icon"
+                          class="fas fa-share-square fa-2x float-right"></span>
+                </div>
+            </div>
         </div>
-        <div class="col-md-2" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-            <span id="previous-schedule-icon"
-                  class="fas fa-share-square fa-flip-horizontal fa-2x"></span>
-            <span id="current-schedule-icon"
-                  class="fas fa-flag fa-2x"></span>
-            <span id="upcoming-schedule-icon"
-                  class="fas fa-share-square fa-2x float-right"></span>
-        </div>
+        <div class="col-md-1"></div>
     </div>
+    <!--
     <div class="row">
         <div class="col-md-12 no-padding alert-line">
             <div class="alert alert-primary w100" role="alert">
@@ -30,12 +37,15 @@
             </div>
         </div>
     </div>
+    -->
+
+    <br>
 
     <div class="row">
         <div class="col-md-1">
         </div>
 
-        <div class="col-md-10">
+        <div class="col-md-10 no-padding">
             <div class="row">
                 <div class="col-md-12" style="padding-bottom: 1em;">
                     <button type="button" class="btn btn-outline-dark" id="add-employee" data-target="#add-employee-modal" data-toggle="modal">Add Employee</button>

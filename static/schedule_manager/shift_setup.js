@@ -14,6 +14,21 @@ $.fn.exists = function () {
 }
 
 $(function () {
+    new jBox('Modal', {
+        addClass: 'jBox-Notice jBox-Notice-blue',
+        responsiveHeight: true,
+        target: $("#quick-info-panel"),
+        content: "Shifts are shown in the calendar. To edit a shift, select the corresponding day and change the information in the table. Recurring shifts may be added with the 'Create Template' button.",
+        overlay: false,
+        closeOnClick: 'box',
+        //offset: {x: -10, y: 40},
+        onCloseComplete: function () {
+          this.destroy();
+        }
+    }).open();
+})
+
+$(function () {
     Date.prototype.addDays = function(days)
         {
             var dat = new Date(this.valueOf());
@@ -325,10 +340,13 @@ function loadShiftCalendar (data) {
 }
 
 function highlightDay () {
+    /*
     new jBox('Notice', {
         content: 'I\'m up here!',
-        color: 'black'
+        color: 'black',
+        target: $("#quick-info-panel")
     });
+    */
 
     var allDates = createDates(schedule_dates)
     $('#check-all-shifts').prop('checked', false);

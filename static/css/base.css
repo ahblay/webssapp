@@ -104,13 +104,13 @@ select {
 
 /* alert upper border */
 .line-default {
-    border-top: 5px solid #4794de;
+    border-top: 3px solid #4794de;
 }
 .line-active {
-    border-top: 5px solid #51a53d;
+    border-top: 3px solid #51a53d;
 }
 .line-upcoming {
-    border-top: 5px solid #e6b829;
+    border-top: 3px solid #e6b829;
 }
 
 /* line lower border */
@@ -289,11 +289,12 @@ select {
     box-shadow: none;
 }
 
+
 #tab-select button:first-child {
-    margin-left: 1em;
+    margin-left: 0;
 }
 #tab-select button:last-child {
-    margin-right: 1em;
+    margin-right: 0;
 }
 
 /* shift button styling */
@@ -618,6 +619,12 @@ select {
 /* flip */
 .flip {
     transform: scaleX(-1);
+}
+
+/* schedule tabs */
+.schedule-tabs {
+    display: flex;
+    justify-content: space-between;
 }
 
 /* just for funsies */
