@@ -627,6 +627,24 @@ select {
     justify-content: space-between;
 }
 
+/* navbar font */
+.nav-link {
+    font-size: 15px;
+}
+
+/* color picker */
+.sp-replacer {
+    border: 1px solid #000 !important;
+    border-radius: 5px;
+}
+.sp-preview {
+    border-radius: 5px;
+    width: 20px !important;
+}
+.sp-preview-inner {
+    border-radius: 4px;
+}
+
 /* just for funsies */
 .ugly {
     font-family: "Times New Roman", Times, serif;

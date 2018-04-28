@@ -117,7 +117,7 @@
                        id="new-schedule-button">Create New Schedule
                     </a>
 
-                    <div class="dropdown float-right" style="padding-right: 1em;">
+                    <div class="dropdown float-left" style="padding-right: 1em;">
                         <button class="btn btn-outline-dark dropdown-toggle"
                                 type="button"
                                 id="dropdownMenuButton"
@@ -174,23 +174,24 @@
             </div>
 
             <!--schedule thumbnails-->
-            <div class="row text-center schedules-row">
-                <div class="card-deck">
+            <div class="row schedules-row">
+                <div class="card-deck" style="display: flex; justify-content: space-between;">
                 {% for schedule in schedules %}
                     {% if schedule['status'] == 'active' %}
-                        <div class="card border-dark text-center mb-3 schedule-card schedule-active {{ schedule['status'] }}"
+                        <div class="card border-dark mb-3 schedule-card schedule-active {{ schedule['status'] }}"
                              data-id="{{ schedule['_id'] }}"
                              style="max-width:207px; min-width:207px;">
                     {% elif schedule['status'] == 'upcoming' %}
-                        <div class="card border-dark text-center mb-3 schedule-card schedule-upcoming {{ schedule['status'] }}"
+                        <div class="card border-dark mb-3 schedule-card schedule-upcoming {{ schedule['status'] }}"
                              data-id="{{ schedule['_id'] }}"
                              style="max-width:207px; min-width:207px;">
                     {% else %}
-                        <div class="card border-dark text-center mb-3 schedule-card schedule-default {{ schedule['status'] }}"
+                        <div class="card border-dark mb-3 schedule-card schedule-default {{ schedule['status'] }}"
                              data-id="{{ schedule['_id'] }}"
                              style="max-width:207px; min-width:207px;">
                     {% endif %}
                         <div class="card-header">
+                            <!--
                             <div class="dropdown">
                                 <span class="float-left schedule-options fas fa-ellipsis-v dropdown-toggle"
                                     id="options-dropdown"
@@ -203,6 +204,7 @@
                                     <a class="dropdown-item u" href="#">Upcoming</a>
                                 </div>
                             </div>
+                            -->
                             <span class="close text-right close-schedule"
                                   data-schedule-id="{{ schedule['_id'] }}">&times;</span>
                             <br>

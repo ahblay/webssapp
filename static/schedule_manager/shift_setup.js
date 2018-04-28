@@ -13,6 +13,7 @@ $.fn.exists = function () {
     return this.length !== 0;
 }
 
+/*
 $(function () {
     new jBox('Modal', {
         addClass: 'jBox-Notice jBox-Notice-blue',
@@ -25,8 +26,10 @@ $(function () {
         onCloseComplete: function () {
           this.destroy();
         }
+
     }).open();
 })
+*/
 
 $(function () {
     Date.prototype.addDays = function(days)
@@ -320,7 +323,7 @@ function loadShiftCalendar (data) {
                     if (data[k]["date"] == allDates[date_counter][1]) {
                         var calendar_shift = document.createElement("div")
                         var shift_role = data[k]["role"]
-                        $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[shift_role])
+                        $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[shift_role])
                         $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
                         $(calendar_shift).attr("id", data[k]["_id"])
                         $(calendar_day).append(calendar_shift)
@@ -789,7 +792,7 @@ $(document).on("click", "#save-shifts", function () {
         })
         for (j = 0; j < roles.length; j++) {
             var calendar_shift = document.createElement("div")
-            $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[roles[j]])
+            $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[roles[j]])
             $(calendar_shift).text(roles[j] + " " + starts[j])
             $(calendar_shift).attr("id", ids[j])
             $(calendar_shift).insertBefore('*[data-calendar-date="' + date + '"] .calendar-date-label')

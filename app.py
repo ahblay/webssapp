@@ -187,7 +187,17 @@ def add_role():
     print("Role {} has been added to the database.".format(request.json['name']))
 
     # return a jsonify success object1
-    return jsonify({"success": True, "message": "Employee added successfully"})
+    return jsonify({"success": True, "message": "Role added successfully"})
+
+
+@app.route('/edit_role', methods=['POST'])
+def edit_role():
+    db = get_db()
+    db.roles.update({"name": request.json['name']},
+                    {"$set": {"color": request.json["color"]}}
+                    )
+
+    return jsonify({"success": True, "message": "Role updated successfully"})
 
 
 @app.route("/_save_emp_data", methods=['POST'])
