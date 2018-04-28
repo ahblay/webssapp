@@ -28,23 +28,7 @@ $(document).ready(function () {
     });
 })
 
-$(document).ready(function () {
-    $(".spectrum-edit").spectrum({
-        change: function(color) {
-            data = {"name": $(this).data("shift-name"), "color": color.toHexString()}
-            console.log(data)
-            $.ajax({
-                type: "POST",
-                url: "/edit_role",
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                dataType: "json",
-                encode: "true"
-                //success: success
-            });
-        }
-    });
-})
+
 
 function openSchedule(id) {
     console.log(id)
@@ -143,7 +127,21 @@ function refresh_table_data(data) {
 
         $("#roles-table-master tbody").append(tr)
     }
-
+    $(".spectrum-edit").spectrum({
+        change: function(color) {
+            data = {"name": $(this).data("shift-name"), "color": color.toHexString()}
+            console.log(data)
+            $.ajax({
+                type: "POST",
+                url: "/edit_role",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                dataType: "json",
+                encode: "true"
+                //success: success
+            });
+        }
+    });
 }
 
 //Remove role functions
