@@ -80,7 +80,7 @@ class Schedule:
             if shift >= len(self.management_data[role][day]["num_employees"]):
                 continue
 
-            if schedule.roles[role] == shifts_by_day[day][shift]['role']:
+            if schedule.roles[str(role)] == shifts_by_day[day][shift]['role']:
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
                     == self.management_data[role][day]["num_employees"][shift]
 
@@ -126,7 +126,7 @@ class Schedule:
             elif shift >= len(shifts_by_day[day]):
                 return -7500
             else:
-                if schedule.roles[role] == shifts_by_day[day][shift]['role']:
+                if schedule.roles[str(role)] == shifts_by_day[day][shift]['role']:
 
                     if employee_info[employee]["shift_pref"][day][shift]["lock_in_role"] == role:
                         c = 1000

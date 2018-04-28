@@ -28,8 +28,6 @@ $(document).ready(function () {
     });
 })
 
-
-
 function openSchedule(id) {
     console.log(id)
     //var scheduleID = $(this).data("schedule-id")
