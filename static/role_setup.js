@@ -3,6 +3,37 @@ $.getJSON("/_api/get_roles", function(data) {
     refresh_table_data(data);
 });
 
+$(".basic").spectrum({
+    color: "#fff",
+    change: function(color) {
+        console.log("change called: " + color.toHexString());
+    }
+});
+
+$(document).ready(function () {
+    new jBox('Tooltip', {
+        attach: '#previous-schedule-icon',
+        content: $("#previous-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+    new jBox('Tooltip', {
+        attach: '#current-schedule-icon',
+        content: $("#current-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+    new jBox('Tooltip', {
+        attach: '#upcoming-schedule-icon',
+        content: $("#upcoming-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+})
+
+function openSchedule(id) {
+    console.log(id)
+    //var scheduleID = $(this).data("schedule-id")
+    window.location.href = "/view_schedule/" + id
+}
+
 //Main table functions
 $(document).on("click", "#check-all-roles", function(){
     $(".row-select-checkbox").not(this).prop("checked", this.checked)
@@ -29,7 +60,7 @@ $(document).on("change", ".row-select-checkbox", function(){
 });
 
 $(document).on("click", "#add-role-submit", function () {
-    var data = {name: $("#add-role").val(), color: $("#role-color-select").val()}
+    var data = {name: $("#add-role").val(), color: $("#role-color-select").spectrum('get').toHexString()}
     console.log(data)
     $.ajax({
         type: "POST",
@@ -76,15 +107,39 @@ function refresh_table_data(data) {
         $(name_td).append(data[i]["name"])
         $(tr).append(name_td)
 
+
         let color_td = document.createElement("td")
         $(color_td).css("border-top", "1px solid")
+
+        /*
         let color_box = document.createElement("div")
-        $(color_box).addClass("role-color-box").addClass(data[i]["color"])
+        $(color_box).addClass("role-color-box").css("background-color", data[i]["color"])
         $(color_td).append(color_box)
+        */
+
+        let color_picker = document.createElement("input")
+        $(color_picker).addClass("spectrum-edit").val(data[i]["color"])
+        $(color_picker).attr("data-shift-name", data[i]["name"])
+        $(color_td).append(color_picker)
         $(tr).append(color_td)
 
         $("#roles-table-master tbody").append(tr)
     }
+    $(".spectrum-edit").spectrum({
+        change: function(color) {
+            data = {"name": $(this).data("shift-name"), "color": color.toHexString()}
+            console.log(data)
+            $.ajax({
+                type: "POST",
+                url: "/edit_role",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                dataType: "json",
+                encode: "true"
+                //success: success
+            });
+        }
+    });
 }
 
 //Remove role functions

@@ -187,7 +187,17 @@ def add_role():
     print("Role {} has been added to the database.".format(request.json['name']))
 
     # return a jsonify success object1
-    return jsonify({"success": True, "message": "Employee added successfully"})
+    return jsonify({"success": True, "message": "Role added successfully"})
+
+
+@app.route('/edit_role', methods=['POST'])
+def edit_role():
+    db = get_db()
+    db.roles.update({"name": request.json['name']},
+                    {"$set": {"color": request.json["color"]}}
+                    )
+
+    return jsonify({"success": True, "message": "Role updated successfully"})
 
 
 @app.route("/_save_emp_data", methods=['POST'])
@@ -318,12 +328,26 @@ def delete_schedule(_id=None):
 @app.route('/employees')
 def employee_setup():
     employees = get_employees()
-    return render_template("employee_master.html", employees=employees)
+
+    db = get_db()
+
+    schedules = list(db.schedules.find({"username": current_user.username}))
+    for schedule in schedules:
+        schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
+        schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+
+    return render_template("employee_master.html", employees=employees, schedules=schedules)
 
 @login_required
 @app.route('/roles')
 def role_setup():
-    return render_template("role_setup.html")
+    db = get_db()
+
+    schedules = list(db.schedules.find({"username": current_user.username}))
+    for schedule in schedules:
+        schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
+        schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+    return render_template("role_setup.html", schedules=schedules)
 
 
 @login_required

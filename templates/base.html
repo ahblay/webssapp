@@ -28,6 +28,10 @@
 
         <!-- Tooltips plugin CSS -->
         <link href="//code.jboxcdn.com/0.4.9/jBox.css" rel="stylesheet">
+        <link href="//code.jboxcdn.com/plugins/Notice/jBox.Notice.css" rel="stylesheet"/>
+
+        <!-- Color picker plugin CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css" rel="stylesheet"/>
 
         <style>
         html { height: 100%; }
@@ -49,49 +53,53 @@
 
     </head>
     <body>
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url_for('open_landing_page') }}">Slob Scheduling</a>
-                <button class="navbar-toggler"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target="#navbarNavDropdown"
-                        aria-controls="navbarNavDropdown"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('select_schedule') }}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('employee_setup') }}">Employees</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('role_setup') }}">Roles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('settings') }}">Settings</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {% if current_user.is_authenticated %}
-                                    {{ current_user.get_id() }}
-                                {% else %}
-                                    Unnamed user
-                                {% endif %}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="#">Account</a>
-                                <a class="dropdown-item" href="/logout">Logout</a>
-                            </div>
-                        </li>
-                    </ul>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark no-padding" style="height: 45px;">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="container-fluid row no-padding">
+                    <a class="navbar-brand" href="{{ url_for('open_landing_page') }}">Slob Scheduling</a>
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-toggle="collapse"
+                            data-target="#navbarNavDropdown"
+                            aria-controls="navbarNavDropdown"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('select_schedule') }}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('employee_setup') }}">Employees</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('role_setup') }}">Roles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('settings') }}">Settings</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if current_user.is_authenticated %}
+                                        {{ current_user.get_id() }}
+                                    {% else %}
+                                        Unnamed user
+                                    {% endif %}
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="#">Account</a>
+                                    <a class="dropdown-item" href="/logout">Logout</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <div class="col-md-1"></div>
         </nav>
 
         {% block containedcontent %}
@@ -128,7 +136,10 @@
 
     <!-- jBox plugin (tooltips and modals) -->
     <script src="//code.jboxcdn.com/0.4.9/jBox.min.js"></script>
-    <link href="//code.jboxcdn.com/0.4.9/jBox.css" rel="stylesheet">
+    <script src="//code.jboxcdn.com/plugins/Notice/jBox.Notice.js"></script>
+
+    <!-- Color picker plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
 
     {% block js %}
     {% endblock js %}

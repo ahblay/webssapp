@@ -104,13 +104,13 @@ select {
 
 /* alert upper border */
 .line-default {
-    border-top: 5px solid #4794de;
+    border-top: 3px solid #4794de;
 }
 .line-active {
-    border-top: 5px solid #51a53d;
+    border-top: 3px solid #51a53d;
 }
 .line-upcoming {
-    border-top: 5px solid #e6b829;
+    border-top: 3px solid #e6b829;
 }
 
 /* line lower border */
@@ -280,8 +280,8 @@ select {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     margin-bottom: -1px;
-    padding-top: 0.75em;
-    padding-bottom: 0.75em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }
 #tab-select button:focus {
     outline: none;
@@ -293,11 +293,12 @@ select {
     box-shadow: none;
 }
 
+
 #tab-select button:first-child {
-    margin-left: 1em;
+    margin-left: 0;
 }
 #tab-select button:last-child {
-    margin-right: 1em;
+    margin-right: 0;
 }
 
 /* shift button styling */
@@ -622,6 +623,30 @@ select {
 /* flip */
 .flip {
     transform: scaleX(-1);
+}
+
+/* schedule tabs */
+.schedule-tabs {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* navbar font */
+.nav-link {
+    font-size: 15px;
+}
+
+/* color picker */
+.sp-replacer {
+    border: 1px solid #000 !important;
+    border-radius: 5px;
+}
+.sp-preview {
+    border-radius: 5px;
+    width: 20px !important;
+}
+.sp-preview-inner {
+    border-radius: 4px;
 }
 
 /* just for funsies */

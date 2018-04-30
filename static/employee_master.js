@@ -3,6 +3,30 @@ $.getJSON("/api/get_employees", function(data){
     refresh_table_data(data);
 });
 
+$(document).ready(function () {
+    new jBox('Tooltip', {
+        attach: '#previous-schedule-icon',
+        content: $("#previous-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+    new jBox('Tooltip', {
+        attach: '#current-schedule-icon',
+        content: $("#current-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+    new jBox('Tooltip', {
+        attach: '#upcoming-schedule-icon',
+        content: $("#upcoming-schedules-tooltip"),
+        closeOnMouseleave: true
+    });
+})
+
+function openSchedule(id) {
+    console.log(id)
+    //var scheduleID = $(this).data("schedule-id")
+    window.location.href = "/view_schedule/" + id
+}
+
 // Main table functionality
 $("#check-all-employees").on("click", function(){
 

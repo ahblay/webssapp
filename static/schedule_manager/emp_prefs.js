@@ -4,6 +4,7 @@ var employee_names = {}
 var shift_dict = {}
 var pref_dict = {}
 var last_tab = null
+var popupJBOX = null
 
 // no longer necessary due to the fact that prefs table is generated when the prefs tab is selected
 /*
@@ -20,6 +21,12 @@ $(function () {
     //$.getJSON("/_api/get_shifts/" + schedule_id, renderShiftPrefsTable)
 })
 */
+
+$(document).ready(function () {
+    popupJBOX = new jBox("Modal", {
+        trigger: "mouseenter",
+    });
+})
 
 function renderEmpTable(data) {
     data = data['employees'];
@@ -96,12 +103,30 @@ function renderPrefCalendar(data) {
                     $(pref_calendar_pref).data("shift-id", shift_id)
                     $(pref_calendar_pref).data("emp-id", emp_id)
 
+                    let pop_up = document.createElement("div")
+                    let ul = document.createElement("ul")
+                    let start_li = document.createElement("li")
+                    let end_li = document.createElement("li")
+                    let emp_li = document.createElement("li")
+                    let role_li = document.createElement("li")
+                    $(start_li).text("Start: " + start)
+                    $(end_li).text("End: " + end)
+                    $(emp_li).text("Employees: " + num_employees)
+                    $(role_li).text("Role: " + role)
+                    $(ul).append(start_li)
+                    $(ul).append(end_li)
+                    $(ul).append(emp_li)
+                    $(ul).append(role_li)
+                    $(pop_up).append(ul)
+
+                    /*
                     let pop_up_window = document.createElement("span")
                     $(pop_up_window).addClass("popuptext")
                     $(pop_up_window).append("Start: " + start + "<br>")
                     $(pop_up_window).append("End: " + end + "<br>")
                     $(pop_up_window).append("Employees: " + num_employees + "<br>")
                     $(pop_up_window).append("Role: " + role + "<br>")
+                    */
 
                     let eligible_employees = $(".emp-shift-prefs").find("#" + shift_id).data("eligible")
 
@@ -133,6 +158,9 @@ function renderPrefCalendar(data) {
 
                     $(pref_calendar_pref).on("click", togglePrefs)
 
+                    popupJBOX.attach(".pref-calendar-pref").setContent($(pop_up)).open()
+
+                    /*
                     var timer;
                     $(pref_calendar_pref).hover(function () {
                         var _this = this;
@@ -144,8 +172,9 @@ function renderPrefCalendar(data) {
                         clearTimeout(timer);
                         $(this).find(".popuptext").removeClass("show");
                     });
+                    */
 
-                    $(pref_calendar_pref).append(pop_up_window)
+                    //$(pref_calendar_pref).append(pop_up_window)
                     $(pref_calendar_prefs).append(pref_calendar_pref)
                 }
 

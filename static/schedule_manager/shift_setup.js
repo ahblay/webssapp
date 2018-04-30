@@ -13,6 +13,24 @@ $.fn.exists = function () {
     return this.length !== 0;
 }
 
+/*
+$(function () {
+    new jBox('Modal', {
+        addClass: 'jBox-Notice jBox-Notice-blue',
+        responsiveHeight: true,
+        target: $("#quick-info-panel"),
+        content: "Shifts are shown in the calendar. To edit a shift, select the corresponding day and change the information in the table. Recurring shifts may be added with the 'Create Template' button.",
+        overlay: false,
+        closeOnClick: 'box',
+        //offset: {x: -10, y: 40},
+        onCloseComplete: function () {
+          this.destroy();
+        }
+
+    }).open();
+})
+*/
+
 $(function () {
     Date.prototype.addDays = function(days)
         {
@@ -305,10 +323,7 @@ function loadShiftCalendar (data) {
                     if (data[k]["date"] == allDates[date_counter][1]) {
                         var calendar_shift = document.createElement("div")
                         var shift_role = data[k]["role"]
-                        console.log(shift_role)
-                        console.log(master_roles_color_data)
-                        console.log(master_roles_color_data[shift_role])
-                        $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[shift_role])
+                        $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[shift_role])
                         $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
                         $(calendar_shift).attr("id", data[k]["_id"])
                         $(calendar_day).append(calendar_shift)
@@ -328,6 +343,14 @@ function loadShiftCalendar (data) {
 }
 
 function highlightDay () {
+    /*
+    new jBox('Notice', {
+        content: 'I\'m up here!',
+        color: 'black',
+        target: $("#quick-info-panel")
+    });
+    */
+
     var allDates = createDates(schedule_dates)
     $('#check-all-shifts').prop('checked', false);
     $(".big-calendar").find(".calendar-highlighted").removeClass("calendar-highlighted")
@@ -661,12 +684,6 @@ $(document).on("click", "#create-template-submit", function () {
         dataType: "json",
     }).done(function(){
         console.log("Sent to server.")
-        var role = "";
-        var start = "";
-
-        //var shift_to_copy = $(".big-calendar").find(".calendar-highlighted").find("#" + data["shift_id"]).clone()
-        //console.log(shift_to_copy)
-
         for (i = 0; i < data["dates"].length; i++) {
             var shift_to_copy = $(".big-calendar").find(".calendar-highlighted").find("#" + data["shift_id"]).clone()
             $(shift_to_copy).insertBefore("*[data-calendar-date='" + data["dates"][i] + "'] .calendar-date-label")
@@ -775,7 +792,7 @@ $(document).on("click", "#save-shifts", function () {
         })
         for (j = 0; j < roles.length; j++) {
             var calendar_shift = document.createElement("div")
-            $(calendar_shift).addClass("big-calendar-shift").addClass(master_roles_color_data[roles[j]])
+            $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[roles[j]])
             $(calendar_shift).text(roles[j] + " " + starts[j])
             $(calendar_shift).attr("id", ids[j])
             $(calendar_shift).insertBefore('*[data-calendar-date="' + date + '"] .calendar-date-label')

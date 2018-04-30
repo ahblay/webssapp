@@ -16,7 +16,7 @@ def get_roles():
 
     roles = list(db.roles.find())
 
-    return {index: role for index, role in enumerate([role_dict['name'] for role_dict in roles])}
+    return {str(index): role for index, role in enumerate([role_dict['name'] for role_dict in roles])}
 
 
 def get_schedule(schedule_id):
