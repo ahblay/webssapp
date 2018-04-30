@@ -256,6 +256,10 @@ select {
     overflow: visible;
 }
 
+.shift-change-modal-content {
+    display: none;
+}
+
 /* schedule tabs */
 #tab-select {
     border-bottom: 1px solid black;
