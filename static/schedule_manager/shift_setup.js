@@ -309,11 +309,16 @@ function loadShiftCalendar (data) {
     for (i = 0; i < calendar_dates.length; i++) {
         var calendar_week = document.createElement("div")
         $(calendar_week).addClass("big-calendar-week")
+        var calendar_date_row = document.createElement("div")
+        $(calendar_date_row).addClass("big-calendar-date-row")
         for (j = 0; j < calendar_dates[i].length; j++) {
             var calendar_day = document.createElement("div")
             $(calendar_day).addClass("big-calendar-day").addClass("day")
             if (calendar_dates[i][j] == "") {
                 $(calendar_day).addClass("calendar-empty")
+                var calendar_date_label = document.createElement("div")
+                $(calendar_date_label).addClass("calendar-date-label").addClass("calendar-date-empty")
+                $(calendar_date_row).append(calendar_date_label)
             }
             else {
                 $(calendar_day).attr("data-calendar-date", allDates[date_counter][1])
@@ -331,15 +336,24 @@ function loadShiftCalendar (data) {
                 }
                 var calendar_date_label = document.createElement("div")
                 $(calendar_date_label).addClass("calendar-date-label").text(calendar_dates[i][j])
-                $(calendar_day).append(calendar_date_label)
+                var add_shift_icon = document.createElement("img")
+                $(add_shift_icon).attr("src", "/static/assets/plus.png").addClass("add-shift-icon")
+                $(add_shift_icon).click(openAddShiftModal)
+                $(calendar_date_label).append(add_shift_icon)
+                $(calendar_date_row).append(calendar_date_label)
                 date_counter++
             }
 
             $(calendar_week).append(calendar_day)
         }
+        $(".big-calendar").append(calendar_date_row)
         $(".big-calendar").append(calendar_week)
     }
     return console.log("success");
+}
+
+function openAddShiftModal() {
+
 }
 
 function highlightDay () {
