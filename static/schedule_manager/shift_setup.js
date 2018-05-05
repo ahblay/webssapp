@@ -8,28 +8,18 @@ var master_roles = []
 var master_roles_color_data = {}
 var day_index = 0;
 var all_schedule_data = "default assignment";
+var selectedDay = {}
+var addShiftModal
 
 $.fn.exists = function () {
     return this.length !== 0;
 }
 
-/*
 $(function () {
-    new jBox('Modal', {
-        addClass: 'jBox-Notice jBox-Notice-blue',
-        responsiveHeight: true,
-        target: $("#quick-info-panel"),
-        content: "Shifts are shown in the calendar. To edit a shift, select the corresponding day and change the information in the table. Recurring shifts may be added with the 'Create Template' button.",
-        overlay: false,
-        closeOnClick: 'box',
-        //offset: {x: -10, y: 40},
-        onCloseComplete: function () {
-          this.destroy();
-        }
-
-    }).open();
+    addShiftModal = new jBox('Modal', {
+        attach: ".add-shift-icon"
+    });
 })
-*/
 
 $(function () {
     Date.prototype.addDays = function(days)
@@ -48,7 +38,7 @@ $(function () {
     schedule_dates = $("#shift-setup-tab").data("schedule-dates").split(" ")
     $.getJSON("/_api/get_roles", getRoles)
     //the code below runs, although pycharm interprets it as being commented out
-    //$.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+    //$.getJSON("/api/get_shift_data/" + schedule_dates[0].replace(/\//g, "") + "/" + schedule_id, buildShiftModalContent)
     $.getJSON("/api/get_all_shift_data/" + schedule_id, loadShiftCalendar)
         .done(function () {
                 console.log('Checking for selection.');
@@ -62,22 +52,13 @@ $(function () {
 });
 
 $(function () {
-    console.log('Checking for selection.');
-    console.log($('.calendar-selected'));
-    console.log($('.calendar-selected').exists());
     if (!$('.calendar-highlighted').exists()){
-        console.log('Clicking calendar day!');
-        console.log(schedule_dates);
-        console.log(schedule_dates[0]);
-        console.log($('.big-calendar-day'));
         $("*[data-calendar-date='"+ schedule_dates[0] + "']").click();
     };
 });
 
 $(() => {
     schedule_length = [... new Set(schedule_dates)].length;
-    console.log('Schedule Length')
-    console.log(schedule_length)
     if (schedule_length > 1){
         $("#page-right").prop("disabled", false);
     };
@@ -89,8 +70,10 @@ function getRoles(data) {
         master_roles.push(data[i]["name"])
         master_roles_color_data[data[i]["name"]] = data[i]["color"]
     }
+    buildShiftModalContent(data)
 }
 
+/*
 function renderShiftTable(data) {
     console.log(data)
     $(".shift-table-body").empty()
@@ -99,9 +82,10 @@ function renderShiftTable(data) {
         shift_name = data[i]["name"]
         console.log(shift_name)
         shift_data = data[i]
-        create_row(".shift-table-body", shift_name, shift_data)
+        //create_row(".shift-table-body", shift_name, shift_data)
     }
 }
+*/
 
 function createDates(list) {
     var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -140,157 +124,6 @@ $(function () {
     $("#date").html("<b>" + allDates[0][0] + "</b>");
     console.log($("#date").text());
 });
-
-function create_row(attribute, name, shift){
-    if (typeof(name) === 'undefined') name = "";
-    if (typeof(shift) === "undefined") shift = {"start": "", "end": "", "num_employees": "", "role": "", "_id": "", "name": ""};
-
-    console.log(shift)
-    let row = document.createElement("tr");
-
-    if (shift["_id"] == "")  {
-        var row_id = new ObjectId()
-        $(row).data("id", row_id.toString())
-    }
-    else {
-        $(row).data("id", shift["_id"])
-    }
-
-    //checkbox
-    let checkCell = document.createElement("td");
-    $(checkCell).css("border-top", "1px solid")
-    let label = document.createElement("label");
-    $(label).addClass("checkbox-container");
-    let span = document.createElement("span");
-    $(span).addClass("custom-checkbox");
-    let input = $(document.createElement("input"));
-    input.addClass("shift-select-checkbox");
-    input.attr("id", shift["_id"])
-
-    input.attr("type", "checkbox");
-    input.val("");
-    console.log(input);
-    $(label).append(input);
-    $(label).append(span);
-    $(checkCell).append(label);
-    $(row).append(checkCell);
-
-    //shift name
-    let nameCell = document.createElement("td");
-    $(nameCell).css("border-top", "1px solid")
-    let nameField = document.createElement("input");
-    $(nameField).addClass("shift-name")
-    if (name != "") {
-        $(nameField).attr("value", name);
-    }
-    nameCell.append(nameField);
-    row.append(nameCell);
-
-    //manage start time dropdown
-    let startTime = document.createElement("td");
-    $(startTime).css("border-top", "1px solid")
-    let startHourOptions = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5];
-    let startInput = document.createElement("input")
-    $(startInput).val(shift["start"])
-
-    $(function() {
-        $(startInput).timepicker()
-        $(startInput).timepicker('option', { useSelect: true });
-    })
-
-    let startSelect = document.createElement("select");
-
-    startTime.append(startInput)
-    row.append(startTime);
-
-    //manage end time dropdown
-    let endTime = document.createElement("td");
-    $(endTime).css("border-top", "1px solid")
-    let endOptions = [10, 11, 12, 1, 2, 3, 4, 5];
-    let endInput = document.createElement("input")
-    $(endInput).val(shift["end"])
-
-    $(function() {
-        $(endInput).timepicker()
-        $(endInput).timepicker('option', { useSelect: true });
-    })
-
-    let endSelect = document.createElement("select")
-
-    $(endTime).append(endInput)
-    row.append(endTime);
-
-    //determine length
-    let length = document.createElement("td");
-    $(length).css("border-top", "1px solid")
-    length.append(timeDifference($(startInput).val(), $(endInput).val()))
-
-    $(startInput).on("change", function () {
-        $(length).empty()
-        length.append(timeDifference($(startInput).val(), $(endInput).val()))
-    })
-    $(endInput).on("change", function () {
-        $(length).empty()
-        length.append(timeDifference($(startInput).val(), $(endInput).val()))
-    })
-
-    row.append(length);
-
-    //select number of employees
-    let numberEmps = document.createElement("td");
-    $(numberEmps).css("border-top", "1px solid")
-    let numEmpsOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    let numEmpsSelect = document.createElement("select");
-
-    for (let i=0; i < numEmpsOptions.length; i++) {
-        let option = document.createElement("option");
-        option.value = numEmpsOptions[i];
-        option.text = numEmpsOptions[i];
-        if (numEmpsOptions[i] == shift["num_employees"]) {
-            $(option).prop("selected", true)
-        }
-        numEmpsSelect.appendChild(option);
-    };
-
-    numberEmps.append(numEmpsSelect);
-    row.append(numberEmps);
-
-    //select role
-    let roles = document.createElement("td");
-    $(roles).css("border-top", "1px solid")
-
-    row.append(roles);
-    let roleOptions = master_roles;
-    let roleSelect = document.createElement("select");
-
-    for (let i=0; i < roleOptions.length; i++) {
-        let option = document.createElement("option");
-        option.value = roleOptions[i];
-        option.text = roleOptions[i];
-        if (roleOptions[i] == shift["role"]) {
-            $(option).prop("selected", true)
-        }
-        roleSelect.appendChild(option);
-    };
-
-    roles.append(roleSelect);
-
-    //template button
-    let template = document.createElement("td");
-    $(template).css("border-top", "1px solid");
-    let createTemplateButton = $("<button/>", {
-        "data-target": "#create-template-modal",
-        "data-toggle": "modal",
-        "data-shift-id": $(row).data("id"),
-        class: "btn btn-outline-dark shift-btn",
-        text: "Create Template",
-        click: openShiftModal
-    });
-    $(template).append(createTemplateButton);
-    row.append(template);
-
-    $(attribute).append(row);
-};
 
 function loadShiftCalendar (data) {
 
@@ -338,6 +171,8 @@ function loadShiftCalendar (data) {
                 $(calendar_date_label).addClass("calendar-date-label").text(calendar_dates[i][j])
                 var add_shift_icon = document.createElement("img")
                 $(add_shift_icon).attr("src", "/static/assets/plus.png").addClass("add-shift-icon")
+                $(add_shift_icon).attr("data-calendar-day", allDates[date_counter][0])
+                $(add_shift_icon).attr("data-calendar-date", allDates[date_counter][1])
                 $(add_shift_icon).click(openAddShiftModal)
                 $(calendar_date_label).append(add_shift_icon)
                 $(calendar_date_row).append(calendar_date_label)
@@ -352,8 +187,79 @@ function loadShiftCalendar (data) {
     return console.log("success");
 }
 
-function openAddShiftModal() {
+function buildShiftModalContent(data) {
+    // build recurrence functionality, including calendar graphic
+    openShiftModal()
 
+    // build endtime select dropdown
+    let endInput = document.createElement("input")
+    let endLabel = document.createElement("label")
+    $(endLabel).text("End:").css("font-size", "13px").css("padding-right", "5px")
+    $(function() {
+        $(endInput).timepicker()
+        $(endInput).timepicker('option', { useSelect: true });
+    })
+    let end_div = document.createElement("div")
+    $(end_div).attr("id", "add-shift-end-time")
+    $(end_div).append(endLabel).append(endInput)
+    $("#add-shift-modal-content").prepend(end_div)
+
+    // build starttime select dropdown
+    let startInput = document.createElement("input")
+    let startLabel = document.createElement("label")
+    $(startLabel).text("Start:").css("font-size", "13px").css("padding-right", "5px")
+    $(function() {
+        $(startInput).timepicker()
+        $(startInput).timepicker('option', { useSelect: true });
+    })
+    let start_div = document.createElement("div")
+    $(start_div).attr("id", "add-shift-start-time")
+    $(start_div).append(startLabel).append(startInput)
+    $("#add-shift-modal-content").prepend(start_div)
+
+    // build number of employees dropdown select
+    let numEmpsLabel = document.createElement("label")
+    $(numEmpsLabel).text("Employees:").css("font-size", "13px").css("padding-right", "5px")
+    let number_emps_div = document.createElement("div");
+    let numEmpsOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let numEmpsSelect = document.createElement("select");
+
+    for (let i=0; i < numEmpsOptions.length; i++) {
+        let option = document.createElement("option");
+        option.value = numEmpsOptions[i];
+        option.text = numEmpsOptions[i];
+        numEmpsSelect.appendChild(option);
+    };
+
+    $(number_emps_div).attr("id", "add-shift-number-emps")
+    $(number_emps_div).append(numEmpsLabel).append(numEmpsSelect);
+    $("#add-shift-modal-content").prepend(number_emps_div)
+
+    // build role dropdown select
+    let roleOptions = master_roles;
+    let roleSelect = document.createElement("select");
+    let roleLabel = document.createElement("label")
+    $(roleLabel).text("Role:").css("font-size", "13px").css("padding-right", "5px")
+
+    for (let i=0; i < roleOptions.length; i++) {
+        let option = document.createElement("option");
+        option.value = roleOptions[i];
+        option.text = roleOptions[i];
+        roleSelect.appendChild(option);
+    };
+
+    let roles_div = document.createElement("div")
+    $(roles_div).attr("id", "add-shift-role")
+    $(roles_div).append(roleLabel).append(roleSelect)
+    $("#add-shift-modal-content").prepend(roles_div)
+}
+
+function openAddShiftModal() {
+    let day = $(this).data("calendar-day")
+    let date = $(this).data("calendar-date")
+    selectedDay["day"] = day
+    selectedDay["date"] = date
+    addShiftModal.setTitle(day).setContent($("#create-template-modal-body")).open();
 }
 
 function highlightDay () {
@@ -373,7 +279,7 @@ function highlightDay () {
     var day = $(this).data("calendar-day")
     console.log(date)
     $("#date").empty().append("<b>" + day + "</b>")
-    $.getJSON("/api/get_shift_data/" + date.replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
+    //$.getJSON("/api/get_shift_data/" + date.replace(/\//g, "") + "/" + schedule_id, renderShiftTable)
 }
 
 function findCalendarDates () {
@@ -671,42 +577,8 @@ function removeRecurrence(recurrence_type) {
 }
 
 $(document).on("click", "#create-template-submit", function () {
-    var selectedDates = [];
-    $(".calendar").children().each(function () {
-        console.log("In calendar!")
-        if ($(this).hasClass("calendar_week")) {
-            console.log("In calendar week!!")
-            $(this).children().each(function () {
-                if ($(this).hasClass("calendar-selected")) {
-                    console.log("Found selected date!!")
-                    selectedDates.push($(this).data("date"));
-                }
-            })
-        }
-    })
-
-    var data = {"dates": selectedDates,
-                "shift_id": $("#recurrence-options").data("shift-id"),
-                "schedule_id": schedule_id,
-                "parent_shift_date": $(".calendar-highlighted").data("calendar-date")}
-    console.log(data);
-    $.ajax({
-        type: "POST",
-        url: "/update_shift_data",
-        data: JSON.stringify(data),
-        contentType: 'application/json;charset=UTF-8',
-        dataType: "json",
-    }).done(function(){
-        console.log("Sent to server.")
-        for (i = 0; i < data["dates"].length; i++) {
-            var shift_to_copy = $(".big-calendar").find(".calendar-highlighted").find("#" + data["shift_id"]).clone()
-            $(shift_to_copy).insertBefore("*[data-calendar-date='" + data["dates"][i] + "'] .calendar-date-label")
-        }
-    }).fail(function(jqXHR, status, error){
-        alert(status + ": " + error);
-    });
+    saveShift()
 });
-
 
 function timeDifference (start, end) {
 
@@ -752,6 +624,9 @@ function timeDifference (start, end) {
 var counter = 1
 
 function collectShiftData () {
+
+
+    /*
     var shift_data = [];
     $(".shift-table-body tr").each(function () {
         var shift = []
@@ -769,6 +644,7 @@ function collectShiftData () {
         shift_data.push(shift)
     })
     return shift_data;
+    */
 }
 
 $(document).on("click", "#add-shift", function () {
@@ -776,7 +652,60 @@ $(document).on("click", "#add-shift", function () {
     create_row(".shift-table-body")
 });
 
-$(document).on("click", "#save-shifts", function () {
+function saveShift () {
+    var date = selectedDay["date"]
+    var role = $("#add-shift-role").find("select").val()
+    var number_emps = $("#add-shift-number-emps").find("select").val()
+    var start = $("#add-shift-start-time").find("select").val()
+    var end = $("#add-shift-end-time").find("select").val()
+
+    var selectedDates = [];
+    $(".calendar").children().each(function () {
+        if ($(this).hasClass("calendar_week")) {
+            $(this).children().each(function () {
+                if ($(this).hasClass("calendar-selected")) {
+                    selectedDates.push($(this).data("date"));
+                }
+            })
+        }
+    })
+
+    var shift_id = new ObjectId()
+
+    var data = {"date": date,
+                "schedule_id": schedule_id,
+                "role": role,
+                "number_emps": number_emps,
+                "start": start,
+                "end": end,
+                "shift_id": shift_id.toString(),
+                "recurrence_dates": selectedDates}
+
+    console.log(data);
+    $.ajax({
+        type: "POST",
+        url: "/save_shift_data",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        dataType: "json",
+        success: function(data) {
+            for (i = 0; i < data.length; i++) {
+                var calendar_shift = document.createElement("div")
+                $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[role])
+                $(calendar_shift).text(role + " " + start)
+                $(calendar_shift).attr("id", data[i][1])
+                console.log(calendar_shift)
+                $("*[data-calendar-date='" + data[i][0] + "']").append(calendar_shift)
+            }
+        }
+    }).done(function(){
+        console.log("Sent to server.")
+    }).fail(function(jqXHR, status, error){
+        alert(status + ": " + error);
+    });
+}
+
+function saveShifts () {
     var allDates = createDates(schedule_dates)
     var current = $("#date").text()
     var i = getIndexOf(allDates, current)
@@ -814,7 +743,7 @@ $(document).on("click", "#save-shifts", function () {
     }).fail(function(jqXHR, status, error){
         alert(status + ": " + error);
     });
-});
+};
 
 function getIndexOf(arr, k) {
     for (var i = 0; i < arr.length; i++) {

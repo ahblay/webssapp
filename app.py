@@ -458,62 +458,44 @@ def _get_roles():
 
 @app.route('/save_shift_data', methods=["POST"])
 def save_shift_data():
-    shift_data = request.json["shift_data"]
-    id = request.json["_id"]
+    schedule_id = request.json["schedule_id"]
     date = request.json["date"]
+    role = request.json["role"]
+    number_emps = request.json["number_emps"]
+    start = request.json["start"]
+    end = request.json["end"]
+    shift_id = request.json["shift_id"]
+    recurrence_dates = request.json["recurrence_dates"]
     db = get_db()
+
+    if date in recurrence_dates:
+        recurrence_dates.remove(date)
 
     print('Saving shift data.')
 
-    for shift in shift_data:
-        entry = {"_id": shift[5],
-                 "name": shift[0],
-                 "start": shift[1],
-                 "end": shift[2],
-                 "num_employees": int(shift[3]),
-                 "role": shift[4],
-                 "date": date,
-                 "parent_shift": shift[5]}
+    entry = {"_id": shift_id,
+             "start": start,
+             "end": end,
+             "num_employees": number_emps,
+             "role": role,
+             "date": date,
+             "parent_shift": shift_id}
 
-        db.schedules.update({'_id': ObjectId(id)},
-                            {'$pull': {'shifts': {'_id': entry['_id']}}})
-        db.schedules.update({'_id': ObjectId(id)},
+    db.schedules.update({'_id': ObjectId(schedule_id)},
+                        {'$pull': {'shifts': {'_id': entry['_id']}}})
+    db.schedules.update({'_id': ObjectId(schedule_id)},
+                        {'$push': {"shifts": entry}})
+
+    date_id_for_callback = [[date, shift_id]]
+
+    for date in recurrence_dates:
+        entry["date"] = date
+        entry["_id"] = str(ObjectId())
+        date_id_for_callback.append([entry["date"], entry["_id"]])
+        db.schedules.update({'_id': ObjectId(schedule_id)},
                             {'$push': {"shifts": entry}})
 
-    return jsonify({"success": True, "message": "Database updated with shifts."})
-
-
-@app.route('/update_shift_data', methods=["POST"])
-def update_shift_data():
-    dates = request.json["dates"]
-    shift_id = request.json["shift_id"]
-    schedule_id = request.json["schedule_id"]
-    parent_shift_date = request.json["parent_shift_date"]
-    shift_to_copy = None
-
-    db = get_db()
-    all_shifts = list(db.schedules.find({"_id": ObjectId(schedule_id)}, {"shifts": 1, "days": 1}))[0]["shifts"]
-
-    for shift in all_shifts:
-        if shift["_id"] == shift_id:
-            shift_to_copy = shift
-            break
-
-    recurrence_days = dates
-
-    recurrence_days = list(set(recurrence_days))
-
-    if parent_shift_date in recurrence_days:
-        recurrence_days.remove(parent_shift_date)
-
-    for date in recurrence_days:
-        shift_to_copy["parent_shift"] = shift_id
-        shift_to_copy["date"] = date
-        shift_to_copy["_id"] = str(ObjectId())
-        db.schedules.update({'_id': ObjectId(schedule_id)},
-                            {'$push': {"shifts": shift_to_copy}})
-
-    return jsonify({"success": True, "message": "Recurring shifts added to database."})
+    return jsonify(date_id_for_callback)
 
 
 @app.route('/save_pref_data', methods=['POST'])

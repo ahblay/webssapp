@@ -16,6 +16,34 @@
     border-bottom: 0;
 }
 
+/* new table style class */
+.new-table-basic {
+    border: solid 1px #939b9e;
+    border-collapse: separate;
+    border-radius: 5px;
+    border-spacing: 0px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.new-table-basic thead th {
+    height: 30px;
+    font-size: 13px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-weight: normal;
+    background: #343a40;
+    color: #ffffff;
+    border-radius: 3px 3px 0 0;
+    border-top: 0;
+    border-bottom: 0;
+}
+.new-table-basic tbody td {
+    height: 30px;
+    font-size: 13px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
 /* input field style */
 input {
     border: 1px solid;
@@ -26,11 +54,11 @@ input {
 
 /* select dropdown style */
 select {
-    width: 120px;
+    border: solid 1px #939b9e;
+    width: 100px;
     padding: 0 0 0 5px;
-    font-size: 16px;
-    border: 1px solid;
-    border-radius: 5px;
+    font-size: 13px;
+    border-radius: 3px;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -346,21 +374,24 @@ select {
     grid-template-columns: repeat(7, 1fr);
 }
 .calendar_week {
-    grid-auto-rows: 75px;
+    grid-auto-rows: 40px;
     text-align: right;
 }
 .calendar_header {
     background-color: #343a40;
-    grid-auto-rows: 50px;
+    grid-auto-rows: 30px;
     align-items: center;
     text-align: center;
+    font-size: 13px;
 }
 .calendar_day {
-    padding: 7px;
+    padding: 2px;
+    padding-right: 4px;
+    font-size: 13px;
 }
 .calendar {
     background-color: white;
-    border: 1px solid #000000;
+    border: solid 1px #939b9e;
     border-radius: 5px;
 }
 .calendar_header > div {
@@ -368,8 +399,8 @@ select {
     font-weight: normal;
 }
 .calendar_day {
-    border-right: 1px solid #000000;
-    border-top: 1px solid #000000;
+    border-top: solid 1px #939b9e;
+    border-right: solid 1px #939b9e;
 }
 .calendar_day:last-child {
     border-right: 0;
@@ -391,7 +422,7 @@ select {
     text-align: right;
 }
 .big-calendar-header {
-    background-color: #444;
+    background-color: #343a40;
     grid-auto-rows: 30px;
     font-size: 13px;
     align-items: center;
@@ -669,6 +700,11 @@ select {
 }
 .sp-preview-inner {
     border-radius: 4px;
+}
+
+/* jBox modal changes */
+.jBox-overlay {
+    background-color: rgba(0, 0, 0, 0) !important;
 }
 
 /* just for funsies */
