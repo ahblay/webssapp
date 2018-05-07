@@ -729,10 +729,10 @@ function editShift (edit_type) {
     var data = {"date": shift_info["date"],
                 "schedule_id": schedule_id,
                 "role": role,
-                "number_emps": number_emps,
+                "num_employees": number_emps,
                 "start": start,
                 "end": end,
-                "shift_id": shift_info["_id"],
+                "_id": shift_info["_id"],
                 "parent_shift": shift_info["parent_shift"],
                 "edit_type": edit_type}
 
@@ -744,15 +744,22 @@ function editShift (edit_type) {
         data: JSON.stringify(data),
         contentType: 'application/json;charset=UTF-8',
         dataType: "json",
-        success: function(data) {
-            if (data["edit_type"] == "Apply" || data["edit_type"] == "Apply All") {
-                for (i = 0; i < data["date_id"].length; i++) {
-                    $(".big-calendar").find("#" + data["date_id"][i][1]).css("background-color", master_roles_color_data[role]).text(role + " " + start)
+        success: function(callback_data) {
+            console.log(callback_data)
+            if (callback_data["edit_type"] == "Apply" || callback_data["edit_type"] == "Apply All") {
+                for (i = 0; i < callback_data["date_id"].length; i++) {
+                    let shift = $(".big-calendar").find("#" + callback_data["date_id"][i][1])
+                    console.log(data)
+                    shift.css("background-color", master_roles_color_data[role]).text(role + " " + start)
+                    shift.data("all-info", data)
+                    console.log(shift)
                 }
             }
-            if (data["edit_type"] == "Delete" || data["edit_type"] == "Delete All") {
-                for (i = 0; i < data["date_id"].length; i++) {
-                    $(".big-calendar").find("#" + data["date_id"][i][1]).remove()
+            if (callback_data["edit_type"] == "Delete" || callback_data["edit_type"] == "Delete All") {
+                for (i = 0; i < callback_data["date_id"].length; i++) {
+                    let shift = $(".big-calendar").find("#" + callback_data["date_id"][i][1])
+                    console.log(shift)
+                    shift.remove()
                 }
             }
         }
@@ -786,10 +793,11 @@ function saveShift () {
     var data = {"date": date,
                 "schedule_id": schedule_id,
                 "role": role,
-                "number_emps": number_emps,
+                "num_employees": number_emps,
                 "start": start,
                 "end": end,
-                "shift_id": shift_id.toString(),
+                "_id": shift_id.toString(),
+                "parent_shift": shift_id.toString(),
                 "recurrence_dates": selectedDates}
 
     $.ajax({
@@ -798,14 +806,15 @@ function saveShift () {
         data: JSON.stringify(data),
         contentType: 'application/json;charset=UTF-8',
         dataType: "json",
-        success: function(data) {
-            for (i = 0; i < data.length; i++) {
+        success: function(callback_data) {
+            for (i = 0; i < callback_data.length; i++) {
                 var calendar_shift = document.createElement("div")
                 $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[role])
                 $(calendar_shift).text(role + " " + start)
-                $(calendar_shift).attr("id", data[i][1])
-                //$(calendar_shift).click(openEditShiftModal)
-                $("*[data-calendar-date='" + data[i][0] + "']").append(calendar_shift)
+                $(calendar_shift).attr("id", callback_data[i][1])
+                $(calendar_shift).data("all-info", data)
+                $(calendar_shift).click(openEditShiftModal)
+                $("*[data-calendar-date='" + callback_data[i][0] + "']").append(calendar_shift)
             }
         }
     }).done(function(){

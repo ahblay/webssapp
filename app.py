@@ -462,10 +462,11 @@ def save_shift_data():
     schedule_id = request.json["schedule_id"]
     date = request.json["date"]
     role = request.json["role"]
-    number_emps = request.json["number_emps"]
+    number_emps = request.json["num_employees"]
     start = request.json["start"]
     end = request.json["end"]
-    shift_id = request.json["shift_id"]
+    shift_id = request.json["_id"]
+    parent_shift = request.json["parent_shift"]
     recurrence_dates = request.json["recurrence_dates"]
     db = get_db()
 
@@ -480,7 +481,7 @@ def save_shift_data():
              "num_employees": number_emps,
              "role": role,
              "date": date,
-             "parent_shift": shift_id}
+             "parent_shift": parent_shift}
 
     db.schedules.update({'_id': ObjectId(schedule_id)},
                         {'$pull': {'shifts': {'_id': entry['_id']}}})
@@ -504,10 +505,10 @@ def update_shift_data():
     schedule_id = request.json["schedule_id"]
     date = request.json["date"]
     role = request.json["role"]
-    number_emps = request.json["number_emps"]
+    number_emps = request.json["num_employees"]
     start = request.json["start"]
     end = request.json["end"]
-    shift_id = request.json["shift_id"]
+    shift_id = request.json["_id"]
     parent_shift = request.json["parent_shift"]
     edit_type = request.json["edit_type"]
 
