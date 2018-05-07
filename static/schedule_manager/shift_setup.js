@@ -265,7 +265,7 @@ function openEditShiftModal () {
     })
     $(endInput).val(shift_data["end"])
     let end_div = document.createElement("div")
-    $(end_div).attr("id", "add-shift-end-time")
+    $(end_div).attr("id", "edit-shift-end-time")
     $(end_div).append(endLabel).append(endInput)
     $("#edit-shift-modal-content").prepend(end_div)
 
@@ -279,7 +279,7 @@ function openEditShiftModal () {
     })
     $(startInput).val(shift_data["start"])
     let start_div = document.createElement("div")
-    $(start_div).attr("id", "add-shift-start-time")
+    $(start_div).attr("id", "edit-shift-start-time")
     $(start_div).append(startLabel).append(startInput)
     $("#edit-shift-modal-content").prepend(start_div)
 
@@ -298,7 +298,7 @@ function openEditShiftModal () {
     };
 
     $(numEmpsSelect).val(shift_data["num_employees"])
-    $(number_emps_div).attr("id", "add-shift-number-emps")
+    $(number_emps_div).attr("id", "edit-shift-number-emps")
     $(number_emps_div).append(numEmpsLabel).append(numEmpsSelect);
     $("#edit-shift-modal-content").prepend(number_emps_div)
 
@@ -317,11 +317,12 @@ function openEditShiftModal () {
 
     $(roleSelect).val(shift_data["role"])
     let roles_div = document.createElement("div")
-    $(roles_div).attr("id", "add-shift-role")
+    $(roles_div).attr("id", "edit-shift-role")
     $(roles_div).append(roleLabel).append(roleSelect)
     $("#edit-shift-modal-content").prepend(roles_div)
 
     console.log(shift_data)
+    $("#save-edit-shift-modal").data("all-info", shift_data)
 
     editShiftModal.setTitle(shift_data["role"]).setContent($("#edit-shift-modal-body"));
 
@@ -646,6 +647,30 @@ $(document).on("click", "#create-template-submit", function () {
     saveShift()
 });
 
+$(document).on("click", "#save-edit-shift-modal", function () {
+    editShiftModal.close()
+    var edit_type = $(this).text();
+    editShift(edit_type);
+});
+
+$(document).on("click", "#delete-edit-shift-modal", function () {
+    editShiftModal.close()
+    var edit_type = $(this).text();
+    editShift(edit_type);
+});
+
+$(document).on("click", "#save-all-edit-shift-modal", function () {
+    editShiftModal.close()
+    var edit_type = $(this).text();
+    editShift(edit_type);
+});
+
+$(document).on("click", "#delete-all-edit-shift-modal", function () {
+    editShiftModal.close()
+    var edit_type = $(this).text();
+    editShift(edit_type);
+});
+
 $(document).on("click", "#close-add-shift-modal", function () {
     addShiftModal.close()
 });
@@ -693,6 +718,51 @@ function timeDifference (start, end) {
 
 var counter = 1
 
+function editShift (edit_type) {
+    var shift_info = $("#save-edit-shift-modal").data("all-info")
+
+    var role = $("#edit-shift-role").find("select").val()
+    var number_emps = $("#edit-shift-number-emps").find("select").val()
+    var start = $("#edit-shift-start-time").find("select").val()
+    var end = $("#edit-shift-end-time").find("select").val()
+
+    var data = {"date": shift_info["date"],
+                "schedule_id": schedule_id,
+                "role": role,
+                "number_emps": number_emps,
+                "start": start,
+                "end": end,
+                "shift_id": shift_info["_id"],
+                "parent_shift": shift_info["parent_shift"],
+                "edit_type": edit_type}
+
+    console.log(data)
+
+    $.ajax({
+        type: "POST",
+        url: "/update_shift_data",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        dataType: "json",
+        success: function(data) {
+            if (data["edit_type"] == "Apply" || data["edit_type"] == "Apply All") {
+                for (i = 0; i < data["date_id"].length; i++) {
+                    $(".big-calendar").find("#" + data["date_id"][i][1]).css("background-color", master_roles_color_data[role]).text(role + " " + start)
+                }
+            }
+            if (data["edit_type"] == "Delete" || data["edit_type"] == "Delete All") {
+                for (i = 0; i < data["date_id"].length; i++) {
+                    $(".big-calendar").find("#" + data["date_id"][i][1]).remove()
+                }
+            }
+        }
+    }).done(function(){
+        console.log("Sent to server.")
+    }).fail(function(jqXHR, status, error){
+        alert(status + ": " + error);
+    });
+}
+
 function saveShift () {
     var date = selectedDay["date"]
     var role = $("#add-shift-role").find("select").val()
@@ -734,6 +804,7 @@ function saveShift () {
                 $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[role])
                 $(calendar_shift).text(role + " " + start)
                 $(calendar_shift).attr("id", data[i][1])
+                //$(calendar_shift).click(openEditShiftModal)
                 $("*[data-calendar-date='" + data[i][0] + "']").append(calendar_shift)
             }
         }

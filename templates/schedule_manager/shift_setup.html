@@ -106,7 +106,7 @@
             style="margin-left: 1em;">Save</button>
 </div>
 
-<!--Add shift modal-->
+<!--Edit shift modal-->
 <div id="edit-shift-modal-body" style="display: none;">
     <div class="row">
         <div class="col-md-1">
@@ -119,8 +119,20 @@
     </div>
     <button type="button"
             class="btn btn-sm btn-outline-dark float-right"
+            id="save-all-edit-shift-modal"
+            style="margin-left: 1em;">Apply All</button>
+    <button type="button"
+            class="btn btn-sm btn-outline-dark float-right"
             id="save-edit-shift-modal"
-            style="margin-left: 1em;">Save</button>
+            style="margin-left: 1em;">Apply</button>
+    <button type="button"
+            class="btn btn-sm btn-outline-danger float-left"
+            id="delete-all-edit-shift-modal"
+            style="margin-left: 1em;">Delete All</button>
+    <button type="button"
+            class="btn btn-sm btn-outline-danger float-left"
+            id="delete-edit-shift-modal"
+            style="margin-left: 1em;">Delete</button>
 </div>
 
 <!--script file path because it doesn't run when placed in schedule_manager_base.html-->
