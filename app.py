@@ -498,6 +498,11 @@ def save_shift_data():
     return jsonify(date_id_for_callback)
 
 
+@app.route('/update_shift_data', methods=['POST'])
+def update_shift_data():
+    return "blah"
+
+
 @app.route('/save_pref_data', methods=['POST'])
 def save_pref_data():
     pref_data = request.json["pref_data"]
