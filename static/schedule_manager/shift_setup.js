@@ -746,10 +746,11 @@ function editShift (edit_type) {
         dataType: "json",
         success: function(callback_data) {
             console.log(callback_data)
+            console.log($(".big-calendar").find("#" + callback_data["date_id"][0][1]))
             if (callback_data["edit_type"] == "Apply" || callback_data["edit_type"] == "Apply All") {
                 for (i = 0; i < callback_data["date_id"].length; i++) {
                     let shift = $(".big-calendar").find("#" + callback_data["date_id"][i][1])
-                    console.log(data)
+                    console.log(shift)
                     shift.css("background-color", master_roles_color_data[role]).text(role + " " + start)
                     shift.data("all-info", data)
                     console.log(shift)

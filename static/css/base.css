@@ -130,15 +130,22 @@ select {
     left: 2px;
 }
 
-/* alert upper border */
+/* alert upper border
 .line-default {
     border-top: 3px solid #4794de;
+    z-index: 19;
 }
 .line-active {
     border-top: 3px solid #51a53d;
+    z-index: 19;
 }
 .line-upcoming {
     border-top: 3px solid #e6b829;
+    z-index: 19;
+}
+*/
+.navbar {
+    border-bottom: 3px solid #522052 !important;
 }
 
 /* line lower border */
@@ -152,7 +159,7 @@ select {
     border-bottom: 5px solid #e6b829;
 }
 
-/* title row background */
+/* title row background
 .alert-default #title-row {
     background-color: #f0f6fd;
 }
@@ -171,6 +178,7 @@ select {
 .alert-upcoming #tab-select {
     background-color: #fdf6e1;
 }
+*/
 
 /*alert styling
 .alert-default .alert {
@@ -292,12 +300,14 @@ select {
 #tab-select {
     border-bottom: 1px solid black;
 }
+/*
 .selected-tab {
     background-color: white !important;
     color: black !important;
     border-bottom: 1px solid white !important;
     z-index: 10;
 }
+*/
 
 #tab-select button {
     background-color: #eeeeee;
@@ -690,6 +700,9 @@ select {
 .nav-link {
     font-size: 15px;
 }
+.bg-dark {
+    background: purple !important;
+}
 
 /* color picker */
 .sp-replacer {
@@ -711,6 +724,68 @@ select {
 #edit-shift-jBox-overlay {
     background-color: rgba(0, 0, 0, 0.1) !important;
 }
+
+/* side navigation bar */
+.sidenav {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    height: 100%;
+    width: 65px;
+    position: fixed;
+    z-index: 18;
+    top: 0;
+    left: 0;
+    background-color: #343a40;
+    overflow-x: hidden;
+    padding-top: 45px;
+    opacity: 1;
+}
+.sidenav-hidden {
+    display: none;
+}
+.sidenav-item {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+.icon-label {
+    font-size: 13px;
+}
+.select-view-highlighted {
+    background: #000;
+}
+.icon-highlighted {
+    color: purple;
+}
+#shifts-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#employees-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#preferences-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#options-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#schedule-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+
 
 /* just for funsies */
 .ugly {
