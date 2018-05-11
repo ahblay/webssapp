@@ -976,6 +976,48 @@ def create_schedule(schedule_id=None):
 
     return jsonify(schedule.to_dict())
 
+@app.route('/_change_shift_assignment', methods=['POST'])
+def change_shift_assignment():
+
+    schedule_id = request.json['schedule_id']
+    date = request.json['date']
+    emp_id = request.json['emp_id']
+    shift = request.json['shift']
+
+    db = get_db()
+
+    schedule = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)}))
+    output = schedule['output']
+
+    dates = [day.strftime("%m/%d/%Y") for day in schedule['days']]
+    print(dates)
+    day_index = dates.index(date)
+
+    emp_index = schedule['employees'].index(next((emp for emp in schedule['employees'] if str(emp['_id']) == emp_id)))
+    print(day_index, emp_index)
+
+    emps_work_for_day = {}
+    if shift == "OFF":
+        emps_work_for_day = {"working": False}
+    else:
+        emps_work_for_day = {
+            "working": True,
+            "employee_id": emp_id,
+            "shift_id": shift['_id'],
+            "role": list(schedule["roles"].values()).index(shift["role"]),
+            "declined": False,
+            "shift": shift['start'] + "-" + shift['end']}
+    print(emps_work_for_day)
+    output[emp_index][day_index] = emps_work_for_day
+    pprint.pprint(output)
+
+    db.schedules.update({'_id': ObjectId(schedule_id)}, {'$set': {'output': output}})
+    schedule = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)}))
+    pprint.pprint(schedule)
+    schedule = ScheduleProcessor(schedule)
+    schedule.preprocess()
+
+    return jsonify(schedule.to_dict())
 
 if __name__ == '__main__':
     app.run(debug=True)

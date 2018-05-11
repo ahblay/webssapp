@@ -292,8 +292,22 @@ select {
     overflow: visible;
 }
 
-.shift-change-modal-content {
+*[id^="shift-issue-warning-icon-"] *[id^="shift-issue-warning-text-"]{
+    display: inline-block;
+};
+
+.jbox-content {
     display: none;
+}
+
+.shift-change-modal-cancel {
+    float: right;
+    display: inline-block;
+}
+
+.shift-change-modal-change{
+    float: right;
+    display: inline-block;
 }
 
 /* schedule tabs */
