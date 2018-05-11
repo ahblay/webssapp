@@ -1,16 +1,3 @@
-<!--
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert w100" role="alert">
-            <p>
-                Shifts are organized by day. The day may be changed using the arrow buttons on the right. Shift tables are
-                separated and arranged by role.
-            </p>
-        </div>
-    </div>
-</div>
--->
-
 <div class="row">
     <!-- border -->
     <div class="col-md-1">
@@ -18,8 +5,6 @@
 
     <!--main content-->
     <div class="col-md-10">
-
-        <br>
 
         <div class="big-calendar">
             <div class="big-calendar-header">
@@ -34,49 +19,6 @@
         </div>
         <br>
 
-        <div class="row" style="padding-bottom: 1em;">
-            <div class="col-sm-6">
-                <h5 id="date"></h5>
-            </div>
-
-            <div class="col-sm-6">
-                <div class="btn-group float-right" id="page-select" style="padding-left: 1em;">
-                        <button type="button" class="btn btn-outline-dark" id="page-left" disabled>&laquo;</button>
-                        <button type="button" class="btn btn-outline-dark" id="page-right" disabled>&raquo;</button>
-                </div>
-                <div class="btn-group float-right">
-                    <button type="button" class="btn btn-outline-dark float-right" id="add-shift">Add Shift</button>
-                    <button type="button" class="btn btn-outline-dark float-right" id="save-shifts">Save Shifts</button>
-                    <button type="button" class="btn btn-outline-danger float-right" id="remove-shifts" disabled>Remove Selected</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-hover rounded-table-basic shift-table">
-                    <thead>
-                        <tr>
-                            <th data-dbkey="checkbox" scope="col">
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="" id="check-all-shifts">
-                                    <span class="custom-checkbox" style="top: -12px !important;">
-                                    </span>
-                                </label>
-                            </th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Start Time</th>
-                            <th scope="col">End Time</th>
-                            <th scope="col">Length</th>
-                            <th scope="col">Employees</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Add Template</th>
-                        </tr>
-                    </thead>
-                    <tbody class="shift-table-body"></tbody>
-                </table>
-            </div>
-        </div>
     </div>
 
     <!-- border -->
@@ -85,94 +27,110 @@
 
 </div>
 
-<!-- shift templating modal -->
-<div class="modal fade" id="create-template-modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Create Template</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="create-template-modal-body">
+
+<!--Add shift modal-->
+<div id="create-template-modal-body" style="display: none;">
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-10" id="add-shift-modal-content">
+            <form>
+
+                <table class="table new-table-basic" id="recurrence-options">
+                    <thead>
+                        <tr>
+                            <th>Add Recurrence:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Weekends</td>
+                        <tr>
+                            <td>Weekdays</td>
+                        </tr>
+                        <tr>
+                            <td>If the day has 6 letters</td>
+                        </tr>
+                    </tbody>
+                </table>
+
                 <div class="row">
-                    <div class="col-md-1">
-                    </div>
-                    <div class="col-md-10">
-                        <form>
+                    <div class="col-md-12">
+                        <select id="select-day">
+                            <option selected>Select day</option>
+                            <option>Sunday</option>
+                            <option>Monday</option>
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                        </select>
 
-                            <table class="table rounded-table-basic" id="recurrence-options">
-                                <thead>
-                                    <tr>
-                                        <th>Add Recurrence:</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="border-top: 1px solid;">Weekends</td>
-                                    <tr>
-                                        <td style="border-top: 1px solid;">Weekdays</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top: 1px solid;">If the day has 6 letters</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <select id="select-day">
-                                        <option selected>Select day</option>
-                                        <option>Sunday</option>
-                                        <option>Monday</option>
-                                        <option>Tuesday</option>
-                                        <option>Wednesday</option>
-                                        <option>Thursday</option>
-                                        <option>Friday</option>
-                                        <option>Saturday</option>
-                                    </select>
-
-                                    <select id="select-frequency" style="width: 160px;">
-                                        <option selected>Select frequency</option>
-                                        <option>Every day</option>
-                                        <option>Every 2nd day</option>
-                                        <option>Every 3rd day</option>
-                                        <option>Every 4th day</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <br>
-
-                            <div class="calendar">
-                                <div class="calendar_header">
-                                    <div>Sun</div>
-                                    <div>Mon</div>
-                                    <div>Tues</div>
-                                    <div>Wed</div>
-                                    <div>Thurs</div>
-                                    <div>Fri</div>
-                                    <div>Sat</div>
-                                </div>
-                            </div>
-
-                            <br>
-
-                        </form>
-                    </div>
-                    <div class="col-md-1">
+                        <select id="select-frequency" style="width: 160px;">
+                            <option selected>Select frequency</option>
+                            <option>Every day</option>
+                            <option>Every 2nd day</option>
+                            <option>Every 3rd day</option>
+                            <option>Every 4th day</option>
+                        </select>
                     </div>
                 </div>
-                <button type="button"
-                        class="btn btn-outline-dark float-right"
-                        id="create-template-submit"
-                        style="margin-left: 1em;"
-                        data-dismiss="modal">Save</button>
-                <button type="button" class="btn btn-outline-danger float-right" data-dismiss="modal">Close</button>
-            </div>
+
+                <br>
+
+                <div class="calendar">
+                    <div class="calendar_header">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tues</div>
+                        <div>Wed</div>
+                        <div>Thurs</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                </div>
+
+                <br>
+
+            </form>
+        </div>
+        <div class="col-md-1">
         </div>
     </div>
+    <button type="button"
+            class="btn btn-sm btn-outline-dark float-right"
+            id="create-template-submit"
+            style="margin-left: 1em;">Save</button>
+</div>
+
+<!--Edit shift modal-->
+<div id="edit-shift-modal-body" style="display: none;">
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-10" id="edit-shift-modal-content">
+
+        </div>
+        <div class="col-md-1">
+        </div>
+    </div>
+    <button type="button"
+            class="btn btn-sm btn-outline-dark float-right"
+            id="save-all-edit-shift-modal"
+            style="margin-left: 1em;">Apply All</button>
+    <button type="button"
+            class="btn btn-sm btn-outline-dark float-right"
+            id="save-edit-shift-modal"
+            style="margin-left: 1em;">Apply</button>
+    <button type="button"
+            class="btn btn-sm btn-outline-danger float-left"
+            id="delete-all-edit-shift-modal"
+            style="margin-left: 1em;">Delete All</button>
+    <button type="button"
+            class="btn btn-sm btn-outline-danger float-left"
+            id="delete-edit-shift-modal"
+            style="margin-left: 1em;">Delete</button>
 </div>
 
 <!--script file path because it doesn't run when placed in schedule_manager_base.html-->

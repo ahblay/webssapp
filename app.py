@@ -338,6 +338,7 @@ def employee_setup():
 
     return render_template("employee_master.html", employees=employees, schedules=schedules)
 
+
 @login_required
 @app.route('/roles')
 def role_setup():
@@ -458,62 +459,112 @@ def _get_roles():
 
 @app.route('/save_shift_data', methods=["POST"])
 def save_shift_data():
-    shift_data = request.json["shift_data"]
-    id = request.json["_id"]
+    schedule_id = request.json["schedule_id"]
     date = request.json["date"]
+    role = request.json["role"]
+    number_emps = request.json["num_employees"]
+    start = request.json["start"]
+    end = request.json["end"]
+    shift_id = request.json["_id"]
+    parent_shift = request.json["parent_shift"]
+    recurrence_dates = request.json["recurrence_dates"]
     db = get_db()
+
+    if date in recurrence_dates:
+        recurrence_dates.remove(date)
 
     print('Saving shift data.')
 
-    for shift in shift_data:
-        entry = {"_id": shift[5],
-                 "name": shift[0],
-                 "start": shift[1],
-                 "end": shift[2],
-                 "num_employees": int(shift[3]),
-                 "role": shift[4],
-                 "date": date,
-                 "parent_shift": shift[5]}
+    entry = {"_id": shift_id,
+             "start": start,
+             "end": end,
+             "num_employees": number_emps,
+             "role": role,
+             "date": date,
+             "parent_shift": parent_shift}
 
-        db.schedules.update({'_id': ObjectId(id)},
-                            {'$pull': {'shifts': {'_id': entry['_id']}}})
-        db.schedules.update({'_id': ObjectId(id)},
+    db.schedules.update({'_id': ObjectId(schedule_id)},
+                        {'$pull': {'shifts': {'_id': entry['_id']}}})
+    db.schedules.update({'_id': ObjectId(schedule_id)},
+                        {'$push': {"shifts": entry}})
+
+    date_id_for_callback = [[date, shift_id]]
+
+    for date in recurrence_dates:
+        entry["date"] = date
+        entry["_id"] = str(ObjectId())
+        date_id_for_callback.append([entry["date"], entry["_id"]])
+        db.schedules.update({'_id': ObjectId(schedule_id)},
                             {'$push': {"shifts": entry}})
 
-    return jsonify({"success": True, "message": "Database updated with shifts."})
+    return jsonify(date_id_for_callback)
 
 
-@app.route('/update_shift_data', methods=["POST"])
+@app.route('/update_shift_data', methods=['POST'])
 def update_shift_data():
-    dates = request.json["dates"]
-    shift_id = request.json["shift_id"]
     schedule_id = request.json["schedule_id"]
-    parent_shift_date = request.json["parent_shift_date"]
-    shift_to_copy = None
+    date = request.json["date"]
+    role = request.json["role"]
+    number_emps = request.json["num_employees"]
+    start = request.json["start"]
+    end = request.json["end"]
+    shift_id = request.json["_id"]
+    parent_shift = request.json["parent_shift"]
+    edit_type = request.json["edit_type"]
 
     db = get_db()
-    all_shifts = list(db.schedules.find({"_id": ObjectId(schedule_id)}, {"shifts": 1, "days": 1}))[0]["shifts"]
-
-    for shift in all_shifts:
+    shifts = list(db.schedules.find_one({"_id": ObjectId(schedule_id)})["shifts"])
+    role_to_be_updated = ""
+    for shift in shifts:
         if shift["_id"] == shift_id:
-            shift_to_copy = shift
+            role_to_be_updated = shift["role"]
             break
 
-    recurrence_days = dates
+    date_id_for_callback = [[date, shift_id]]
 
-    recurrence_days = list(set(recurrence_days))
+    entry = {"_id": shift_id,
+             "start": start,
+             "end": end,
+             "num_employees": number_emps,
+             "role": role,
+             "date": date,
+             "parent_shift": parent_shift}
 
-    if parent_shift_date in recurrence_days:
-        recurrence_days.remove(parent_shift_date)
-
-    for date in recurrence_days:
-        shift_to_copy["parent_shift"] = shift_id
-        shift_to_copy["date"] = date
-        shift_to_copy["_id"] = str(ObjectId())
+    if edit_type == "Apply":
         db.schedules.update({'_id': ObjectId(schedule_id)},
-                            {'$push': {"shifts": shift_to_copy}})
+                            {'$pull': {'shifts': {'_id': entry['_id']}}})
+        db.schedules.update({'_id': ObjectId(schedule_id)},
+                            {'$push': {"shifts": entry}})
+        return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
 
-    return jsonify({"success": True, "message": "Recurring shifts added to database."})
+    if edit_type == "Apply All":
+        for shift in shifts:
+            if shift["role"] == role_to_be_updated:
+                db.schedules.update({'shifts._id': shift["_id"]},
+                                    {'$set': {'shifts.$.role': entry['role']}})
+                db.schedules.update({'shifts._id': shift["_id"]},
+                                    {'$set': {'shifts.$.start': entry['start']}})
+                db.schedules.update({'shifts._id': shift["_id"]},
+                                    {'$set': {'shifts.$.end': entry['end']}})
+                db.schedules.update({'shifts._id': shift["_id"]},
+                                    {'$set': {'shifts.$.num_employees': entry['num_employees']}})
+                date_id_for_callback.append([shift["date"], shift["_id"]])
+        return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
+
+    if edit_type == "Delete":
+        db.schedules.update({'_id': ObjectId(schedule_id)},
+                            {'$pull': {'shifts': {'_id': entry['_id']}}})
+        return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
+
+    if edit_type == "Delete All":
+        for shift in shifts:
+            if shift["role"] == role_to_be_updated:
+                db.schedules.update({'_id': ObjectId(schedule_id)},
+                                    {'$pull': {'shifts': {'_id': shift['_id']}}})
+                date_id_for_callback.append([shift["date"], shift["_id"]])
+        return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
+
+    return jsonify({"success": False, "message": "Failed to apply any changes."})
 
 
 @app.route('/save_pref_data', methods=['POST'])

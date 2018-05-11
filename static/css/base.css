@@ -16,6 +16,34 @@
     border-bottom: 0;
 }
 
+/* new table style class */
+.new-table-basic {
+    border: solid 1px #939b9e;
+    border-collapse: separate;
+    border-radius: 5px;
+    border-spacing: 0px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.new-table-basic thead th {
+    height: 30px;
+    font-size: 13px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-weight: normal;
+    background: #343a40;
+    color: #ffffff;
+    border-radius: 3px 3px 0 0;
+    border-top: 0;
+    border-bottom: 0;
+}
+.new-table-basic tbody td {
+    height: 30px;
+    font-size: 13px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
 /* input field style */
 input {
     border: 1px solid;
@@ -26,11 +54,11 @@ input {
 
 /* select dropdown style */
 select {
-    width: 120px;
+    border: solid 1px #939b9e;
+    width: 100px;
     padding: 0 0 0 5px;
-    font-size: 16px;
-    border: 1px solid;
-    border-radius: 5px;
+    font-size: 13px;
+    border-radius: 3px;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -102,15 +130,22 @@ select {
     left: 2px;
 }
 
-/* alert upper border */
+/* alert upper border
 .line-default {
     border-top: 3px solid #4794de;
+    z-index: 19;
 }
 .line-active {
     border-top: 3px solid #51a53d;
+    z-index: 19;
 }
 .line-upcoming {
     border-top: 3px solid #e6b829;
+    z-index: 19;
+}
+*/
+.navbar {
+    border-bottom: 3px solid #522052 !important;
 }
 
 /* line lower border */
@@ -124,7 +159,7 @@ select {
     border-bottom: 5px solid #e6b829;
 }
 
-/* title row background */
+/* title row background
 .alert-default #title-row {
     background-color: #f0f6fd;
 }
@@ -143,6 +178,7 @@ select {
 .alert-upcoming #tab-select {
     background-color: #fdf6e1;
 }
+*/
 
 /*alert styling
 .alert-default .alert {
@@ -278,12 +314,14 @@ select {
 #tab-select {
     border-bottom: 1px solid black;
 }
+/*
 .selected-tab {
     background-color: white !important;
     color: black !important;
     border-bottom: 1px solid white !important;
     z-index: 10;
 }
+*/
 
 #tab-select button {
     background-color: #eeeeee;
@@ -334,6 +372,7 @@ select {
     background: #dd4245;
     color: #000000;
 }
+/*
 .calendar-highlighted > .calendar-date-label {
     box-shadow: inset 2px 2px 4px #272727;
 }
@@ -350,6 +389,7 @@ select {
 .calendar-empty-day {
     background-color: #72777a;
 }
+*/
 
 /* calendar */
 .calendar_week,
@@ -358,21 +398,24 @@ select {
     grid-template-columns: repeat(7, 1fr);
 }
 .calendar_week {
-    grid-auto-rows: 75px;
+    grid-auto-rows: 40px;
     text-align: right;
 }
 .calendar_header {
     background-color: #343a40;
-    grid-auto-rows: 50px;
+    grid-auto-rows: 30px;
     align-items: center;
     text-align: center;
+    font-size: 13px;
 }
 .calendar_day {
-    padding: 7px;
+    padding: 2px;
+    padding-right: 4px;
+    font-size: 13px;
 }
 .calendar {
     background-color: white;
-    border: 1px solid #000000;
+    border: solid 1px #939b9e;
     border-radius: 5px;
 }
 .calendar_header > div {
@@ -380,8 +423,8 @@ select {
     font-weight: normal;
 }
 .calendar_day {
-    border-right: 1px solid #000000;
-    border-top: 1px solid #000000;
+    border-top: solid 1px #939b9e;
+    border-right: solid 1px #939b9e;
 }
 .calendar_day:last-child {
     border-right: 0;
@@ -393,19 +436,25 @@ select {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
 }
+.big-calendar-date-row {
+    height: 25px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
 .big-calendar-week {
     grid-auto-rows: 125px;
     text-align: right;
 }
 .big-calendar-header {
     background-color: #343a40;
-    grid-auto-rows: 50px;
+    grid-auto-rows: 30px;
+    font-size: 13px;
     align-items: center;
     text-align: center;
 }
 .big-calendar {
     background-color: white;
-    border: 1px solid #000000;
+    border: 1px solid #939b9e;
     border-radius: 5px;
 }
 .big-calendar-header > div {
@@ -413,43 +462,59 @@ select {
     font-weight: normal;
 }
 .big-calendar-shift {
-    border-bottom: 1px solid;
     align-items: center;
     text-align: center;
-    font-size: 13px;
-    padding-top: 8px;
-    grid-column-start: 1;
-    grid-column-end: 3;
+    font-size: 12px;
+    padding-top: 6px;
+    margin: 3px;
+    margin-bottom: 0;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
 }
-.big-calendar-shift:first-child {
-    grid-column-start: 2;
-    grid-column-end: 3;
+.big-calendar-shift:last-child {
+    height: 27px;
+    margin-bottom: 3px;
 }
 .calendar-date-label {
-    grid-row-start: 1;
-    grid-row-end: 2;
-    grid-column-start: 1;
-    grid-column-end: 2;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
-    text-align: center;
-    padding-top: 5px;
-    font-weight: bold;
+    padding-left: 5px;
+    padding-top: 2px;
+    font-weight: 450;
+    text-align: left;
+    font-size: 12px;
     background-color: #eeeeee;
+    border-right: 1px solid #939b9e;
+    border-top: 1px solid #939b9e;
 }
 .big-calendar-day {
     overflow: scroll;
-    border-right: 1px solid #000000;
-    border-top: 1px solid #000000;
     display: grid;
-    grid-auto-rows: 35px;
-    grid-template-columns: 35px auto;
+    grid-auto-rows: 30px;
+    border-right: 1px solid #939b9e;
 }
 .big-calendar-day:last-child {
     border-right: 0;
 }
+.calendar-date-label:last-child {
+    border-right: 0;
+}
 .calendar-empty {
-    background-color: #72777a;
+    background-color: #ababab;
+    border-color: #ababab;
+}
+.calendar-date-empty {
+    background-color: #ababab;
+    margin: 0;
+    border-radius: 0;
+    border-color: #ababab;
+}
+.add-shift-icon {
+    width: 13px;
+    height: 13px;
+    float: right;
+    padding-top: 5px;
+    padding-right: 5px;
+    cursor: pointer;
 }
 
 /* preference calendar */
@@ -649,6 +714,9 @@ select {
 .nav-link {
     font-size: 15px;
 }
+.bg-dark {
+    background: purple !important;
+}
 
 /* color picker */
 .sp-replacer {
@@ -662,6 +730,76 @@ select {
 .sp-preview-inner {
     border-radius: 4px;
 }
+
+/* jBox modal changes */
+#add-shift-jBox-overlay {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+#edit-shift-jBox-overlay {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* side navigation bar */
+.sidenav {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    height: 100%;
+    width: 65px;
+    position: fixed;
+    z-index: 18;
+    top: 0;
+    left: 0;
+    background-color: #343a40;
+    overflow-x: hidden;
+    padding-top: 45px;
+    opacity: 1;
+}
+.sidenav-hidden {
+    display: none;
+}
+.sidenav-item {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+.icon-label {
+    font-size: 13px;
+}
+.select-view-highlighted {
+    background: #000;
+}
+.icon-highlighted {
+    color: purple;
+}
+#shifts-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#employees-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#preferences-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#options-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+#schedule-page-icon {
+    height: 30px;
+    width: 30px;
+    color: #ababab;
+}
+
 
 /* just for funsies */
 .ugly {

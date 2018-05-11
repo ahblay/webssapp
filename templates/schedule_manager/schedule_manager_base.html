@@ -14,13 +14,6 @@
     .main {
         padding-bottom: 100px;
     }
-    .sidenav {
-        flex: 1;
-        padding-top: 20px;
-        padding-bottom: 100px;
-        background-color: #f1f1f1;
-        height: 100%;
-    }
     .schedules-row {
         padding-left: 1em;
         padding-right: 1em;
@@ -29,6 +22,61 @@
 {% endblock %}
 
 {% block containedcontent %}
+<div class="sidenav">
+    <div id="shift-setup-tab"
+         class="sidenav-item active selected-tab"
+         data-view-id="shift-setup"
+         data-schedule-id="{{ schedule['_id'] }}"
+         data-schedule-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}">
+        <div id="shifts-page-small" class="sidenav-small">
+            <img id="shifts-page-icon" class="far fa-calendar-plus">
+        </div>
+        <div id="shifts-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="emp-management-tab"
+         class="sidenav-item"
+         data-view-id="emp-management">
+        <div id="employees-page-small" class="sidenav-small">
+            <img id="employees-page-icon" class="fas fa-users">
+        </div>
+        <div id="employees-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="employee-prefs-tab"
+         class="sidenav-item"
+         data-view-id="emp-prefs"
+         data-schedule-id="{{ schedule['_id'] }}">
+        <div id="preferences-page-small" class="sidenav-small">
+            <img id="preferences-page-icon" class="fas fa-sliders-h">
+        </div>
+        <div id="preferences-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="options-tab"
+         class="sidenav-item"
+         data-view-id="schedule-options">
+        <div id="options-page-small" class="sidenav-small">
+            <img id="options-page-icon" class="fas fa-cogs">
+        </div>
+        <div id="options-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="view-schedule-tab"
+         class="sidenav-item"
+         data-view-id="view-schedule">
+        <div id="schedule-page-small" class="sidenav-small">
+            <img id="schedule-page-icon" class="far fa-calendar-check">
+        </div>
+        <div id="schedule-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+</div>
 <div class="container-fluid" id="navbar-line" data-status="{{ schedule['status'] }}">
     <div class="row" id="title-row">
         <div class="col-md-1"></div>
@@ -70,16 +118,14 @@
         </div>
         <div class="col-md-1"></div>
     </div>
+
+    <!--
     <div class="row">
         <div class="col-md-12 no-padding" id="schedule-tabs">
             <div class="btn-toolbar" id="tab-select" role="group" style="display: flex;">
                 <div class="col-md-1"></div>
                 <div class="col-md-10 schedule-tabs no-padding">
-                    <!--
-                    <button type="button" class="btn-secondary" id="back-to-home">
-                        <span class="fas fa-angle-left fa-3x"></span>
-                    </button>
-                    -->
+
                     <button type="button"
                             class="btn-secondary active selected-tab"
                             id="shift-setup-tab"
@@ -87,18 +133,12 @@
                             data-schedule-id="{{ schedule['_id'] }}"
                             data-schedule-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"
                             style="flex: 1">Shifts
-                        <!--
-                        <span class="badge badge-notify" style="font-size:16px;">3</span>
-                        -->
                     </button>
 
                     <button type="button"
                             class="btn-secondary"
                             data-view-id="emp-management"
                             style="flex: 1">Employees
-                        <!--
-                        <span class="badge badge-notify" style="font-size:16px;">3</span>
-                        -->
                     </button>
 
                     <button type="button"
@@ -107,27 +147,18 @@
                             data-view-id="emp-prefs"
                             data-schedule-id="{{ schedule['_id'] }}"
                             style="flex: 1">Preferences
-                        <!--
-                        <span class="badge badge-notify" style="font-size:16px;">3</span>
-                        -->
                     </button>
 
                     <button type="button"
                             class="btn-secondary"
                             data-view-id="schedule-options"
                             style="flex: 1">Options
-                        <!--
-                        <span class="badge badge-notify" style="font-size:16px;">3</span>
-                        -->
                     </button>
 
                     <button type="button"
                             class="btn-secondary"
                             data-view-id="view-schedule"
                             style="flex: 1">Schedule
-                        <!--
-                        <span class="badge badge-notify" style="font-size:16px;">3</span>
-                        -->
                     </button>
                 </div>
 
@@ -136,6 +167,7 @@
             </div>
         </div>
     </div>
+    -->
     <div class="row">
         <div class="col-md-12 no-padding">
             <div class='smgr-tab' id="shift-setup">
