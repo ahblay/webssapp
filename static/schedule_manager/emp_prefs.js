@@ -4,7 +4,6 @@ var employee_names = {}
 var shift_dict = {}
 var pref_dict = {}
 var last_tab = null
-var popupJBOX = null
 
 // no longer necessary due to the fact that prefs table is generated when the prefs tab is selected
 /*
@@ -21,12 +20,6 @@ $(function () {
     //$.getJSON("/_api/get_shifts/" + schedule_id, renderShiftPrefsTable)
 })
 */
-
-$(document).ready(function () {
-    popupJBOX = new jBox("Modal", {
-        trigger: "mouseenter",
-    });
-})
 
 function renderEmpTable(data) {
     data = data['employees'];
@@ -47,9 +40,6 @@ function renderPrefCalendar(data) {
     let pref_calendar_day_label = document.createElement("div")
     $(pref_calendar_day_label).addClass("pref-calendar-label").text("Days:")
     $(pref_calendar_labels).append(pref_calendar_day_label)
-    let pref_calendar_role_label = document.createElement("div")
-    $(pref_calendar_role_label).addClass("pref-calendar-label").text("Roles:")
-    $(pref_calendar_labels).append(pref_calendar_role_label)
     for (i = 0; i < employees.length; i ++) {
         let pref_calendar_name_label = document.createElement("div")
         $(pref_calendar_name_label).addClass("pref-calendar-name-label").text(employees[i]["name"])
@@ -72,120 +62,81 @@ function renderPrefCalendar(data) {
         $(pref_calendar_day_title).addClass("pref-calendar-title").text(days[i])
         $(pref_calendar_day).append(pref_calendar_day_title)
 
-        let pref_calendar_roles = document.createElement("div")
-        $(pref_calendar_roles).addClass("pref-calendar-roles")
+        let pref_calendar_all_prefs = document.createElement("div")
+        $(pref_calendar_all_prefs).addClass("pref-calendar-all-prefs")
 
-        for (j = 0; j < Object.keys(pref_calendar_data[days[i]]).length; j++) {
-            let pref_calendar_role = document.createElement("div")
-            $(pref_calendar_role).addClass("pref-calendar-role")
+        let pref_calendar_prefs = document.createElement("div")
+        $(pref_calendar_prefs).addClass("pref-calendar-prefs")
 
-            let pref_calendar_role_title = document.createElement("div")
-            $(pref_calendar_role_title).addClass("pref-calendar-title").text(Object.keys(pref_calendar_data[days[i]])[j].slice(0, 3) + ".")
-            $(pref_calendar_role).append(pref_calendar_role_title)
+        for (l = 0; l < employees.length; l++) {
+            emp_id = employees[l]["_id"]
+            shift_id = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[0]][0]["_id"]
+            start = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[0]][0]["start"]
+            end = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[0]][0]["end"]
+            num_employees = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[0]][0]["num_employees"]
+            role = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[0]][0]["role"]
 
-            let pref_calendar_all_prefs = document.createElement("div")
-            $(pref_calendar_all_prefs).addClass("pref-calendar-all-prefs")
+            let day_info = pref_calendar_data[days[i]]
 
-            for (k = 0; k < pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]].length; k++) {
-                let pref_calendar_prefs = document.createElement("div")
-                $(pref_calendar_prefs).addClass("pref-calendar-prefs")
+            let pref_calendar_pref = document.createElement("div")
+            $(pref_calendar_pref).addClass("pref-calendar-pref")
+            $(pref_calendar_pref).data("shift-id", shift_id)
+            $(pref_calendar_pref).data("emp-id", emp_id)
+            $(pref_calendar_pref).data("all-info", day_info)
 
-                for (l = 0; l < employees.length; l++) {
-                    emp_id = employees[l]["_id"]
-                    shift_id = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["_id"]
-                    start = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["start"]
-                    end = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["end"]
-                    num_employees = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["num_employees"]
-                    role = pref_calendar_data[days[i]][Object.keys(pref_calendar_data[days[i]])[j]][k]["role"]
+            let expand_icon = document.createElement("img")
+            $(expand_icon).addClass("pref-calendar-expand-icon")
+            $(expand_icon).attr("src", "/static/assets/expand_icon.png")
 
-                    let pref_calendar_pref = document.createElement("div")
-                    $(pref_calendar_pref).addClass("pref-calendar-pref").addClass("popup")
-                    $(pref_calendar_pref).data("shift-id", shift_id)
-                    $(pref_calendar_pref).data("emp-id", emp_id)
+            let pref_text = document.createElement("p")
+            $(pref_text).addClass("pref-text")
+            $(pref_calendar_pref).append(pref_text)
 
-                    let pop_up = document.createElement("div")
-                    let ul = document.createElement("ul")
-                    let start_li = document.createElement("li")
-                    let end_li = document.createElement("li")
-                    let emp_li = document.createElement("li")
-                    let role_li = document.createElement("li")
-                    $(start_li).text("Start: " + start)
-                    $(end_li).text("End: " + end)
-                    $(emp_li).text("Employees: " + num_employees)
-                    $(role_li).text("Role: " + role)
-                    $(ul).append(start_li)
-                    $(ul).append(end_li)
-                    $(ul).append(emp_li)
-                    $(ul).append(role_li)
-                    $(pop_up).append(ul)
+            let eligible_employees = $(".emp-shift-prefs").find("#" + shift_id).data("eligible")
 
-                    /*
-                    let pop_up_window = document.createElement("span")
-                    $(pop_up_window).addClass("popuptext")
-                    $(pop_up_window).append("Start: " + start + "<br>")
-                    $(pop_up_window).append("End: " + end + "<br>")
-                    $(pop_up_window).append("Employees: " + num_employees + "<br>")
-                    $(pop_up_window).append("Role: " + role + "<br>")
-                    */
-
-                    let eligible_employees = $(".emp-shift-prefs").find("#" + shift_id).data("eligible")
-
-                    if (!eligible_employees.includes(emp_id)) {
-                        $(pref_calendar_pref).addClass("pref-ineligible")
-                    }
-                    else if (Object.keys(data['prefs']).length === 0) {
-                        $(pref_calendar_pref).addClass("pref-empty")
-                        $(pref_calendar_pref).data("current-pref", "pref-empty")
-                    } else if (!Object.keys(data['prefs']).includes(emp_id)) {
-                        $(pref_calendar_pref).addClass("pref-empty")
-                        $(pref_calendar_pref).data("current-pref", "pref-empty")
-                    } else if (!Object.keys(data['prefs'][emp_id]).includes(shift_id)) {
-                        $(pref_calendar_pref).addClass("pref-empty")
-                        $(pref_calendar_pref).data("current-pref", "pref-empty")
-                    } else if (data["prefs"][emp_id][shift_id] == -1000) {
-                        $(pref_calendar_pref).addClass("pref-unavailable")
-                        $(pref_calendar_pref).data("current-pref", "pref-unavailable")
-                    } else if (data["prefs"][emp_id][shift_id] == 1) {
-                        $(pref_calendar_pref).addClass("pref-available")
-                        $(pref_calendar_pref).data("current-pref", "pref-available")
-                    } else if (data["prefs"][emp_id][shift_id] == 5) {
-                        $(pref_calendar_pref).addClass("pref-prefer")
-                        $(pref_calendar_pref).data("current-pref", "pref-prefer")
-                    } else {
-                        $(pref_calendar_pref).addClass("pref-empty")
-                        $(pref_calendar_pref).data("current-pref", "pref-empty")
-                    }
-
-                    $(pref_calendar_pref).on("click", togglePrefs)
-
-                    popupJBOX.attach(".pref-calendar-pref").setContent($(pop_up)).open()
-
-                    /*
-                    var timer;
-                    $(pref_calendar_pref).hover(function () {
-                        var _this = this;
-                        timer = setTimeout(function () {
-                            $(_this).find(".popuptext").addClass("show");
-                        }, 1000);
-                    },
-                    function () {
-                        clearTimeout(timer);
-                        $(this).find(".popuptext").removeClass("show");
-                    });
-                    */
-
-                    //$(pref_calendar_pref).append(pop_up_window)
-                    $(pref_calendar_prefs).append(pref_calendar_pref)
-                }
-
-                $(pref_calendar_all_prefs).append(pref_calendar_prefs)
+            if (eligible_employees.includes(emp_id)) {
+                $(pref_calendar_pref).prepend(expand_icon)
+            }
+            if (!eligible_employees.includes(emp_id)) {
+                $(pref_calendar_pref).addClass("pref-ineligible")
+            }
+            else if (Object.keys(data['prefs']).length === 0) {
+                $(pref_calendar_pref).addClass("pref-empty")
+                $(pref_text).text("Empty")
+                $(pref_calendar_pref).data("current-pref", "pref-empty")
+            } else if (!Object.keys(data['prefs']).includes(emp_id)) {
+                $(pref_calendar_pref).addClass("pref-empty")
+                $(pref_text).text("Empty")
+                $(pref_calendar_pref).data("current-pref", "pref-empty")
+            } else if (!Object.keys(data['prefs'][emp_id]).includes(shift_id)) {
+                $(pref_calendar_pref).addClass("pref-empty")
+                $(pref_text).text("Empty")
+                $(pref_calendar_pref).data("current-pref", "pref-empty")
+            } else if (data["prefs"][emp_id][shift_id] == -1000) {
+                $(pref_calendar_pref).addClass("pref-unavailable")
+                $(pref_text).text("Unavailable")
+                $(pref_calendar_pref).data("current-pref", "pref-unavailable")
+            } else if (data["prefs"][emp_id][shift_id] == 1) {
+                $(pref_calendar_pref).addClass("pref-available")
+                $(pref_text).text("Available")
+                $(pref_calendar_pref).data("current-pref", "pref-available")
+            } else if (data["prefs"][emp_id][shift_id] == 5) {
+                $(pref_calendar_pref).addClass("pref-prefer")
+                $(pref_text).text("Prefer")
+                $(pref_calendar_pref).data("current-pref", "pref-prefer")
+            } else {
+                $(pref_calendar_pref).addClass("pref-empty")
+                $(pref_calendar_pref).data("current-pref", "pref-empty")
             }
 
-            $(pref_calendar_role).append(pref_calendar_all_prefs)
-            $(pref_calendar_roles).append(pref_calendar_role)
+            $(pref_calendar_pref).on("click", togglePrefs)
+
+            $(pref_calendar_prefs).append(pref_calendar_pref)
         }
 
-        $(pref_calendar_day).append(pref_calendar_roles)
+        $(pref_calendar_all_prefs).append(pref_calendar_prefs)
+
+        $(pref_calendar_day).append(pref_calendar_all_prefs)
         $(pref_calendar_content).append(pref_calendar_day)
     }
 
@@ -195,10 +146,13 @@ function renderPrefCalendar(data) {
 
 function togglePrefs() {
     let pref_options = ["pref-unavailable", "pref-available", "pref-prefer", "pref-empty"]
+    let text_options = ["Unavailable", "Available", "Prefer", "Empty"]
     let current_pref = $(this).data("current-pref")
     $(this).removeClass(current_pref)
     let index = pref_options.indexOf(current_pref)
     new_pref = pref_options[(index + 1) % pref_options.length]
+    new_text = text_options[(index + 1) % text_options.length]
+    $(this).find(".pref-text").text(new_text)
     $(this).data("current-pref", new_pref)
     $(this).addClass(new_pref)
 
@@ -527,6 +481,9 @@ $(document).on("click", ".emp-prefs-select-emp-tab", function () {
     $("#pref-options").css("display", "block");
     showEmployeeShifts(_id);
     resetPrefButtons();
+
+    console.log(".emp-prefs-select-emp-tab clicked on")
+
     $.getJSON("/_api/get_prefs/" + schedule_id, assignPrefButtons);
 });
 

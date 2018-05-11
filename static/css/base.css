@@ -525,7 +525,7 @@ select {
     display: flex;
     flex-direction: row;
     overflow-y: visible;
-     --cell-size: 30px;
+     --cell-size: 50px;
      --num-emps: 7;
 }
 .pref-calendar-labels {
@@ -579,7 +579,7 @@ select {
 }
 .pref-calendar-prefs {
     display: grid;
-    grid-template-columns: var(--cell-size);
+    grid-template-columns: calc(2*var(--cell-size));
     grid-template-rows: repeat(var(--num-emps), var(--cell-size));
     grid-row-gap: 2px;
     border-left: 1px solid transparent;
@@ -587,73 +587,25 @@ select {
 }
 .pref-calendar-pref {
     border: 1px solid;
-    border-radius: 5px;
+    border-radius: 3px;
 }
 .pref-calendar-text {
     justify-self: center;
     align-self: center;
     font-size: 13px;
 }
-
-/* pop-up styling */
-.popup {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
+.pref-calendar-expand-icon {
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    float: right;
 }
-
-/* The actual pop-up */
-.popup .popuptext {
-    visibility: hidden;
-    width: 160px;
-    background-color: #fff;
-    color: #000;
+.pref-text {
+    margin-top: 25px;
     text-align: center;
-    border: 1px solid;
-    border-radius: 5px;
-    padding: 8px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -80px;
-}
-
-/* makes triangle */
-.popup .popuptext::after,
-.popup .popuptext::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-style: solid;
-}
-
-/* this border color controls the color of the triangle (what looks like the fill of the triangle) */
-.popup .popuptext::after {
-    border-color: #fff transparent transparent transparent;
-    border-width: 5px;
-}
-
-/* this border color controls the outside, thin border */
-.popup .popuptext::before {
-    left: calc(50% - 1px);
-    border-color: #000 transparent transparent transparent;
-    border-width: 6px;
-}
-
-/* Toggle this class - hide and show the pop-up */
-.popup .show {
-    visibility: visible;
-    animation: fadeIn 0.75s;
-}
-
-/* Add animation (fade in the pop-up) */
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity:1 ;}
+    font-size: 13px;
+    color: #fff;
 }
 
 /* role color box */
