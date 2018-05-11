@@ -782,6 +782,7 @@ def remove_schedule_employees():
         db.schedules.update({"employees._id": ObjectId(_id)}, {"$unset": {"prefs." + _id: 1}})
         db.schedules.update({"employees._id": ObjectId(_id)}, {"$pull": {"employees": {"_id": ObjectId(_id)}}})
 
+    pprint.pprint(dict(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])})))
 
     return jsonify({"success": True, "message": "Request received by server."})
 
@@ -833,6 +834,8 @@ def edit_schedule_status():
 def edit_schedule_employees():
     # gets name from form in add employee modal
     _ids = request.json['_ids']
+    schedule_id = request.json['schedule_id']
+    roles = request.json['roles']
 
     # if form is empty, return json object indicating failure
     if request.json is None:
@@ -842,6 +845,8 @@ def edit_schedule_employees():
     schedule = db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})
 
     emps_to_edit = [emp for emp in schedule['employees'] if str(emp['_id']) in _ids]
+
+    pprint.pprint(request.json)
 
     filtered_dict = {}
     for key in request.json.keys():
@@ -858,6 +863,41 @@ def edit_schedule_employees():
             db.schedules.update({'employees._id': ObjectId(emp['_id'])}, {'$pull': {"employees":
                                                                                    {'_id': ObjectId(emp['_id'])}}})
             db.schedules.update({'_id': ObjectId(request.json['schedule_id'])}, {'$push': {"employees": emp}})
+
+    emp_ids = []
+    prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
+    shifts = list(db.schedules.find_one({'_id': ObjectId(schedule_id)})["shifts"])
+    shifts_to_add = []
+    shifts_to_remove = []
+    for shift in shifts:
+        if shift["role"] in roles:
+            shifts_to_add.append([shift["_id"], shift["date"]])
+        elif shift["role"] not in roles:
+            shifts_to_remove.append(shift["_id"])
+    for employee_id in _ids:
+        emp_ids.append([employee_id, roles])
+    for emp_id in emp_ids:
+        for day in prefs[emp_id[0]]:
+            for shift_to_remove in shifts_to_remove:
+                if shift_to_remove in day:
+                    del day[shift_to_remove]
+            for shift_to_add in shifts_to_add:
+                if shift_to_add[0] not in day and day["date"] == datetime.datetime.strptime(shift_to_add[1], '%m/%d/%Y'):
+                    if day["status"] == "Unavailable":
+                        day[shift_to_add[0]] = -1000
+                    elif day["status"] == "Available":
+                        day[shift_to_add[0]] = 5
+                    else:
+                        day[shift_to_add[0]] = "Empty"
+            db.schedules.update({'_id': ObjectId(schedule_id)},
+                                {'$pull': {"prefs." + emp_id[0]:
+                                               {'date': day["date"]}}})
+            db.schedules.update({'_id': ObjectId(schedule_id)},
+                                {'$push': {"prefs." + emp_id[0]: day}})
+
+    print("+++++++++++++++++++++++++++")
+    pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
+    print("+++++++++++++++++++++++++++")
 
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
@@ -877,6 +917,27 @@ def add_emps_to_schedule():
         emp['inactive'] = False
 
         db.schedules.update({'_id': ObjectId(request.json['schedule_id'])}, {'$push': {'employees': emp}})
+
+    schedule_dates = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["days"])
+    shifts = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["shifts"])
+
+    emp_prefs = []
+    for date in schedule_dates:
+        emp_prefs.append({"date": date, "status": "Empty"})
+
+    for emp in emps_to_add:
+        for shift in shifts:
+            if shift["role"] in emp["roles"]:
+                for day in emp_prefs:
+                    if day["date"] == datetime.datetime.strptime(shift["date"], '%m/%d/%Y'):
+                        if day["status"] == "Unavailable":
+                            day[shift["_id"]] = -1000
+                        elif day["status"] == "Available":
+                            day[shift["_id"]] = 5
+                        else:
+                            day[shift["_id"]] = "Empty"
+        db.schedules.update({'_id': ObjectId(request.json['schedule_id'])},
+                                {'$push': {"prefs." + str(emp["_id"]): emp_prefs}})
 
     return jsonify({"success": True, "message": "Employee added successfully"})
 
