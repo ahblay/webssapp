@@ -44,6 +44,16 @@
     padding-bottom: 0.25rem;
 }
 
+/* simple table */
+.simple-table thead th {
+    border: none;
+    padding: 0.25rem;
+}
+.simple-table tbody td {
+    border: none;
+    padding: 0.25rem;
+}
+
 /* input field style */
 input {
     border: 1px solid;
@@ -145,7 +155,7 @@ select {
 }
 */
 .navbar {
-    border-bottom: 3px solid #522052 !important;
+    border-bottom: 3px solid #349477 !important;
 }
 
 /* line lower border */
@@ -519,15 +529,19 @@ select {
 
 /* preference calendar */
 .pref-unavailable {
-    background-color: red;
+    border-color: red !important;
+    background-color: #f6c0be;
 }
 .pref-available {
-    background-color: green;
+    border-color: green !important;
+    background-color: #cae0c4;
 }
 .pref-prefer {
+    border-color: #d4af37 !important;
     background-color: #d4af37;
 }
 .pref-empty {
+    border-color: grey !important;
     background-color: grey;
 }
 .pref-ineligible {
@@ -539,8 +553,8 @@ select {
     display: flex;
     flex-direction: row;
     overflow-y: visible;
-     --cell-size: 50px;
-     --num-emps: 7;
+     --cell-size: 30px;
+     --num-emps: 10;
 }
 .pref-calendar-labels {
     display: flex;
@@ -550,10 +564,12 @@ select {
 }
 .pref-calendar-label {
     font-weight: bold;
+    font-size: 13px;
     height: var(--cell-size);
 }
 .pref-calendar-name-label {
     font-weight: bold;
+    font-size: 13px;
     height: calc(var(--cell-size) + 2px);
     vertical-align: middle;
 }
@@ -572,6 +588,9 @@ select {
 }
 .pref-calendar-title {
     text-align: center;
+    font-size: 13px;
+    font-weight: 450;
+    color: grey;
     height: var(--cell-size);
 }
 .pref-calendar-roles {
@@ -602,6 +621,7 @@ select {
 .pref-calendar-pref {
     border: 1px solid;
     border-radius: 3px;
+    cursor: pointer;
 }
 .pref-calendar-text {
     justify-self: center;
@@ -616,10 +636,8 @@ select {
     float: right;
 }
 .pref-text {
-    margin-top: 25px;
     text-align: center;
     font-size: 13px;
-    color: #fff;
 }
 
 /* role color box */
@@ -667,7 +685,7 @@ select {
     font-size: 15px;
 }
 .bg-dark {
-    background: purple !important;
+    background: #52b899 !important;
 }
 
 /* color picker */
@@ -690,6 +708,9 @@ select {
 #edit-shift-jBox-overlay {
     background-color: rgba(0, 0, 0, 0.1) !important;
 }
+#view-shifts-jBox-overlay {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
 
 /* side navigation bar */
 .sidenav {
@@ -702,7 +723,7 @@ select {
     z-index: 18;
     top: 0;
     left: 0;
-    background-color: #343a40;
+    background-color: #d75749;
     overflow-x: hidden;
     padding-top: 45px;
     opacity: 1;
@@ -721,37 +742,57 @@ select {
     font-size: 13px;
 }
 .select-view-highlighted {
-    background: #000;
+    background: #992f16;
 }
 .icon-highlighted {
-    color: purple;
+    color: #f8bf39;
 }
 #shifts-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #f1ead1;
 }
 #employees-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #f1ead1;
 }
 #preferences-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #f1ead1;
 }
 #options-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #f1ead1;
 }
 #schedule-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #f1ead1;
 }
 
+/* shift pref modal styling */
+#view-shifts-modal-table th {
+    font-size: 13px;
+}
+#view-shifts-modal-table td {
+    font-size: 13px;
+}
+
+.greyed-out {
+    color: #dadada !important;
+}
+
+#view-shifts-modal-table-body tr {
+    cursor: pointer;
+}
+.smiley-icon {
+    font-size: 25px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
 
 /* just for funsies */
 .ugly {
