@@ -711,6 +711,9 @@ def edit_schedule_employees():
     filtered_dict = {}
     for key in request.json.keys():
 
+        if key == "_ids":
+            continue
+
         if request.json[key] != "":
             if request.json[key][0] == "":
                 continue

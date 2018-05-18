@@ -266,14 +266,171 @@ select {
     cursor: default !important;
 }
 
+/* Employees */
+.em-add-emp-form-body {
+    display: grid;
+    grid-template-rows: repeat(1fr, 5);
+    grid-gap: 10px;
+}
+
+.em-add-emp-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 15px;
+}
+
+.em-add-emp-shifts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 15px;
+}
+
+.em-add-emp-roles-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 5px;
+}
+
+.em-add-emp-roles-row-header {
+    grid-column: 1 / -1;
+    grid-rows: 1 / 2;
+}
+
+.em-add-emp-role-cell {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    grid-template-row: auto;
+
+    border-radius: 3px;
+    border: 1px solid black;
+}
+
 /* View schedule */
+.big-color-block {
+    height: 500px;
+    background: #BADA55;
+}
+
+#vs-calendar {
+    padding-top: 10px;
+    display: grid;
+    grid-template-columns: 125px 1fr;
+    grid-template-rows: auto 1fr;
+    grid-gap: 5px;
+}
+
+.vs-calendar-header-row {
+    position: sticky;
+    top:0;
+    background: white;
+
+    display: grid;
+    overflow: hidden;
+    grid-template-rows: auto;
+    grid-auto-flow: columns;
+    grid-column: 2 / -1;
+    grid-row: 1 / 2;
+    grid-gap: 5px;
+}
+
+.vs-calendar-emp-label {
+    position: sticky;
+    top:0;
+    background: white;
+    font-weight: bold;
+
+    display: grid;
+    grid-template-rows: auto;
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+
+.vs-calendar-header-cell {
+    padding: 5px;
+    text-align: center;
+    border-bottom: 3px solid black;
+    font-weight: bold;
+
+    display: grid;
+    grid-template-rows: 30px 20px;
+}
+
+.vs-calendar-header-text {
+    text-align: center;
+    grid-row: 2 / -1;
+}
+
+.vs-calendar-shift-issue-warning {
+    border-style: solid;
+    border-color: orangered;
+    border-radius: 3px;
+    grid-row: 1 / 2;
+}
+
+.shift-issue-warning-icon {
+    color: orangered;
+}
+
+#vs-calendar-emps {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.vs-calendar-emp {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+}
+
+#vs-calendar-shifts {
+    display: grid;
+    overflow-x: scroll;
+    grid-gap: 5px;
+}
+
+.vs-calendar-shift-cell {
+    padding: 5px;
+    text-align: center;
+    border-radius: 3px;
+
+    display: grid;
+    grid-template-columns: 7fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 2px;
+}
+
+.vs-calendar-shift-cell-text {
+    border-radius: 2px;
+    background: white;
+    padding: 3px;
+    grid-column: 1 / 2;
+    grid-row: 1 / -1;
+}
+
+.vs-calendar-shift-change-icon {
+    border-radius: 2px;
+    background: white;
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+.vs-calendar-shift-status-icon {
+    border-radius: 2px;
+    background: white;
+};
+
 .declined-shift {
     background-color: #dd4245;
 }
 
-#schedule-output-table.items td{
-    text-align: center;
-}
+#schedule-output-div {
+    padding-top: 10px;
+};
+
+#schedule-output-table {
+    overflow: scroll;
+};
 
 #view-schedule-button-bar {
     padding-top: 10px;
@@ -290,6 +447,8 @@ select {
     position: relative;
     z-index: 1;
     overflow: visible;
+    text-align: center;
+    width: 20%;
 }
 
 *[id^="shift-issue-warning-icon-"] *[id^="shift-issue-warning-text-"]{
@@ -750,7 +909,7 @@ select {
     z-index: 18;
     top: 0;
     left: 0;
-    background-color: #343a40;
+    background-color: #fff;
     overflow-x: hidden;
     padding-top: 45px;
     opacity: 1;
@@ -764,40 +923,42 @@ select {
     display: grid;
     align-items: center;
     justify-items: center;
+
+    border-right: 3px solid #ababab;
 }
 .icon-label {
     font-size: 13px;
 }
 .select-view-highlighted {
-    background: #000;
+    border-right: 3px solid #D75749;
 }
 .icon-highlighted {
-    color: purple;
+    color: #fff;
 }
 #shifts-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #fff;
 }
 #employees-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #fff;
 }
 #preferences-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #fff;
 }
 #options-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #fff;
 }
 #schedule-page-icon {
     height: 30px;
     width: 30px;
-    color: #ababab;
+    color: #fff;
 }
 
 

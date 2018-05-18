@@ -114,31 +114,38 @@ $(document).on("click", "#shift-setup-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#shifts-page-icon").css("color", "purple")
+    $("#shifts-page-icon").css("color", "#D75749")
 })
 $(document).on("click", "#emp-management-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#employees-page-icon").css("color", "purple")
+    $("#employees-page-icon").css("color", "#D75749")
 })
 $(document).on("click", "#employee-prefs-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#preferences-page-icon").css("color", "purple")
+    $("#preferences-page-icon").css("color", "#D75749")
 })
 $(document).on("click", "#options-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#options-page-icon").css("color", "purple")
+    $("#options-page-icon").css("color", "#D75749")
 })
+
 $(document).on("click", "#view-schedule-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
+
+    $(this).data("schedule-id");
+    $.getJSON("/api/get_sorted_schedule/" + schedule_id, success= function(data) {
+
+    });
+
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#schedule-page-icon").css("color", "purple")
+    $("#schedule-page-icon").css("color", "#D75749")
 })
 
 

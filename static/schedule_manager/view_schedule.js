@@ -1,12 +1,21 @@
 var SCHEDULE = [];
+var GLOBAL_ROLES;
 var SHIFT_CHANGE_JBOX = null;
+var VS_CALENDAR_DELAY_TIMER;
+var VS_CALENDAR_CELL_HOVER_DELAY = 200;
 
-$(document).on("click", "button[data-view-id='view-schedule']", () => {
+$(document).on("click", "#view-schedule-tab", () => {
+    $.getJSON("/_api/get_roles", function(data){
+        GLOBAL_ROLES = data;
+        console.log(GLOBAL_ROLES);
+    });
+
     $.getJSON("/api/get_sorted_schedule/" + SCHEDULE_ID, function(data){
         SCHEDULE = data;
         console.log(SCHEDULE);
         if (SCHEDULE["output"] != null){
             console.log("Rendering saved output.");
+            render_vs_calendar(SCHEDULE);
             render_schedule(SCHEDULE);
         };
     });
@@ -27,19 +36,146 @@ $(document).on("click", "#create-schedule", () => {
     } else {
         $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
                 SCHEDULE = data;
+                render_vs_calendar(SCHEDULE);
                 render_schedule(SCHEDULE);
         });
     };
 });
 
+function render_vs_calendar(schedule) {
+    console.log("Rendering vs-calendar.");
+
+    //Empty things as needed
+    $("#vs-calendar-shifts").empty();
+    $("#vs-calendar-emps").empty();
+    $("#vs-calendar-emp-label").empty();
+    $("#vs-calendar-header-row").empty();
+
+    //Add emp list header
+    $("#vs-calendar-emp-label").append($("<div />").addClass("vs-calendar-header-cell")
+                                                   .append($("<div />").addClass("vs-calendar-header-text")
+                                                   .text("Employees")));
+
+    $("#vs-calendar-emps").css("grid-template-rows", "1fr ".repeat(schedule['employees'].length) + "15px");
+
+    //populate employee list
+    for (emp=0; emp<schedule['employees'].length; emp++){
+        $("#vs-calendar-emps").append($("<div />").addClass("vs-calendar-emp")
+                                                    .text(schedule['employees'][emp]['name']));
+    };
+
+    //add assignments for each day
+    //day headers
+    //set width of grid based on number of days
+    let header_row = $("#vs-calendar-header-row");
+
+    header_row.css("grid-template-columns", "175px ".repeat(schedule['days'].length + 1));
+
+    for (day=0; day<schedule['days'].length; day++){
+        header_row.append($("<div />").addClass("vs-calendar-header-cell")
+                                      .append($("<div />").addClass("vs-calendar-header-text")
+                                      .text(schedule['days'][day])));
+    };
+
+    $("#vs-calendar-shifts").css("grid-template-columns", "175px ".repeat(schedule['days'].length));
+
+    //fill shift information
+    for (emp=0; emp<schedule['employees'].length; emp++){
+        for (day=0; day<schedule['days'].length; day++){
+
+            let shift_assignment = schedule["output"][emp][day];
+
+            //Init cell_html with the shift change icon included
+            let cell_html = "";
+
+            if (shift_assignment['working'] == true){
+                cell_html += schedule['roles'][shift_assignment['role']] + "<br>" + shift_assignment['shift'];
+            } else {
+                cell_html += "OFF";
+            }
+
+            let cell_content = $("<div />").addClass("vs-calendar-shift-cell");
+            let text_area = $("<div />").addClass("vs-calendar-shift-cell-text")
+                                            .html(cell_html);
+            //Set cell background color based on role
+
+            if (shift_assignment['working'] == true){
+                cell_content.css("background", GLOBAL_ROLES[shift_assignment['role']]['color']);
+            } else {
+                cell_content.css("background", "#cccccc");
+            };
+
+            cell_content.append(text_area);
+
+            cell_content.append($("<div />").addClass("vs-calendar-shift-change-icon")
+                                            .attr("data-date", SCHEDULE['days'][day])
+                                            .attr("data-emp-id", SCHEDULE['employees'][emp]['_id'])
+                                            .append($("<span />").addClass("fas fa-exchange-alt")));
+
+            cell_content.append($("<div />").addClass("vs-calendar-shift-status-icon"));
+            /*
+            cell_content.hover(function (){
+                let current_cell = $(this);
+                VS_CALENDAR_DELAY_TIMER = setTimeout(function() {
+                    console.log("Entering hover state.");
+                    current_cell.children(".vs-calendar-shift-change-icon").children().show();
+                }, VS_CALENDAR_CELL_HOVER_DELAY)
+            }, function () {
+                let current_cell = $(this);
+                clearTimeout(VS_CALENDAR_DELAY_TIMER);
+                console.log("Leaving hover state.");
+                current_cell.children(".vs-calendar-shift-change-icon").children().hide();
+            });
+            */
+
+            $("#vs-calendar-shifts").append(cell_content);
+        }
+    };
+
+};
+
+$(document).on("click", ".vs-calendar-shift-change-icon", function() {
+
+    let shift_date = $(this).attr("data-date");
+    let emp_id = $(this).attr("data-emp-id");
+
+    set_shift_change_modal_content(shift_date, emp_id);
+
+    SHIFT_CHANGE_JBOX = new jBox("Modal", {
+        id: "shift-change-jbox",
+        title: "Change Shift Assignment",
+        content: $("#shift-change-modal-content"),
+        footer: create_shift_change_modal_footer(shift_date, emp_id),
+        onClose: function () {this.setContent("Modal failed to close.")},
+        onCloseComplete: function () {
+            console.log("Destroying jBox.")
+            this.destroy()}
+    });
+
+    SHIFT_CHANGE_JBOX.open();
+
+});
+
+$("#vs-calendar-shifts").on('scroll', function(){
+    $("#vs-calendar-header-row").scrollLeft($(this).scrollLeft());
+});
+/*
+$(document).on("mouseenter", ".vs-calendar-shift-cell", function() {
+
+});
+
+$(document).on("mouseleave", ".vs-calendar-shift-cell", function() {
+    console.log("Entering hover state.");
+    $(this).children(".vs-calendar-shift-change-icon").children().hide();
+});
+*/
 function render_schedule(schedule){
     console.log("Rendering view-schedule page.")
 
     $("#schedule-output-div").empty().addClass("col-md-12");
-    console.log($("#schedule-output-div"));
-    $("#schedule-output-div").append($("<table />")
-                              .attr("id", "schedule-output-table")
-                              .addClass("table rounded-table-basic table-hover"));
+
+    $("#schedule-output-div").append($("<table />").attr("id", "schedule-output-table")
+                                                   .addClass("table rounded-table-basic"));
 
     $("#schedule-output-table").append($("<thead />")
                                 .attr("id", "schedule-output-header"));
@@ -94,18 +230,7 @@ function render_schedule(schedule){
         $("#schedule-output-body").append(row);
     };
 
-    col_modal = [];
-
-    for(i=0; i<days.length+1; i++){
-        col_modal.push({width: 175, align: "center"})
-    };
-    console.log(col_modal);
-
-    $("#schedule-output-table").fxdHdrCol({
-        width: "100%",
-        height: 46*SCHEDULE['employees'].length+50,
-        colModal: col_modal
-    });
+    update_shift_issue_flags(SCHEDULE['shifts'], SCHEDULE['output']);
 };
 
 //Shift Change Modal jBox
@@ -168,8 +293,9 @@ $(document).on("click", ".shift-change-modal-toggle", function () {
 
 
 var set_shift_change_modal_content = (date, emp_id) => {
-
     console.log("Rebuilding shift change modal content.")
+    console.log(date);
+    console.log(emp_id);
 
     $("#shift-change-modal-content").remove();
     let modal_content = $("<div />").attr("id", "shift-change-modal-content")
@@ -274,38 +400,32 @@ var build_off_row = () => {
 var update_shift_assignment = (schedule, shift_id) => {
     console.log("Updating shift assignment.");
 
+    let date = $("#shift-change-modal-change").attr("data-shift-date");
+    let emp_id = $("#shift-change-modal-change").attr("data-emp-id");
+    let cell_to_edit = get_cell_to_edit(date, emp_id);
+    let role_index = -1;
+
     let shift = null;
 
     if (shift_id) {
         shift = SCHEDULE["shifts"].find(shift => shift._id === shift_id);
+        role_index = GLOBAL_ROLES.indexOf(GLOBAL_ROLES.find(role => role.name === shift['role']));
+        cell_to_edit.css("background", GLOBAL_ROLES[role_index]['color']);
     } else {
         shift = "OFF";
+        cell_to_edit.css("background", "#cccccc")
     };
 
-    let date = $("#shift-change-modal-change").attr("data-shift-date");
-    let emp_id = $("#shift-change-modal-change").attr("data-emp-id");
-    let cell_to_edit = get_cell_to_edit(date, emp_id);
+    let text_area = cell_to_edit.children(".vs-calendar-shift-cell-text");
 
-    console.log(cell_to_edit);
-
-    cell_to_edit.empty();
-
-    console.log(cell_to_edit);
-    let exchange_shifts_button = $("<button />").addClass("btn btn-default btn-xs shift-change-modal-toggle")
-                                                .attr("type", "button");
-    let exchange_icon = $("<span />").addClass("fas fa-exchange-alt");
-    exchange_shifts_button.append(exchange_icon);
-    exchange_shifts_button.attr("data-date", date)
-                          .attr("data-emp-id", emp_id);
-
-    if (shift == "OFF"){
-        console.log("Changing cell text to OFF");
-        cell_to_edit.text("OFF");
+    text_area.empty();
+    let cell_html = "";
+    if (shift != "OFF"){
+        cell_html += schedule['roles'][role_index] + "<br>" + shift['start'] + " - " + shift['end'];
     } else {
-        cell_to_edit.html(shift["role"] + "<br>" +
-                shift["start"] + "-" + shift["end"]);
+        cell_html += "OFF";
     };
-    cell_to_edit.append(exchange_shifts_button);
+    text_area.html(cell_html);
 
     //Update database
     post_shift_change(date, emp_id, shift);
@@ -313,16 +433,23 @@ var update_shift_assignment = (schedule, shift_id) => {
 
 var get_cell_to_edit = (date, emp_id) => {
 
-    let schedule_output_table = $("#schedule-output-table");
+    let vs_calendar_shifts = $("#vs-calendar-shifts");
+    let emp_index = SCHEDULE['employees'].indexOf(SCHEDULE['employees'].find(emp => emp._id === emp_id))
+    let day_index = SCHEDULE['days'].indexOf(date);
 
-    let emp_row = schedule_output_table.find("[data-emp-id='" + emp_id + "']");
-    let day_index = SCHEDULE['days'].indexOf(date) + 2; //Accounts for emp column and conversion from 0 to 1 indexing
-    console.log(day_index);
-    console.log(SCHEDULE['days'].indexOf(date));
-    let cell_to_edit = emp_row.children(":nth-child(" + day_index + ")");
-
-
+    let cell_to_edit = vs_calendar_shifts.children(":nth-child(" + select_cell(emp_index, day_index) + ")");
+    console.log("Cell to edit:");
+    console.log(cell_to_edit);
     return cell_to_edit
+};
+
+var select_cell = (emp_index, day_index) => {
+
+    let cells_above = emp_index * SCHEDULE['days'].length;
+
+    let cell_index = cells_above + day_index + 1; //1 to change to 1-indexing for nth-child
+    console.log("Cell index: " + cell_index);
+    return cell_index;
 };
 
 var post_shift_change = (date, emp_id, shift) => {
@@ -352,8 +479,7 @@ var post_shift_change = (date, emp_id, shift) => {
 
 var update_shift_issue_flags = (shifts, output) => {
 
-    $("[id^=shift-issue-warning-icon]").remove();
-    $("[id^=shift-issue-warning-text]").remove();
+    $(".vs-calendar-shift-issue-warning").remove();
 
     console.log("Updating shift issue flags.");
 
@@ -380,25 +506,30 @@ var update_shift_issue_flags = (shifts, output) => {
 
     for (day=0; day < shifts_with_issues_by_day.length; day++){
           console.log(day);
-          console.log(shifts_with_issues_by_day[day]);
+          console.log(shifts_with_issues_by_day);
           console.log(shifts_with_issues_by_day[day].length);
           if (shifts_with_issues_by_day[day].length > 0){
+                 console.log("Adding warning text / icon.");
                  //make a warning icon
                  let warning_icon = $("<span />").attr("id", "shift-issue-warning-icon-" + day)
                                                 .addClass("fas fa-exclamation-triangle shift-issue-warning-icon");
 
                  //attach warning icon to header cell
-                 let day_index = SCHEDULE['days'].indexOf(shifts_with_issues_by_day[day][0]['date']) + 2; //Accounts for emp column and 0 to 1 indexing conversion
+                 let day_index = SCHEDULE['days'].indexOf(shifts_with_issues_by_day[day][0]['date']) + 1; //Accounts for emp column
 
-                 let header_cell = $("#schedule-output-header").children("tr").children(":nth-child(" + day_index + ")")
+                 let header_cell = $("#vs-calendar-header-row").children(":nth-child(" + day_index + ")");
+
+                 let warning_container = $("<div />").addClass("vs-calendar-shift-issue-warning");
 
                  let issue_warning = $("<p />").attr("id", "shift-issue-warning-text-" + day)
                                                 .attr("data-date", shifts_with_issues_by_day[day][0]['date'])
                                                 .data("shifts-with-issues", shifts_with_issues_by_day[day])
                                                 .append(warning_icon)
-                                                .append(shifts_with_issues_by_day[day].length + " issue(s)");
+                                                .append(" " + shifts_with_issues_by_day[day].length + " issue(s)");
 
-                 header_cell.append(issue_warning);
+                 warning_container.append(issue_warning);
+                 header_cell.append(warning_container);
+
                  let tooltip = new jBox('Tooltip', {
                     attach: '#shift-issue-warning-text-' + day,
                     title: 'Shift Issues',
@@ -440,8 +571,7 @@ function set_warning_icon_tooltip_content(shifts, output) {
         }
 
         console.log(tooltip_text);
-
-        console.log(tooltip_content);
+        tooltip_content.append(tooltip_text);
     };
 };
 
@@ -504,8 +634,14 @@ function group_shifts_by_day(shifts) {
     let dates = [];
 
     for (i=0; i < shifts.length; i++){
-        dates.push(shifts[i]['date']);
+        console.log(dates);
+        console.log(shifts[i]['date']);
+        if (!(dates.indexOf(shifts[i]['date']) >= 0)){
+            dates.push(shifts[i]['date']);
+        };
     };
+
+    console.log(dates);
 
     let shifts_by_day = [];
 
@@ -513,6 +649,10 @@ function group_shifts_by_day(shifts) {
         let shifts_for_day = [];
         for (shift=0; shift < shifts.length; shift++) {
             if (shifts[shift]['date'] == dates[date]) {
+                console.log("Adding shifts to day.");
+                console.log(day);
+                console.log(dates[date]);
+                console.log(shifts[shift]['date']);
                 shifts_for_day.push(shifts[shift]);
             };
         };

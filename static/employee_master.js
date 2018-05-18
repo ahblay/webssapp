@@ -1,6 +1,12 @@
+var GLOBAL_ROLES;
+
 //On load
 $.getJSON("/api/get_employees", function(data){
     refresh_table_data(data);
+});
+
+$.getJSON("/_api/get_roles", function(data){
+    GLOBAL_ROLES = data;
 });
 
 $(document).ready(function () {
@@ -120,6 +126,35 @@ function render_boolean(value){
 
 
 // Add employees modal functions
+$(document).on("click", "#add-employee", function () {
+    let em_add_emp_role_grid = $(".em-add-emp-roles-row");
+    em_add_emp_role_grid.empty();
+
+    em_add_emp_role_grid.append($("<div />").addClass("em-add-emp-roles-row-header")
+                                            .text("Choose Eligible Roles and Training Status"));
+    console.log(GLOBAL_ROLES);
+
+    for (role=0; role < GLOBAL_ROLES.length; role++){
+        let role_cell = $("<div />").addClass("em-add-emp-role-cell");
+
+        role_cell.css("background", GLOBAL_ROLES[role]['color']);
+
+        role_cell.append($("<div />").append($("<input />").prop("type", "checkbox").attr("data-role", role)));
+
+        role_cell.append($("<div />").text(GLOBAL_ROLES[role]['name']))
+
+        let toggle=$(document.createElement("input"));
+        toggle.prop("type", "checkbox");
+        toggle.attr("data-toggle", "toggle");
+        toggle.prop("checked", false);
+
+        role_cell.append($("<div />").append("T? :").append(toggle));
+
+
+        em_add_emp_role_grid.append(role_cell);
+    }
+});
+
 $("#add-employee-submit").on("click", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     var data = {
