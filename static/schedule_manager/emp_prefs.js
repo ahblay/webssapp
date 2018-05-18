@@ -119,7 +119,12 @@ function renderPrefCalendar(data) {
             }
             else if (day["status"] == "Empty") {
                 $(pref_calendar_pref).addClass("pref-empty")
-                //$(pref_text).text("Empty")
+                for (k = 0; k < Object.keys(pref).length - 2; k++) {
+                    let pref_text = document.createElement("p")
+                    $(pref_text).addClass("pref-text")
+                    $(pref_text).addClass("fa fa-circle").css("color", "grey")
+                    $(pref_calendar_pref).append(pref_text)
+                }
             }
             else if (day["status"] == "Available") {
                 $(pref_calendar_pref).addClass("pref-available")
@@ -247,7 +252,7 @@ function viewShifts() {
             prefs["status"] = "Available"
             outerButton.removeClass("pref-available").removeClass("pref-unavailable").removeClass("pref-empty")
             outerButton.addClass("pref-available")
-            outerButton.find(".pref-text").addClass("fa fa-circle")
+            outerButton.find(".pref-text").css("color", "green")
         }
         if (!$(this).is(":checked")) {
             $("#view-shifts-jBox .jBox-title").css("background", "red").css("color", "#fff")
@@ -267,7 +272,7 @@ function viewShifts() {
             prefs["status"] = "Unavailable"
             outerButton.removeClass("pref-available").removeClass("pref-unavailable").removeClass("pref-empty")
             outerButton.addClass("pref-unavailable")
-            outerButton.find(".pref-text").addClass("fa fa-circle")
+            outerButton.find(".pref-text").css("color", "red")
         }
     })
 
@@ -286,11 +291,13 @@ function viewShifts() {
     // building body content
     $("#view-shifts-modal-table-body").empty()
 
+    let counter = 1
     for (i = 0; i < roles.length; i++) {
         for (j = 0; j < all_info[roles[i]].length; j++) {
             //eligible_employees = $(".emp-shift-prefs").find("#" + all_info[roles[i]][j]["_id"]).data("eligible")
             shift_id = all_info[roles[i]][j]["_id"]
             if (eligible_employees[shift_id].includes(emp_id)) {
+
                 let tr = document.createElement("tr")
                 let pref_td = document.createElement("td")
                 let role_td = document.createElement("td")
@@ -319,9 +326,14 @@ function viewShifts() {
                 $(tr).data("emp_id", emp_id)
                 $(tr).data("date", date)
                 $(tr).data("shift-id", shift_id)
+                $(tr).data("outer-button", outerButton)
+                $(tr).data("row-index", counter)
+
                 $(tr).on("click", togglePrefs)
 
                 $("#view-shifts-modal-table-body").append(tr)
+
+                counter++
             }
         }
     }
@@ -348,7 +360,10 @@ function viewShifts() {
 }
 
 function togglePrefs() {
+    let outerButton = $(this).data("outer-button")
+    console.log(outerButton)
     let hasMeh = $(this).find("svg").hasClass("fa-meh")
+    let row_index = $(this).data("row-index")
     $(this).find("svg").remove()
     if (hasMeh) {
         let pref_img = document.createElement("img")
@@ -366,6 +381,8 @@ function togglePrefs() {
             contentType: 'application/json;charset=UTF-8',
             dataType: "json",
         })
+        console.log(row_index)
+        outerButton.find("svg:nth-child(" + row_index + ")").css("color", "green")
     }
     else {
         let pref_img = document.createElement("img")
@@ -383,6 +400,7 @@ function togglePrefs() {
             contentType: 'application/json;charset=UTF-8',
             dataType: "json",
         })
+        outerButton.find("svg:nth-child(" + row_index + ")").css("color", "yellow")
     }
 }
 

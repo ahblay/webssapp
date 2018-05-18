@@ -115,32 +115,32 @@ $(".sidenav").hover(function () {
 $(document).on("click", "#shift-setup-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
-    $("[id$='-page-icon']").css("color", "#f1ead1")
-    $("#shifts-page-icon").css("color", "#f8bf39")
+    $("[id$='-page-icon']").css("color", "#ababab")
+    $("#shifts-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#emp-management-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
-    $("[id$='-page-icon']").css("color", "#f1ead1")
-    $("#employees-page-icon").css("color", "#f8bf39")
+    $("[id$='-page-icon']").css("color", "#ababab")
+    $("#employees-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#employee-prefs-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
-    $("[id$='-page-icon']").css("color", "#f1ead1")
-    $("#preferences-page-icon").css("color", "#f8bf39")
+    $("[id$='-page-icon']").css("color", "#ababab")
+    $("#preferences-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#options-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
-    $("[id$='-page-icon']").css("color", "#f1ead1")
-    $("#options-page-icon").css("color", "#f8bf39")
+    $("[id$='-page-icon']").css("color", "#ababab")
+    $("#options-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#view-schedule-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
-    $("[id$='-page-icon']").css("color", "#f1ead1")
-    $("#schedule-page-icon").css("color", "#f8bf39")
+    $("[id$='-page-icon']").css("color", "#ababab")
+    $("#schedule-page-icon").css("color", "#d75749")
 })
 
 

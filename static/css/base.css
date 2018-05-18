@@ -155,7 +155,12 @@ select {
 }
 */
 .navbar {
-    border-bottom: 3px solid #349477 !important;
+    border-bottom: 1px solid #dadada;
+    box-shadow: 0px 1px 8px 0px #88888866;
+}
+.navbar a {
+    color: #333741;
+    font-weight: 500;
 }
 
 /* line lower border */
@@ -685,7 +690,7 @@ select {
     font-size: 15px;
 }
 .bg-dark {
-    background: #52b899 !important;
+    background: #f3f3f3 !important;
 }
 
 /* color picker */
@@ -716,16 +721,16 @@ select {
 .sidenav {
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 70px 70px 70px 70px 70px;
     height: 100%;
     width: 65px;
     position: fixed;
     z-index: 18;
     top: 0;
     left: 0;
-    background-color: #d75749;
+    background-color: #fff;
     overflow-x: hidden;
-    padding-top: 45px;
+    padding-top: 135px;
     opacity: 1;
 }
 .sidenav-hidden {
@@ -742,7 +747,7 @@ select {
     font-size: 13px;
 }
 .select-view-highlighted {
-    background: #992f16;
+    border-left: 4px solid #d75749;
 }
 .icon-highlighted {
     color: #f8bf39;
