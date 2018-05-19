@@ -90,12 +90,14 @@ $(document).on("click", "#employee-prefs-tab", function() {
     $(".emp-prefs").empty()
     $(".pref-calendar").empty()
     schedule_id = $(this).data("schedule-id")
+    /*
     $.getJSON("/api/get_sorted_schedule/" + schedule_id, success= function(data) {
         console.log(data);
         console.log(data["employees"]);
         renderEmpSelectTabs(data["employees"]);
         renderShiftPrefsTable(data);
     });
+    */
     $.getJSON("/api/get_sorted_schedule/" + schedule_id, renderPrefCalendar)
 })
 
@@ -114,25 +116,25 @@ $(document).on("click", "#shift-setup-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#shifts-page-icon").css("color", "#D75749")
+    $("#shifts-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#emp-management-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#employees-page-icon").css("color", "#D75749")
+    $("#employees-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#employee-prefs-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#preferences-page-icon").css("color", "#D75749")
+    $("#preferences-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#options-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#options-page-icon").css("color", "#D75749")
+    $("#options-page-icon").css("color", "#d75749")
 })
 
 $(document).on("click", "#view-schedule-tab", function () {
@@ -145,7 +147,7 @@ $(document).on("click", "#view-schedule-tab", function () {
 
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
-    $("#schedule-page-icon").css("color", "#D75749")
+    $("#schedule-page-icon").css("color", "#d75749")
 })
 
 

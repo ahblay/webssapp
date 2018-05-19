@@ -146,6 +146,11 @@ function loadShiftCalendar (data) {
                         var calendar_shift = document.createElement("div")
                         var shift_role = data[k]["role"]
                         $(calendar_shift).addClass("big-calendar-shift").css("background-color", master_roles_color_data[shift_role])
+                        console.log(master_roles_color_data[shift_role])
+                        if (master_roles_color_data[shift_role] == "#f1ead1" || master_roles_color_data[shift_role] == "#f8bf39") {
+                            console.log("HITTING THE IFFFFF")
+                            $(calendar_shift).css("color", "#000")
+                        }
                         $(calendar_shift).text(data[k]["role"] + " " + data[k]["start"])
                         $(calendar_shift).attr("id", data[k]["_id"])
                         $(calendar_shift).data("all-info", data[k])

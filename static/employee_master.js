@@ -99,7 +99,7 @@ function refresh_table_data(employees){
 
             if (db_keys[key] == "roles"){
                 for (role=0; role<employees[i][db_keys[key]].length; role++){
-                    employees[i][db_keys[key]][role] = employees[i][db_keys[key]][role] + "\n";
+                    employees[i][db_keys[key]][role] = employees[i][db_keys[key]][role]['role_name'] + "\n";
                 };
                 let html = employees[i][db_keys[key]].join()
                 $(td).css("white-space", "pre")
@@ -139,7 +139,9 @@ $(document).on("click", "#add-employee", function () {
 
         role_cell.css("background", GLOBAL_ROLES[role]['color']);
 
-        role_cell.append($("<div />").append($("<input />").prop("type", "checkbox").attr("data-role", role)));
+        role_cell.append($("<div />").append($("<input />").prop("type", "checkbox")
+                                                           .attr("data-role", role)
+                                                           .addClass("em-add-emp-role-check")));
 
         role_cell.append($("<div />").text(GLOBAL_ROLES[role]['name']))
 
@@ -147,6 +149,7 @@ $(document).on("click", "#add-employee", function () {
         toggle.prop("type", "checkbox");
         toggle.attr("data-toggle", "toggle");
         toggle.prop("checked", false);
+        toggle.addClass("em-add-emp-train-check");
 
         role_cell.append($("<div />").append("T? :").append(toggle));
 
@@ -158,13 +161,16 @@ $(document).on("click", "#add-employee", function () {
 $("#add-employee-submit").on("click", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     var data = {
-                    name: $("#add-employee-name-input").val(),
-                    min_shifts: $("#min-shifts-input").val(),
-                    max_shifts: $("#max-shifts-input").val(),
-                    seniority: $("#seniority-input").val(),
-                    roles: $("#role-input").val().split(",").map(function(item){return item.trim()}),
-                    training: document.getElementById("training-flag").checked,
-                    inactive: document.getElementById("inactive-flag").checked,
+                    name: $("#em-add-emp-first-name").val() + " " + $("#em-add-emp-last-name").val(),
+                    first_name: $("#em-add-emp-first-name").val(),
+                    last_name: $("#em-add-emp-last-name").val(),
+                    email: $("#em-add-emp-email").val(),
+                    phone: $("#em-add-emp-phone").val(),
+                    min_shifts: $("#em-add-emp-min-shifts").val(),
+                    max_shifts: $("#em-add-emp-max-shifts").val(),
+                    seniority: $("#em-add-emp-seniority").val(),
+                    roles: process_role_selection(),
+                    inactive: document.getElementById("em-add-emp-inactive-flag").checked
                };
     console.log(data);
     $.ajax({
@@ -184,6 +190,22 @@ $("#add-employee-submit").on("click", function() {
         }
     });
 });
+
+function process_role_selection() {
+    console.log("Processing role selection")
+    let eligible_roles = $(".em-add-emp-role-check").map(function (){return this.checked}).get();
+    let training_status_for_roles = $(".em-add-emp-train-check").map(function (){return this.checked}).get();
+
+    let role_selections = [];
+
+    for (role=0; role < GLOBAL_ROLES.length; role++){
+        if (eligible_roles[role]) {
+            role_selections.push({"role_name": GLOBAL_ROLES[role]['name'], "training": training_status_for_roles[role]})
+        };
+    };
+
+    return role_selections;
+};
 
 // Edit employee(s) modal functions
 $("#edit-employees").on('click', function(){
@@ -258,3 +280,4 @@ $(document).on("click", "#remove-employees", function() {
         });
     };
 });
+

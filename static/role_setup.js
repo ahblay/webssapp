@@ -126,6 +126,13 @@ function refresh_table_data(data) {
         $("#roles-table-master tbody").append(tr)
     }
     $(".spectrum-edit").spectrum({
+        showPaletteOnly: true,
+        showPalette: true,
+        palette: [
+            ['#717270', '#28B799', '#F8Bf39',
+            '#F1EAD1', '#D75749'],
+            ['#225085', '#28B5C7', '#EA7D33', '#C24B74']
+        ],
         change: function(color) {
             data = {"name": $(this).data("shift-name"), "color": color.toHexString()}
             console.log(data)

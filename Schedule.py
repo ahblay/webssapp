@@ -126,9 +126,11 @@ class ScheduleProcessor:
 
         return shifts_by_day
 
-
     def _init_role_seniority(self, employee):
-        return [int(employee['seniority']) if role in employee['roles'] else 0 for role in self.roles.values()]
+
+        emp_role_names = [role['role_name'] for role in employee['roles']]
+        print(emp_role_names)
+        return [int(employee['seniority']) if role in emp_role_names else 0 for role in self.roles.values()]
 
     def _init_shift_prefs(self, employee):
 
@@ -159,9 +161,9 @@ class ScheduleProcessor:
         return shift_prefs
 
     def build_training(self):
-        training = [[employee['training'] for _ in self.roles]
+        training = [[employee['roles'][role]['training'] for role, _ in enumerate(self.roles)]
                     for employee in self.employees]
-
+        print(training)
         return training
 
     def build_schedule(self):

@@ -44,6 +44,16 @@
     padding-bottom: 0.25rem;
 }
 
+/* simple table */
+.simple-table thead th {
+    border: none;
+    padding: 0.25rem;
+}
+.simple-table tbody td {
+    border: none;
+    padding: 0.25rem;
+}
+
 /* input field style */
 input {
     border: 1px solid;
@@ -145,7 +155,12 @@ select {
 }
 */
 .navbar {
-    border-bottom: 3px solid #522052 !important;
+    border-bottom: 1px solid #dadada;
+    box-shadow: 0px 1px 8px 0px #88888866;
+}
+.navbar a {
+    color: #333741;
+    font-weight: 500;
 }
 
 /* line lower border */
@@ -678,15 +693,19 @@ select {
 
 /* preference calendar */
 .pref-unavailable {
-    background-color: red;
+    border-color: red !important;
+    background-color: #f6c0be;
 }
 .pref-available {
-    background-color: green;
+    border-color: green !important;
+    background-color: #cae0c4;
 }
 .pref-prefer {
+    border-color: #d4af37 !important;
     background-color: #d4af37;
 }
 .pref-empty {
+    border-color: grey !important;
     background-color: grey;
 }
 .pref-ineligible {
@@ -699,7 +718,7 @@ select {
     flex-direction: row;
     overflow-y: visible;
      --cell-size: 30px;
-     --num-emps: 7;
+     --num-emps: 10;
 }
 .pref-calendar-labels {
     display: flex;
@@ -709,10 +728,12 @@ select {
 }
 .pref-calendar-label {
     font-weight: bold;
+    font-size: 13px;
     height: var(--cell-size);
 }
 .pref-calendar-name-label {
     font-weight: bold;
+    font-size: 13px;
     height: calc(var(--cell-size) + 2px);
     vertical-align: middle;
 }
@@ -731,6 +752,9 @@ select {
 }
 .pref-calendar-title {
     text-align: center;
+    font-size: 13px;
+    font-weight: 450;
+    color: grey;
     height: var(--cell-size);
 }
 .pref-calendar-roles {
@@ -752,7 +776,7 @@ select {
 }
 .pref-calendar-prefs {
     display: grid;
-    grid-template-columns: var(--cell-size);
+    grid-template-columns: calc(2*var(--cell-size));
     grid-template-rows: repeat(var(--num-emps), var(--cell-size));
     grid-row-gap: 2px;
     border-left: 1px solid transparent;
@@ -760,73 +784,24 @@ select {
 }
 .pref-calendar-pref {
     border: 1px solid;
-    border-radius: 5px;
+    border-radius: 3px;
+    cursor: pointer;
 }
 .pref-calendar-text {
     justify-self: center;
     align-self: center;
     font-size: 13px;
 }
-
-/* pop-up styling */
-.popup {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
+.pref-calendar-expand-icon {
+    height: 15px;
+    width: 15px;
+    margin-top: 3px;
+    margin-right: 3px;
+    float: right;
 }
-
-/* The actual pop-up */
-.popup .popuptext {
-    visibility: hidden;
-    width: 160px;
-    background-color: #fff;
-    color: #000;
+.pref-text {
     text-align: center;
-    border: 1px solid;
-    border-radius: 5px;
-    padding: 8px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -80px;
-}
-
-/* makes triangle */
-.popup .popuptext::after,
-.popup .popuptext::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-style: solid;
-}
-
-/* this border color controls the color of the triangle (what looks like the fill of the triangle) */
-.popup .popuptext::after {
-    border-color: #fff transparent transparent transparent;
-    border-width: 5px;
-}
-
-/* this border color controls the outside, thin border */
-.popup .popuptext::before {
-    left: calc(50% - 1px);
-    border-color: #000 transparent transparent transparent;
-    border-width: 6px;
-}
-
-/* Toggle this class - hide and show the pop-up */
-.popup .show {
-    visibility: visible;
-    animation: fadeIn 0.75s;
-}
-
-/* Add animation (fade in the pop-up) */
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity:1 ;}
+    font-size: 13px;
 }
 
 /* role color box */
@@ -874,7 +849,7 @@ select {
     font-size: 15px;
 }
 .bg-dark {
-    background: purple !important;
+    background: #f3f3f3 !important;
 }
 
 /* color picker */
@@ -897,12 +872,15 @@ select {
 #edit-shift-jBox-overlay {
     background-color: rgba(0, 0, 0, 0.1) !important;
 }
+#view-shifts-jBox-overlay {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
 
 /* side navigation bar */
 .sidenav {
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 70px 70px 70px 70px 70px;
     height: 100%;
     width: 65px;
     position: fixed;
@@ -911,7 +889,7 @@ select {
     left: 0;
     background-color: #fff;
     overflow-x: hidden;
-    padding-top: 45px;
+    padding-top: 135px;
     opacity: 1;
 }
 .sidenav-hidden {
@@ -923,44 +901,62 @@ select {
     display: grid;
     align-items: center;
     justify-items: center;
-
-    border-right: 3px solid #ababab;
 }
 .icon-label {
     font-size: 13px;
 }
 .select-view-highlighted {
-    border-right: 3px solid #D75749;
+    border-left: 4px solid #d75749;
 }
 .icon-highlighted {
-    color: #fff;
+    color: #f8bf39;
 }
 #shifts-page-icon {
     height: 30px;
     width: 30px;
-    color: #fff;
+    color: #f1ead1;
 }
 #employees-page-icon {
     height: 30px;
     width: 30px;
-    color: #fff;
+    color: #f1ead1;
 }
 #preferences-page-icon {
     height: 30px;
     width: 30px;
-    color: #fff;
+    color: #f1ead1;
 }
 #options-page-icon {
     height: 30px;
     width: 30px;
-    color: #fff;
+    color: #f1ead1;
 }
 #schedule-page-icon {
     height: 30px;
     width: 30px;
-    color: #fff;
+    color: #f1ead1;
 }
 
+/* shift pref modal styling */
+#view-shifts-modal-table th {
+    font-size: 13px;
+}
+#view-shifts-modal-table td {
+    font-size: 13px;
+}
+
+.greyed-out {
+    color: #dadada !important;
+}
+
+#view-shifts-modal-table-body tr {
+    cursor: pointer;
+}
+.smiley-icon {
+    font-size: 25px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
 
 /* just for funsies */
 .ugly {

@@ -76,7 +76,7 @@ function refresh_table_data(employees){
 
             if (db_keys[key] == "roles"){
                 for (role=0; role<employees[i][db_keys[key]].length; role++){
-                    employees[i][db_keys[key]][role] = employees[i][db_keys[key]][role] + "\n";
+                    employees[i][db_keys[key]][role] = employees[i][db_keys[key]][role]['role_name'] + "\n";
                 };
                 let html = employees[i][db_keys[key]].join()
                 $(td).css("white-space", "pre")
