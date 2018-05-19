@@ -128,11 +128,19 @@ function renderPrefCalendar(data) {
             }
             else if (day["status"] == "Available") {
                 $(pref_calendar_pref).addClass("pref-available")
-                for (k = 0; k < Object.keys(pref).length - 2; k++) {
-                    let pref_text = document.createElement("p")
-                    $(pref_text).addClass("pref-text")
-                    $(pref_text).addClass("fa fa-circle").css("color", "green")
-                    $(pref_calendar_pref).append(pref_text)
+                for (k = 0; k < Object.values(pref).length; k++) {
+                    if (Object.values(pref)[k] == 5) {
+                        let pref_text = document.createElement("p")
+                        $(pref_text).addClass("pref-text").addClass("circle-icon-prefer")
+                        $(pref_text).addClass("fa fa-circle").css("color", "green")
+                        $(pref_calendar_pref).append(pref_text)
+                    }
+                    if (Object.values(pref)[k] == 1) {
+                        let pref_text = document.createElement("p")
+                        $(pref_text).addClass("pref-text").addClass("circle-icon-not-prefer")
+                        $(pref_text).addClass("fa fa-circle").css("color", "yellow")
+                        $(pref_calendar_pref).append(pref_text)
+                    }
                 }
             }
             else if (day["status"] == "Unavailable") {
@@ -232,50 +240,6 @@ function viewShifts() {
         $(pref_availability).prop('checked', false)
     }
 
-    // toggling availability status
-    $(pref_availability).change(function () {
-        if ($(this).is(":checked")) {
-            $("#view-shifts-jBox .jBox-title").css("background", "green").css("color", "#fff")
-            $("#view-shifts-modal-table").removeClass("greyed-out")
-            $("#view-shifts-modal-table svg").removeClass("greyed-out")
-            let data = {"status": "Available",
-                        "emp_id": emp_id,
-                        "schedule_id": schedule_id,
-                        "date": date}
-            $.ajax({
-                type: "POST",
-                url: "/update_pref",
-                data: JSON.stringify(data),
-                contentType: 'application/json;charset=UTF-8',
-                dataType: "json",
-            })
-            prefs["status"] = "Available"
-            outerButton.removeClass("pref-available").removeClass("pref-unavailable").removeClass("pref-empty")
-            outerButton.addClass("pref-available")
-            outerButton.find(".pref-text").css("color", "green")
-        }
-        if (!$(this).is(":checked")) {
-            $("#view-shifts-jBox .jBox-title").css("background", "red").css("color", "#fff")
-            $("#view-shifts-modal-table").addClass("greyed-out")
-            $("#view-shifts-modal-table svg").addClass("greyed-out")
-            let data = {"status": "Unavailable",
-                        "emp_id": emp_id,
-                        "schedule_id": schedule_id,
-                        "date": date}
-            $.ajax({
-                type: "POST",
-                url: "/update_pref",
-                data: JSON.stringify(data),
-                contentType: 'application/json;charset=UTF-8',
-                dataType: "json",
-            })
-            prefs["status"] = "Unavailable"
-            outerButton.removeClass("pref-available").removeClass("pref-unavailable").removeClass("pref-empty")
-            outerButton.addClass("pref-unavailable")
-            outerButton.find(".pref-text").css("color", "red")
-        }
-    })
-
     $(toggle_div).append(pref_availability)
 
     $(title_div).addClass("col-md-7")
@@ -305,10 +269,12 @@ function viewShifts() {
                 let end_td = document.createElement("td")
                 let pref_img = document.createElement("img")
 
-                if (prefs[shift_id] == 1) {
+                console.log(outerButton.find("svg:nth-child(" + counter + ")"))
+                console.log(outerButton.find("svg:nth-child(" + counter + ")").hasClass("circle-icon-not-prefer"))
+                if (outerButton.find("svg:nth-child(" + counter + ")").hasClass("circle-icon-not-prefer")) {
                     $(pref_img).addClass("far fa-meh").css("color", "#ffa900")
                 }
-                if (prefs[shift_id] == 5) {
+                if (outerButton.find("svg:nth-child(" + counter + ")").hasClass("circle-icon-prefer")) {
                     $(pref_img).addClass("far fa-smile").css("color", "green")
                 }
 
@@ -337,6 +303,64 @@ function viewShifts() {
             }
         }
     }
+
+    // toggling availability status
+    $(pref_availability).change(function () {
+        if ($(this).is(":checked")) {
+            $("#view-shifts-jBox .jBox-title").css("background", "green").css("color", "#fff")
+            $("#view-shifts-modal-table").removeClass("greyed-out")
+            $("#view-shifts-modal-table svg").removeClass("greyed-out")
+            let data = {"status": "Available",
+                        "emp_id": emp_id,
+                        "schedule_id": schedule_id,
+                        "date": date}
+            $.ajax({
+                type: "POST",
+                url: "/update_pref",
+                data: JSON.stringify(data),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+            })
+            prefs["status"] = "Available"
+            outerButton.removeClass("pref-available").removeClass("pref-unavailable").removeClass("pref-empty")
+            outerButton.addClass("pref-available")
+
+            let counter = 1;
+            $("#view-shifts-modal-table-body tr").each(function () {
+                console.log($(this).find("td:first-child"))
+                console.log($(this).find("td:first-child").hasClass("fa-meh"))
+                if ($(this).find("td:first-child svg").hasClass("fa-meh")) {
+                    console.log("IN IF MY DUDE")
+                    outerButton.find(".pref-text:nth-child(" + counter + ")").css("color", "yellow")
+                }
+                else {
+                    console.log("IN ELSE MY DUDE")
+                    outerButton.find(".pref-text:nth-child(" + counter + ")").css("color", "green")
+                }
+                counter++
+            })
+        }
+        if (!$(this).is(":checked")) {
+            $("#view-shifts-jBox .jBox-title").css("background", "red").css("color", "#fff")
+            $("#view-shifts-modal-table").addClass("greyed-out")
+            $("#view-shifts-modal-table svg").addClass("greyed-out")
+            let data = {"status": "Unavailable",
+                        "emp_id": emp_id,
+                        "schedule_id": schedule_id,
+                        "date": date}
+            $.ajax({
+                type: "POST",
+                url: "/update_pref",
+                data: JSON.stringify(data),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+            })
+            prefs["status"] = "Unavailable"
+            outerButton.removeClass("pref-available").removeClass("pref-unavailable").removeClass("pref-empty")
+            outerButton.addClass("pref-unavailable")
+            outerButton.find(".pref-text").css("color", "red")
+        }
+    })
 
     viewShiftsModal.setTitle($(main_div)).setContent($("#view-shifts-modal-body"));
 
@@ -382,7 +406,7 @@ function togglePrefs() {
             dataType: "json",
         })
         console.log(row_index)
-        outerButton.find("svg:nth-child(" + row_index + ")").css("color", "green")
+        outerButton.find("svg:nth-child(" + row_index + ")").css("color", "green").removeClass("circle-icon-not-prefer").addClass("circle-icon-prefer")
     }
     else {
         let pref_img = document.createElement("img")
@@ -400,7 +424,7 @@ function togglePrefs() {
             contentType: 'application/json;charset=UTF-8',
             dataType: "json",
         })
-        outerButton.find("svg:nth-child(" + row_index + ")").css("color", "yellow")
+        outerButton.find("svg:nth-child(" + row_index + ")").css("color", "yellow").removeClass("circle-icon-prefer").addClass("circle-icon.not-prefer")
     }
 }
 
