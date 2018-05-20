@@ -37,13 +37,15 @@ function renderPrefCalendar(data) {
         for (k = 0; k < employees.length; k++) {
             for (l = 0; l < employees[k]["roles"].length; l++) {
                 console.log()
-                if (employees[k]["roles"][l] == shifts[j]['role']) {
+                if (employees[k]["roles"][l]['role_name'] == shifts[j]['role']) {
                     eligible_employees_shift.push(employees[k]['_id'])
                 }
             }
         }
         eligible_employees[shifts[j]["_id"]] = eligible_employees_shift
     }
+
+    console.log(eligible_employees);
 
     // days row
     let pref_calendar_labels = document.createElement("div")

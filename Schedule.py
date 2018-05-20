@@ -79,21 +79,23 @@ class ScheduleProcessor:
     def build_management_data(self):
         print("Building management data.")
         print("Num shifts: {} | Num roles: {}".format(self.num_shifts, self.num_roles))
-        print(self.roles)
 
         shifts_by_day = self._get_shifts_by_day()
+        pprint.pprint(shifts_by_day)
+        pprint.pprint(self.roles)
 
         management_data = []
-        for _ in self.roles:
+        for role in self.roles.values():
             role_dict = {}
             day_index = 0
             for day in shifts_by_day:
                 day_dict = {
-                    "num_employees": [day[shift]['num_employees'] for shift in range(len(day))],
-                    "shift_times": ['{} - {}'.format(day[shift]['start'], day[shift]['end']) for shift in range(len(day))]}
+                    "num_employees": [day[shift]['num_employees'] for shift in range(len(day)) if day[shift]['role'] == role],
+                    "shift_times": ['{} - {}'.format(day[shift]['start'], day[shift]['end']) for shift in range(len(day)) if day[shift]['role'] == role]}
                 role_dict[day_index] = day_dict
                 day_index += 1
             management_data.append(role_dict)
+        pprint.pprint(management_data)
         return management_data
 
     def build_employee_info(self):
@@ -129,7 +131,6 @@ class ScheduleProcessor:
     def _init_role_seniority(self, employee):
 
         emp_role_names = [role['role_name'] for role in employee['roles']]
-        print(emp_role_names)
         return [int(employee['seniority']) if role in emp_role_names else 0 for role in self.roles.values()]
 
     def _init_shift_prefs(self, employee):
@@ -141,8 +142,9 @@ class ScheduleProcessor:
             pref_val = -1000
 
             if emp_id in self.prefs.keys():
-                if str(_id) in self.prefs[emp_id].keys():
-                    pref_val = emp_prefs[_id]
+                for day_prefs in self.prefs[emp_id]:
+                    if str(_id) in day_prefs.keys():
+                        pref_val = day_prefs[_id]
 
             return pref_val
 
@@ -161,9 +163,17 @@ class ScheduleProcessor:
         return shift_prefs
 
     def build_training(self):
-        training = [[employee['roles'][role]['training'] for role, _ in enumerate(self.roles)]
-                    for employee in self.employees]
-        print(training)
+        training = []
+        pprint.pprint(self.employees)
+        for emp in self.employees:
+            emp_roles = [role['role_name'] for role in emp['roles']]
+            emp_training = [False] * len(self.roles)
+            for loc, role in enumerate(self.roles.values()):
+                if role in emp_roles:
+                    emp_role_index = next((index for (index, emp_role) in enumerate(emp['roles']) if emp_role["role_name"] == role), None)
+                    emp_training[loc] = emp['roles'][emp_role_index]['training']
+
+            training.append(emp_training)
         return training
 
     def build_schedule(self):

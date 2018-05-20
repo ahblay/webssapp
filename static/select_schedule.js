@@ -186,7 +186,7 @@ $("#submit-new-schedule").on("click", function () {
     });
 })
 
-$(".close-schedule").on("click", function () {
+$(".close-schedule").on("click", function (event) {
     preventClickPropogation(event);
 
     var scheduleID = $(this).data("schedule-id")

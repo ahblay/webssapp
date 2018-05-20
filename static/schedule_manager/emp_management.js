@@ -192,14 +192,6 @@ $(document).on("click", "#add-emps-submit", function() {
 
 
 // Edit employee(s) modal functions
-$("#edit-employees").on('click', function(){
-    if ($(".row-select-checkbox:checked").length > 1){
-        $("#multi-name-change-alert").show()
-    }else{
-        $("#multi-name-change-alert").hide()
-    };
-});
-
 $(document).on("click", "#edit-emps-submit", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     var data = {

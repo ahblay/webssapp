@@ -59,6 +59,8 @@ class Schedule:
 
         self.schedule = schedule
 
+        pprint.pprint(schedule.to_dict())
+
         shifts_by_day = get_shifts_by_day(schedule.days, schedule.shifts)
         pprint.pprint(shifts_by_day)
         #print('Management Data ---------------------------')
@@ -83,6 +85,7 @@ class Schedule:
                 continue
 
             if schedule.roles[str(role)] == shifts_by_day[day][shift]['role']:
+                pprint.pprint(self.management_data[role][day]["num_employees"][shift])
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
                     == self.management_data[role][day]["num_employees"][shift]
 
@@ -176,6 +179,7 @@ class Schedule:
         # employee, day: {"working": True/False, "role": role, "shift": shift}
         schedule = [[{"working": False} for _ in range(self.num_days)] for _ in range(self.num_employees)]
         for employee, role, day, shift in product_range(self.num_employees, self.num_roles, self.num_days, self.num_shifts):
+            print("e: {}, r: {}, d:{}, s:{}".format(employee, role, day, shift))
             if value(self.x[employee][role][day][shift]):
                 schedule[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
                 schedule[employee][day]["working"] = True

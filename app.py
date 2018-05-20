@@ -483,7 +483,7 @@ def save_shift_data():
     schedule_id = request.json["schedule_id"]
     date = request.json["date"]
     role = request.json["role"]
-    number_emps = request.json["num_employees"]
+    number_emps = int(request.json["num_employees"])
     start = request.json["start"]
     end = request.json["end"]
     shift_id = request.json["_id"]
@@ -512,10 +512,15 @@ def save_shift_data():
     emp_ids = []
     prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
     for emp in list(db.schedules.find_one({'_id': ObjectId(schedule_id)})["employees"]):
-        emp_ids.append([str(emp['_id']), emp["roles"]])
+        emp_roles = [role['role_name'] for role in emp['roles']]
+        emp_ids.append([str(emp['_id']), emp_roles])
+
+    print("Updating eligible shifts.")
+    pprint.pprint(emp_ids)
     for emp_id in emp_ids:
         if role in emp_id[1]:
             for day in prefs[emp_id[0]]:
+                print(day["date"] == datetime.datetime.strptime(date, '%m/%d/%Y'))
                 if day["date"] == datetime.datetime.strptime(date, '%m/%d/%Y'):
                     if day["status"] == "Unavailable":
                         day[shift_id] = -1000
@@ -565,7 +570,7 @@ def update_shift_data():
     schedule_id = request.json["schedule_id"]
     date = request.json["date"]
     role = request.json["role"]
-    number_emps = request.json["num_employees"]
+    number_emps = int(request.json["num_employees"])
     start = request.json["start"]
     end = request.json["end"]
     shift_id = request.json["_id"]
@@ -593,7 +598,8 @@ def update_shift_data():
     emp_ids = []
     prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
     for emp in list(db.schedules.find_one({'_id': ObjectId(schedule_id)})["employees"]):
-        emp_ids.append([str(emp['_id']), emp["roles"]])
+        emp_roles = [role['role_name'] for role in emp['roles']]
+        emp_ids.append([str(emp['_id']), emp_roles])
 
     if edit_type == "Apply":
         db.schedules.update({'_id': ObjectId(schedule_id)},
