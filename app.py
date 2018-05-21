@@ -874,7 +874,6 @@ def edit_schedule_employees():
     roles = request.json['roles']
     emp_eligible_role_names = [role['role_name'] for role in roles]
 
-
     # if form is empty, return json object indicating failure
     if request.json is None:
         return jsonify({"success": False, "message": "No JSON received by the server."})
@@ -962,12 +961,13 @@ def add_emps_to_schedule():
     schedule_dates = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["days"])
     shifts = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["shifts"])
 
-    emp_prefs = []
-    for date in schedule_dates:
-        emp_prefs.append({"date": date, "status": "Empty"})
     for emp in emps_to_add:
+        emp_prefs = []
+        for date in schedule_dates:
+            emp_prefs.append({"date": date, "status": "Empty"})
         emp_role_names = [role['role_name'] for role in emp['roles']]
-        print(emp_role_names)
+        print("?????????")
+        pprint.pprint(emp_role_names)
         for shift in shifts:
             if shift["role"] in emp_role_names:
                 for day in emp_prefs:

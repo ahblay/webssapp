@@ -323,7 +323,10 @@ var set_shift_change_modal_content = (date, emp_id) => {
     let num_emps_per_shift = num_emps_assigned_per_shift(SCHEDULE['shifts'], SCHEDULE['output']);
 
     shift_change_table_body.append(build_off_row().attr("data-shift-date", date));
-    emp_role_names = [role['role_name'] for role in emp["roles"]]
+    let emp_role_names = [];
+    for (role=0; role < emp['roles'].length; role++){
+        emp_role_names.push(emp['roles'][role]['role_name']);
+    }
     emp_shifts_for_day = get_emp_shifts_for_day(emp_role_names, SCHEDULE['shifts'], SCHEDULE['days'], date)
 
     console.log(emp_shifts_for_day);
