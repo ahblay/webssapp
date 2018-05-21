@@ -874,7 +874,6 @@ def edit_schedule_employees():
     roles = request.json['roles']
     emp_eligible_role_names = [role['role_name'] for role in roles]
 
-
     # if form is empty, return json object indicating failure
     if request.json is None:
         return jsonify({"success": False, "message": "No JSON received by the server."})
