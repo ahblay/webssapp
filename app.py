@@ -967,6 +967,7 @@ def add_emps_to_schedule():
         emp_prefs.append({"date": date, "status": "Empty"})
     for emp in emps_to_add:
         emp_role_names = [role['role_name'] for role in emp['roles']]
+        print(emp_role_names)
         for shift in shifts:
             if shift["role"] in emp_role_names:
                 for day in emp_prefs:
