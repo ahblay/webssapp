@@ -965,10 +965,10 @@ def add_emps_to_schedule():
     emp_prefs = []
     for date in schedule_dates:
         emp_prefs.append({"date": date, "status": "Empty"})
-
+    emp_role_names = [role['role_name'] for role in emp['roles']]
     for emp in emps_to_add:
         for shift in shifts:
-            if shift["role"] in emp["roles"]:
+            if shift["role"] in emp_role_names:
                 for day in emp_prefs:
                     if day["date"] == datetime.datetime.strptime(shift["date"], '%m/%d/%Y'):
                         if day["status"] == "Unavailable":
@@ -978,7 +978,7 @@ def add_emps_to_schedule():
                         else:
                             day[shift["_id"]] = 1
         db.schedules.update({'_id': ObjectId(request.json['schedule_id'])},
-                                {'$push': {"prefs." + str(emp["_id"]): emp_prefs}})
+                                {'$set': {"prefs." + str(emp["_id"]): emp_prefs}})
 
     print("+++++++++++++++++++++++++++")
     pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})))
