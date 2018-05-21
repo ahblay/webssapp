@@ -962,11 +962,13 @@ def add_emps_to_schedule():
     schedule_dates = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["days"])
     shifts = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["shifts"])
 
-    emp_prefs = []
-    for date in schedule_dates:
-        emp_prefs.append({"date": date, "status": "Empty"})
     for emp in emps_to_add:
+        emp_prefs = []
+        for date in schedule_dates:
+            emp_prefs.append({"date": date, "status": "Empty"})
         emp_role_names = [role['role_name'] for role in emp['roles']]
+        print("?????????")
+        pprint.pprint(emp_role_names)
         for shift in shifts:
             if shift["role"] in emp_role_names:
                 for day in emp_prefs:
