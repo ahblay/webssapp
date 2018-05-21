@@ -872,6 +872,8 @@ def edit_schedule_employees():
     _ids = request.json['_ids']
     schedule_id = request.json['schedule_id']
     roles = request.json['roles']
+    emp_eligible_role_names = [role['role_name'] for role in roles]
+
 
     # if form is empty, return json object indicating failure
     if request.json is None:
@@ -909,9 +911,9 @@ def edit_schedule_employees():
     shifts_to_add = []
     shifts_to_remove = []
     for shift in shifts:
-        if shift["role"] in roles:
+        if shift["role"] in emp_eligible_role_names:
             shifts_to_add.append([shift["_id"], shift["date"]])
-        elif shift["role"] not in roles:
+        elif shift["role"] not in emp_eligible_role_names:
             shifts_to_remove.append(shift["_id"])
     for employee_id in _ids:
         emp_ids.append([employee_id, roles])

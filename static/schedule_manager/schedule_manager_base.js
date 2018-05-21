@@ -1,6 +1,10 @@
 //Path from root/templates/
 let SCHEDULE_MANAGER_TEMPLATE_DIR_PATH = "schedule_manager/"
 
+$.getJSON("/_api/get_roles", function(data){
+    GLOBAL_ROLES = data;
+});
+
 $(function () {
     let status = $("#navbar-line").data("status")
     console.log(status)

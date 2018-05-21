@@ -110,32 +110,32 @@
           <div class="alert alert-danger" id="multi-name-change-alert" role="alert" style="display: none">
               Modifying the name field with multiple selections is not recommended.</div>
           <form>
-          <div class="form-group">
-              <div class="row">
-                  <div class="col-md-4">
-                      <label for="edit-emps-min-shifts-input">Minimum Shifts</label>
+          <div class="form-group emp-man-edit-emp-form">
+              <div class="em-add-emp-shifts-row">
+                  <div class="em-add-emp-num-input">
+                      <label for="emp-man-edit-min-shifts">Minimum Shifts</label>
                       <div class="input-group">
-                        <input type="text" id="edit-emps-min-shifts-input" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
+                        <input type="text" id="emp-man-edit-min-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
                         </div>
                       </div>
                   </div>
-                  <div class="col-md-4">
-                      <label for="edit-emps-max-shifts-input">Maximum Shifts</label>
+                  <div class="em-add-emp-num-input">
+                      <label for="emp-man-edit-max-shifts">Maximum Shifts</label>
                       <div class="input-group">
-                        <input type="text" id="edit-emps-max-shifts-input" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
+                        <input type="text" id="emp-man-edit-max-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
                         </div>
                       </div>
                   </div>
-                  <div class="col-md-4">
-                      <label for="edit-emps-seniority-input">Seniority</label>
+                  <div class="em-add-emp-num-input">
+                      <label for="emp-man-edit-seniority">Seniority</label>
                       <div class="input-group">
-                        <input type="text" id="edit-emps-seniority-input" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
+                        <input type="text" id="emp-man-edit-seniority" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
@@ -143,10 +143,14 @@
                       </div>
                   </div>
               </div>
+              <div class="em-add-emp-roles-row"></div>
               <div class="row">
                   <div class="col-md-12">
-                      <label for="edit-emps-role-input">Eligible Roles (Not case sensitive. Separate with commas.)</label>
-                      <input type="text" class="form-control" placeholder="e.g Host, Waiter, Bartender" id="edit-emps-role-input">
+                      <p>Additional Options</p>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="emp-man-edit-inactive" value="inactive">
+                          <label class="form-check-input" for="emp-man-edit-inactive">Set employee to inactive</label>
+                      </div>
                   </div>
               </div>
           </div>

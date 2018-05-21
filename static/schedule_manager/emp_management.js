@@ -192,15 +192,48 @@ $(document).on("click", "#add-emps-submit", function() {
 
 
 // Edit employee(s) modal functions
+$(document).on("click", "#edit-employees", function () {
+    let em_add_emp_role_grid = $(".em-add-emp-roles-row");
+    em_add_emp_role_grid.empty();
+
+    em_add_emp_role_grid.append($("<div />").addClass("em-add-emp-roles-row-header")
+                                            .text("Choose Eligible Roles and Training Status"));
+    console.log(GLOBAL_ROLES);
+
+    for (role=0; role < GLOBAL_ROLES.length; role++){
+        let role_cell = $("<div />").addClass("em-add-emp-role-cell");
+
+        role_cell.css("background", GLOBAL_ROLES[role]['color']);
+
+        role_cell.append($("<div />").append($("<input />").prop("type", "checkbox")
+                                                           .attr("data-role", role)
+                                                           .addClass("em-add-emp-role-check")));
+
+        role_cell.append($("<div />").text(GLOBAL_ROLES[role]['name']))
+
+        let toggle=$(document.createElement("input"));
+        toggle.prop("type", "checkbox");
+        toggle.attr("data-toggle", "toggle");
+        toggle.prop("checked", false);
+        toggle.addClass("em-add-emp-train-check");
+
+        role_cell.append($("<div />").append("T? :").append(toggle));
+
+
+        em_add_emp_role_grid.append(role_cell);
+    }
+});
+
 $(document).on("click", "#edit-emps-submit", function() {
     // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
     var data = {
                     schedule_id: SCHEDULE_ID,
                     _ids: $(".row-select-checkbox:checked").map(function(){return this.id}).get(),
-                    min_shifts: $("#edit-emps-min-shifts-input").val(),
-                    max_shifts: $("#edit-emps-max-shifts-input").val(),
-                    seniority: $("#edit-emps-seniority-input").val(),
-                    roles: $("#edit-emps-role-input").val().split(",").map(function(item){return item.trim()}),
+                    min_shifts: $("#emp-man-edit-min-shifts").val(),
+                    max_shifts: $("#emp-man-edit-max-shifts").val(),
+                    seniority: $("#emp-man-edit-seniority").val(),
+                    roles: process_role_selection(),
+                    inactive: $("#emp-man-edit-inactive").checked
                };
     console.log(data);
     $.ajax({
@@ -220,6 +253,22 @@ $(document).on("click", "#edit-emps-submit", function() {
         }
     });
 });
+
+function process_role_selection() {
+    console.log("Processing role selection")
+    let eligible_roles = $(".em-add-emp-role-check").map(function (){return this.checked}).get();
+    let training_status_for_roles = $(".em-add-emp-train-check").map(function (){return this.checked}).get();
+
+    let role_selections = [];
+
+    for (role=0; role < GLOBAL_ROLES.length; role++){
+        if (eligible_roles[role]) {
+            role_selections.push({"role_name": GLOBAL_ROLES[role]['name'], "training": training_status_for_roles[role]})
+        };
+    };
+
+    return role_selections;
+};
 
 //Remove employee functions
 $(document).on("click", "#remove-employees", function() {

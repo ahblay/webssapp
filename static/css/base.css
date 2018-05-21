@@ -281,7 +281,13 @@ select {
     cursor: default !important;
 }
 
-/* Employees */
+/* Employee Master and Management */
+.emp-man-edit-emp-form {
+    display: grid;
+    grid-template-rows: repeat(1fr, 3);
+    grid-gap: 10px;
+}
+
 .em-add-emp-form-body {
     display: grid;
     grid-template-rows: repeat(1fr, 5);

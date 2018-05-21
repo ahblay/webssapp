@@ -61,7 +61,7 @@ function render_vs_calendar(schedule) {
     //populate employee list
     for (emp=0; emp<schedule['employees'].length; emp++){
         $("#vs-calendar-emps").append($("<div />").addClass("vs-calendar-emp")
-                                                    .text(schedule['employees'][emp]['name']));
+                                                    .text(truncate_name(schedule['employees'][emp]['name'])));
     };
 
     //add assignments for each day
@@ -69,7 +69,7 @@ function render_vs_calendar(schedule) {
     //set width of grid based on number of days
     let header_row = $("#vs-calendar-header-row");
 
-    header_row.css("grid-template-columns", "175px ".repeat(schedule['days'].length + 1));
+    header_row.css("grid-template-columns", "185px ".repeat(schedule['days'].length + 1));
 
     for (day=0; day<schedule['days'].length; day++){
         header_row.append($("<div />").addClass("vs-calendar-header-cell")
@@ -77,7 +77,7 @@ function render_vs_calendar(schedule) {
                                       .text(schedule['days'][day])));
     };
 
-    $("#vs-calendar-shifts").css("grid-template-columns", "175px ".repeat(schedule['days'].length));
+    $("#vs-calendar-shifts").css("grid-template-columns", "185px ".repeat(schedule['days'].length));
 
     //fill shift information
     for (emp=0; emp<schedule['employees'].length; emp++){
@@ -132,6 +132,11 @@ function render_vs_calendar(schedule) {
         }
     };
 
+};
+
+function truncate_name(name){
+    let split_name = name.split(" ");
+    return split_name[0] + " " + split_name[1].charAt(0) + ".";
 };
 
 $(document).on("click", ".vs-calendar-shift-change-icon", function() {
