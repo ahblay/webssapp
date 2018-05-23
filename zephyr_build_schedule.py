@@ -124,9 +124,7 @@ class Schedule:
         '''
         def coeff(employee, role, day, shift):
 
-            if shift >= len(self.management_data[role][day]["num_employees"]):
-                return -7500
-            elif day >= len(shifts_by_day):
+            if day >= len(shifts_by_day):
                 return -7500
             elif shift >= len(shifts_by_day[day]):
                 return -7500
@@ -181,12 +179,14 @@ class Schedule:
         for employee, role, day, shift in product_range(self.num_employees, self.num_roles, self.num_days, self.num_shifts):
             print("e: {}, r: {}, d:{}, s:{}".format(employee, role, day, shift))
             if value(self.x[employee][role][day][shift]):
-                schedule[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
-                schedule[employee][day]["working"] = True
-                schedule[employee][day]["shift_id"] = str(get_shifts_by_day(self.schedule.days, self.schedule.shifts)[day][shift]['_id'])
-                schedule[employee][day]["shift"] = self.management_data[role][day]['shift_times'][shift]
-                schedule[employee][day]["role"] = role
-                schedule[employee][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
+                if shift < len(self.management_data[role][day]['shift_times']):
+                    print("role: {}, day:{}, shift:{}".format(role, day, shift))
+                    schedule[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
+                    schedule[employee][day]["working"] = True
+                    schedule[employee][day]["shift_id"] = str(get_shifts_by_day(self.schedule.days, self.schedule.shifts)[day][shift]['_id'])
+                    schedule[employee][day]["shift"] = self.management_data[role][day]['shift_times'][shift]
+                    schedule[employee][day]["role"] = role
+                    schedule[employee][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
 
         self.output = schedule
         return schedule
