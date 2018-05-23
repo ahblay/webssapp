@@ -30,14 +30,13 @@ $(document).on("click", "#create-schedule", () => {
         if (confirm_reschedule) {
             $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
                 SCHEDULE = data;
-                render_schedule(SCHEDULE);
+                render_vs_calendar(SCHEDULE);
             });
         };
     } else {
         $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
                 SCHEDULE = data;
                 render_vs_calendar(SCHEDULE);
-                render_schedule(SCHEDULE);
         });
     };
 });

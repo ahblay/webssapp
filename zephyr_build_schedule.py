@@ -3,6 +3,7 @@ from pulp import *
 from pulp import solvers
 from itertools import product
 from sanity_checks import *
+from datetime import datetime
 import pprint
 
 
@@ -72,8 +73,24 @@ class Schedule:
         #print('Schedule ----------------------')
         #pprint.pprint(schedule.to_dict())
 
+        counter = 0
+        last_role = 0
+        last_day = 0
         # correct number of employees in each shift
-        for day, shift, role in product_range(num_days, num_shifts, num_roles):
+        for role, day, shift in product_range(num_roles, num_days, num_shifts):
+            if role > last_role:
+                print("Last role: {}".format(last_role))
+                counter = 0
+                last_role = role
+
+            if day > last_day:
+                print("Last day: {}".format(last_day))
+                counter = 0
+                last_day = day
+                if last_day == num_days-1:
+                    last_day = 0
+
+            print("(*&()*^%%@*()^%")
 
             if day >= len(shifts_by_day):
                 continue
@@ -81,13 +98,16 @@ class Schedule:
             if shift >= len(shifts_by_day[day]):
                 continue
 
-            if shift >= len(self.management_data[role][day]["num_employees"]):
+            if shift > len(self.management_data[role][day]['shift_times']):
                 continue
-
+                
             if schedule.roles[str(role)] == shifts_by_day[day][shift]['role']:
-                pprint.pprint(self.management_data[role][day]["num_employees"][shift])
+                print(counter)
+                print(self.management_data[role][day]["num_employees"])
+                pprint.pprint(self.management_data)
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
-                    == self.management_data[role][day]["num_employees"][shift]
+                    == self.management_data[role][day]["num_employees"][counter]
+                counter += 1
 
         # min/max shifts
         for employee in range(num_employees):
@@ -124,9 +144,8 @@ class Schedule:
         '''
         def coeff(employee, role, day, shift):
 
-            if shift >= len(self.management_data[role][day]["num_employees"]):
-                return -7500
-            elif day >= len(shifts_by_day):
+
+            if day >= len(shifts_by_day):
                 return -7500
             elif shift >= len(shifts_by_day[day]):
                 return -7500
@@ -144,6 +163,7 @@ class Schedule:
                             c = -1000
                         else:
                             raise ValueError("`employee_info` array had a bad pref value for employee", employee, "day", day, "shift", shift)
+                    print("S: {} | C: {}".format(employee_info[employee]["role_seniority"][role], c))
                     c *= employee_info[employee]["role_seniority"][role]
                 else:
                     c = -7500
@@ -153,7 +173,10 @@ class Schedule:
 
         prob += lpSum(coeff(employee, role, day, shift)*x[employee][role][day][shift]
                       for employee, role, day, shift in product_range(num_employees, num_roles, num_days, num_shifts))
-
+        print("SCHDULe @ CReATION")
+        pprint.pprint(management_data)
+        pprint.pprint(employee_info)
+        pprint.pprint(schedule.to_dict())
         prob.solve(solvers.PULP_CBC_CMD())
 
     def retrieve_declined_requests(self, employee, role, day, shift):
@@ -178,15 +201,67 @@ class Schedule:
 
         # employee, day: {"working": True/False, "role": role, "shift": shift}
         schedule = [[{"working": False} for _ in range(self.num_days)] for _ in range(self.num_employees)]
+        counter = 0
+        last_role = 0
+        last_day = 0
         for employee, role, day, shift in product_range(self.num_employees, self.num_roles, self.num_days, self.num_shifts):
-            print("e: {}, r: {}, d:{}, s:{}".format(employee, role, day, shift))
+            if role > last_role:
+                print("Last role: {}".format(last_role))
+                counter = 0
+                last_role = role
+                if last_role == self.num_roles - 1:
+                    last_role = 0
+
+            if day > last_day:
+                print("Last day: {}".format(last_day))
+                counter = 0
+                last_day = day
+                if last_day == self.num_days - 1:
+                    last_day = 0
+
+            print("e: {}, r: {}, d:{}, s:{} ==> {}".format(employee, role, day, shift, self.coeff(employee, role, day, shift)))
             if value(self.x[employee][role][day][shift]):
                 schedule[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
                 schedule[employee][day]["working"] = True
                 schedule[employee][day]["shift_id"] = str(get_shifts_by_day(self.schedule.days, self.schedule.shifts)[day][shift]['_id'])
-                schedule[employee][day]["shift"] = self.management_data[role][day]['shift_times'][shift]
+                schedule[employee][day]["shift"] = self.management_data[role][day]['shift_times'][counter]
                 schedule[employee][day]["role"] = role
                 schedule[employee][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
+                print(counter)
+                counter += 1
 
         self.output = schedule
         return schedule
+
+#Takes the list of all shifts and the role and shift indices of a specific shift and returns
+#the index of that shift within its roles in management data.
+
+'''
+def get_management_data_index(schedule, role, day, shift):
+
+    shifts_by_role = get_shifts_by_role(schedule.roles, schedule.shifts)
+    shifts_in_preceding_roles = []
+
+    for role_shifts in shifts_by_role[:role]:
+        for shift_to_add in role_shifts:
+            shifts_in_preceding_roles.append(shift_to_add)
+    print("SIPR: {}".format(shifts_in_preceding_roles))
+    for index, shift_to_check in enumerate(shifts_in_preceding_roles):
+        date = datetime.strptime(shift_to_check['date'], "%m/%d/%Y")
+        if schedule.days.index(date) > day:
+            del shifts_in_preceding_roles[index]
+    print("SIPR -------: {}".format(shifts_in_preceding_roles))
+    return shift - len(shifts_in_preceding_roles) - 1
+
+
+def get_shifts_by_role(roles, shifts):
+    shifts_by_role = []
+    for role in roles.values():
+        role_shifts = []
+        for shift in shifts:
+            if shift['role'] == role:
+                role_shifts.append(shift)
+        shifts_by_role.append(role_shifts)
+
+    return shifts_by_role
+'''
