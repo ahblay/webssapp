@@ -144,7 +144,6 @@ class Schedule:
         '''
         def coeff(employee, role, day, shift):
 
-
             if day >= len(shifts_by_day):
                 return -7500
             elif shift >= len(shifts_by_day[day]):

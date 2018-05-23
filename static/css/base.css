@@ -1,16 +1,19 @@
 /* Login */
-.wrapper {
+/*
+.login-wrapper {
     height: 100%;
     display: flex;
 }
-.row.content {flex: 1}
-.main {
+.login-row.content {flex: 1}
+*/
+.login-main {
     padding-bottom: 100px;
 }
+
 .login-card {
     padding: 1em;
 }
-.main-content {
+.login-main-content {
     padding-top: 5em;
 }
 
