@@ -738,13 +738,14 @@ select {
     background-color: #eeeeee;
     border-color: #dadada !important;
 }
+
 .pref-calendar {
     display: flex;
     flex-direction: row;
     overflow-y: visible;
      --cell-size: 50px;
-     --num-emps: 10;
 }
+
 .pref-calendar-labels {
     display: flex;
     flex-direction: column;
@@ -802,7 +803,7 @@ select {
 .pref-calendar-prefs {
     display: grid;
     grid-template-columns: calc(1.5*var(--cell-size));
-    grid-template-rows: repeat(var(--num-emps), var(--cell-size));
+    grid-auto-rows: var(--cell-size);
     grid-row-gap: 2px;
     border-left: 1px solid transparent;
     border-right: 1px solid transparent;

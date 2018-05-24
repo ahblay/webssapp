@@ -888,7 +888,7 @@ def edit_schedule_employees():
     filtered_dict = {}
     for key in request.json.keys():
 
-        if key == "_ids":
+        if key == "_ids" or key == "change_roles":
             continue
 
         if key == "roles":
@@ -906,36 +906,37 @@ def edit_schedule_employees():
                                                                                    {'_id': ObjectId(emp['_id'])}}})
             db.schedules.update({'_id': ObjectId(request.json['schedule_id'])}, {'$push': {"employees": emp}})
 
-    emp_ids = []
-    prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
-    shifts = list(db.schedules.find_one({'_id': ObjectId(schedule_id)})["shifts"])
-    shifts_to_add = []
-    shifts_to_remove = []
-    for shift in shifts:
-        if shift["role"] in emp_eligible_role_names:
-            shifts_to_add.append([shift["_id"], shift["date"]])
-        elif shift["role"] not in emp_eligible_role_names:
-            shifts_to_remove.append(shift["_id"])
-    for employee_id in _ids:
-        emp_ids.append([employee_id, roles])
-    for emp_id in emp_ids:
-        for day in prefs[emp_id[0]]:
-            for shift_to_remove in shifts_to_remove:
-                if shift_to_remove in day:
-                    del day[shift_to_remove]
-            for shift_to_add in shifts_to_add:
-                if shift_to_add[0] not in day and day["date"] == datetime.datetime.strptime(shift_to_add[1], '%m/%d/%Y'):
-                    if day["status"] == "Unavailable":
-                        day[shift_to_add[0]] = -1000
-                    elif day["status"] == "Available":
-                        day[shift_to_add[0]] = 5
-                    else:
-                        day[shift_to_add[0]] = 1
-            db.schedules.update({'_id': ObjectId(schedule_id)},
-                                {'$pull': {"prefs." + emp_id[0]:
-                                               {'date': day["date"]}}})
-            db.schedules.update({'_id': ObjectId(schedule_id)},
-                                {'$push': {"prefs." + emp_id[0]: day}})
+    if request.json['change_roles']:
+        emp_ids = []
+        prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
+        shifts = list(db.schedules.find_one({'_id': ObjectId(schedule_id)})["shifts"])
+        shifts_to_add = []
+        shifts_to_remove = []
+        for shift in shifts:
+            if shift["role"] in emp_eligible_role_names:
+                shifts_to_add.append([shift["_id"], shift["date"]])
+            elif shift["role"] not in emp_eligible_role_names:
+                shifts_to_remove.append(shift["_id"])
+        for employee_id in _ids:
+            emp_ids.append([employee_id, roles])
+        for emp_id in emp_ids:
+            for day in prefs[emp_id[0]]:
+                for shift_to_remove in shifts_to_remove:
+                    if shift_to_remove in day:
+                        del day[shift_to_remove]
+                for shift_to_add in shifts_to_add:
+                    if shift_to_add[0] not in day and day["date"] == datetime.datetime.strptime(shift_to_add[1], '%m/%d/%Y'):
+                        if day["status"] == "Unavailable":
+                            day[shift_to_add[0]] = -1000
+                        elif day["status"] == "Available":
+                            day[shift_to_add[0]] = 5
+                        else:
+                            day[shift_to_add[0]] = 1
+                db.schedules.update({'_id': ObjectId(schedule_id)},
+                                    {'$pull': {"prefs." + emp_id[0]:
+                                                   {'date': day["date"]}}})
+                db.schedules.update({'_id': ObjectId(schedule_id)},
+                                    {'$push': {"prefs." + emp_id[0]: day}})
 
     print("+++++++++++++++++++++++++++")
     pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
