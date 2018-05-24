@@ -892,7 +892,6 @@ def edit_schedule_employees():
             continue
 
         if key == "roles":
-            print("IN ROLeS")
             if request.json["change_roles"]:
                 filtered_dict[key] = request.json[key]
             continue

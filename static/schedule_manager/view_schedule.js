@@ -257,15 +257,17 @@ $(document).on("click", "#shift-change-modal-change, #shift-change-modal-cancel"
     }
 });
 
-$(document).on("click", ".shift-change-modal-checkbox", function () {
+$(document).on("click", ".shift-change-modal-checkbox", function (e) {
 
     console.log("Shift change checkbox clicked.");
     let calling_checkbox = $(this);
     console.log(calling_checkbox);
     console.log(calling_checkbox.prop("checked"));
 
-    if (calling_checkbox.prop("checked")){
+    // This works but doesn't make sense and should be investigated further.
+    if (!calling_checkbox.is(":checked")){
         console.log("Preventing default.");
+        e.preventDefault();
     } else {
         console.log("Changing assignment.");
         $(".shift-change-modal-checkbox:checked").each(function (){
