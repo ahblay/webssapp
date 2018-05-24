@@ -198,33 +198,17 @@ class Schedule:
 
         # employee, day: {"working": True/False, "role": role, "shift": shift}
         schedule = [[{"working": False} for _ in range(self.num_days)] for _ in range(self.num_employees)]
-        counter = 0
-        last_role = 0
-        last_day = 0
-        for employee, role, day, shift in product_range(self.num_employees, self.num_roles, self.num_days, self.num_shifts):
-            if role > last_role:
-                print("Last role: {}".format(last_role))
-                counter = 0
-                last_role = role
-                if last_role == self.num_roles - 1:
-                    last_role = 0
 
-            if day > last_day:
-                print("Last day: {}".format(last_day))
-                counter = 0
-                last_day = day
-                if last_day == self.num_days - 1:
-                    last_day = 0
+        for employee, role, day, shift in product_range(self.num_employees, self.num_roles, self.num_days, self.num_shifts):
 
             if value(self.x[employee][role][day][shift]):
+                shift_info = get_shifts_by_day(self.schedule.days, self.schedule.shifts)[day][shift]
                 schedule[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
                 schedule[employee][day]["working"] = True
-                schedule[employee][day]["shift_id"] = str(get_shifts_by_day(self.schedule.days, self.schedule.shifts)[day][shift]['_id'])
-                schedule[employee][day]["shift"] = self.management_data[role][day]['shift_times'][counter]
+                schedule[employee][day]["shift_id"] = str(shift_info['_id'])
+                schedule[employee][day]["shift"] = shift_info['start'] + " - " + shift_info['end']
                 schedule[employee][day]["role"] = role
                 schedule[employee][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
-                print(counter)
-                counter += 1
 
         self.output = schedule
         return schedule

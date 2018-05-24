@@ -891,10 +891,13 @@ def edit_schedule_employees():
         if key == "_ids":
             continue
 
-        if request.json[key] != "":
-            if request.json[key][0] == "":
-                continue
+        if key == "roles":
+            print("IN ROLeS")
+            if request.json["change_roles"]:
+                filtered_dict[key] = request.json[key]
+            continue
 
+        if request.json[key] != "":
             filtered_dict[key] = request.json[key]
 
     for key in filtered_dict:

@@ -197,7 +197,9 @@ $(document).on("click", "#edit-employees", function () {
     em_add_emp_role_grid.empty();
 
     em_add_emp_role_grid.append($("<div />").addClass("em-add-emp-roles-row-header")
-                                            .text("Choose Eligible Roles and Training Status"));
+                                            .text("Choose Eligible Roles and Training Status")
+                                            .append($("<input />").prop("type", "checkbox")
+                                                                  .attr("id", "emp-man-edit-change-roles")));
     console.log(GLOBAL_ROLES);
 
     for (role=0; role < GLOBAL_ROLES.length; role++){
@@ -232,8 +234,9 @@ $(document).on("click", "#edit-emps-submit", function() {
                     min_shifts: $("#emp-man-edit-min-shifts").val(),
                     max_shifts: $("#emp-man-edit-max-shifts").val(),
                     seniority: $("#emp-man-edit-seniority").val(),
+                    change_roles: $("#emp-man-edit-change-roles").prop("checked"),
                     roles: process_role_selection(),
-                    inactive: $("#emp-man-edit-inactive").checked
+                    inactive: $("#emp-man-edit-inactive").prop("checked")
                };
     console.log(data);
     $.ajax({

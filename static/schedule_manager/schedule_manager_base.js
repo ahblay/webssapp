@@ -28,20 +28,27 @@ $(function () {
 
 $('.sidenav .sidenav-item').on('click', function(){
 
+    let current_view = $(".sidenav-item.active");
+
     if ($(this).hasClass('active')){
-        return
+        return;
     };
 
-    let current_view = $(".sidenav-item.active");
-    current_view.removeClass("active");
-    current_view.removeClass("selected-tab")
-    $(this).addClass("active")
-    $(this).addClass("selected-tab")
+    if ($(this).data("view-id") == "schedule-options"){
+        alert("This tab is under development and currently unavailable.")
+        return;
+    };
 
-    change_view(current_view.data("view-id"), $(this).data("view-id"))
+    current_view.removeClass("active");
+    current_view.removeClass("selected-tab");
+    $(this).addClass("active");
+    $(this).addClass("selected-tab");
+
+    change_view(current_view.data("view-id"), $(this).data("view-id"));
 });
 
 function change_view(current_view_id, new_view_id){
+
     let current_view = $("#" + current_view_id)
     console.log(current_view)
     current_view.fadeOut().promise().done(function(){
@@ -135,10 +142,12 @@ $(document).on("click", "#employee-prefs-tab", function () {
     $("#preferences-page-icon").css("color", "#d75749")
 })
 $(document).on("click", "#options-tab", function () {
+    /*
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
     $("#options-page-icon").css("color", "#d75749")
+    */
 })
 
 $(document).on("click", "#view-schedule-tab", function () {

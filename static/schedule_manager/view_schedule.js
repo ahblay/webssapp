@@ -257,10 +257,10 @@ $(document).on("click", "#shift-change-modal-change, #shift-change-modal-cancel"
     }
 });
 
-$(document).on("change", ".shift-change-modal-checkbox", (e) => {
+$(document).on("click", ".shift-change-modal-checkbox", function () {
 
     console.log("Shift change checkbox clicked.");
-    let calling_checkbox = $(e.currentTarget);
+    let calling_checkbox = $(this);
     console.log(calling_checkbox);
     console.log(calling_checkbox.prop("checked"));
 
@@ -268,7 +268,9 @@ $(document).on("change", ".shift-change-modal-checkbox", (e) => {
         console.log("Preventing default.");
     } else {
         console.log("Changing assignment.");
-        $(".shift-change-modal-checkbox").prop("checked", false);
+        $(".shift-change-modal-checkbox:checked").each(function (){
+            $(this).prop("checked", false);
+        })
         calling_checkbox.prop("checked", true);
     };
 });
