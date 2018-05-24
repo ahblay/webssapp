@@ -161,6 +161,7 @@ class Schedule:
                         elif employee_info[employee]["shift_pref"][day][shift]["pref"] == -1000:
                             c = -1000
                         else:
+                            print(employee_info[employee]["shift_pref"][day][shift]["pref"])
                             raise ValueError("`employee_info` array had a bad pref value for employee", employee, "day", day, "shift", shift)
                     print("S: {} | C: {}".format(employee_info[employee]["role_seniority"][role], c))
                     c *= employee_info[employee]["role_seniority"][role]
@@ -172,10 +173,7 @@ class Schedule:
 
         prob += lpSum(coeff(employee, role, day, shift)*x[employee][role][day][shift]
                       for employee, role, day, shift in product_range(num_employees, num_roles, num_days, num_shifts))
-        print("SCHDULe @ CReATION")
-        pprint.pprint(management_data)
-        pprint.pprint(employee_info)
-        pprint.pprint(schedule.to_dict())
+
         prob.solve(solvers.PULP_CBC_CMD())
 
     def retrieve_declined_requests(self, employee, role, day, shift):
@@ -218,7 +216,6 @@ class Schedule:
                 if last_day == self.num_days - 1:
                     last_day = 0
 
-            print("e: {}, r: {}, d:{}, s:{} ==> {}".format(employee, role, day, shift, self.coeff(employee, role, day, shift)))
             if value(self.x[employee][role][day][shift]):
                 schedule[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
                 schedule[employee][day]["working"] = True

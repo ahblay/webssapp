@@ -138,15 +138,16 @@ class ScheduleProcessor:
         def gen_pref_val(_id, emp):
 
             emp_id = str(emp['_id'])
-            emp_prefs = self.prefs[emp_id]
-            pref_val = -1000
 
             if emp_id in self.prefs.keys():
                 for day_prefs in self.prefs[emp_id]:
-                    if str(_id) in day_prefs.keys():
-                        pref_val = day_prefs[_id]
+                    if day_prefs['status'] == "Unavailable":
+                        return -1000
 
-            return pref_val
+                    if str(_id) in day_prefs.keys():
+                        return day_prefs[_id]
+
+            return -1000
 
         shift_prefs = []
 

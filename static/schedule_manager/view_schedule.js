@@ -19,7 +19,6 @@ $(document).on("click", "#view-schedule-tab", () => {
             render_schedule(SCHEDULE);
         };
     });
-
 });
 
 $(document).on("click", "#create-schedule", () => {
