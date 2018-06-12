@@ -743,7 +743,7 @@ select {
     display: flex;
     flex-direction: row;
     overflow-y: visible;
-     --cell-size: 50px;
+     --cell-size: 35px;
 }
 
 .pref-calendar-labels {
@@ -826,8 +826,9 @@ select {
     float: right;
 }
 .pref-text {
-    font-size: 13px;
+    font-size: 10px;
     margin-left: 4px;
+    margin-top: -4px;
 }
 
 /* role color box */
