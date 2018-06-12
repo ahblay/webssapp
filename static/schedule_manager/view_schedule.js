@@ -101,6 +101,7 @@ function render_vs_calendar(schedule) {
                 cell_content.css("background", GLOBAL_ROLES[shift_assignment['role']]['color']);
             } else {
                 cell_content.css("background", "#cccccc");
+                text_area.css("opacity", "0.5");
             };
 
             cell_content.append(text_area);

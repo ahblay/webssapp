@@ -73,41 +73,21 @@ class Schedule:
         #print('Schedule ----------------------')
         #pprint.pprint(schedule.to_dict())
 
-        counter = 0
-        last_role = 0
-        last_day = 0
         # correct number of employees in each shift
         for role, day, shift in product_range(num_roles, num_days, num_shifts):
-            if role > last_role:
-                print("Last role: {}".format(last_role))
-                counter = 0
-                last_role = role
-
-            if day > last_day:
-                print("Last day: {}".format(last_day))
-                counter = 0
-                last_day = day
-                if last_day == num_days-1:
-                    last_day = 0
-
-            print("(*&()*^%%@*()^%")
 
             if day >= len(shifts_by_day):
                 continue
 
             if shift >= len(shifts_by_day[day]):
                 continue
-
-            if shift > len(self.management_data[role][day]['shift_times']):
-                continue
                 
             if schedule.roles[str(role)] == shifts_by_day[day][shift]['role']:
-                print(counter)
-                print(self.management_data[role][day]["num_employees"])
-                pprint.pprint(self.management_data)
+                shift_info = shifts_by_day[day][shift]
                 prob += lpSum(x[employee][role][day][shift] for employee in range(num_employees)) \
-                    == self.management_data[role][day]["num_employees"][counter]
-                counter += 1
+                    == shift_info['num_employees']
+                print("Assigned num_emps: {} to shift: {}".format(shift_info['num_employees'],
+                                                                  shift_info['role'] + ': {} - {}'.format(shift_info['start'], shift_info['end'])))
 
         # min/max shifts
         for employee in range(num_employees):
@@ -200,7 +180,6 @@ class Schedule:
         schedule = [[{"working": False} for _ in range(self.num_days)] for _ in range(self.num_employees)]
 
         for employee, role, day, shift in product_range(self.num_employees, self.num_roles, self.num_days, self.num_shifts):
-
             if value(self.x[employee][role][day][shift]):
                 shift_info = get_shifts_by_day(self.schedule.days, self.schedule.shifts)[day][shift]
                 schedule[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
