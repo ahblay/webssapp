@@ -8,6 +8,8 @@ from bson import json_util, ObjectId
 from Schedule import ScheduleProcessor
 import pprint
 from flask_scss import Scss
+import logging
+import json
 
 app = Flask(__name__)
 Scss(app, static_dir='static', asset_dir='assets')
@@ -25,6 +27,29 @@ monday = today - datetime.timedelta(today.weekday())
 # more info at https://flask-login.readthedocs.io/en/latest/
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+# create logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# create file handler and set level to debug
+fh = logging.FileHandler('data/logs/example.log', 'w')
+fh.setLevel(logging.DEBUG)
+
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = logging.Formatter('%(levelname)s: line %(lineno)i in %(funcName)s() (%(asctime)s) - %(message)s')
+
+# add formatter to ch
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 
 class User():
@@ -100,20 +125,24 @@ def login():
     password = request.form.get('password', None)
 
     user = db.users.find_one({"username": username})
-    print("Attempting to log " + user['username'] + " in.")
+    logger.info("Attempting login: " + user['username'])
     if user and User.validate_login(user['pwd'], password):
         user_obj = User(user['username'])
         login_user(user_obj)
         flash("Logged in successfully", category='success')
+        logger.info('Login successful: ' + user['username'])
         return jsonify({"success": True, "message": "Logged in successfully."})
     else:
         flash("Wrong username or password", category='error')
+        logger.error('Login failed. Incorrect username or password: ' +
+                     json.dumps({'username': user['username'], 'password': password}))
         return jsonify({"success": False, "message": "Incorrect username or password."})
 
 
 @app.route('/logout')
 def logout():
     logout_user()
+    logger.info("User logged out.")
     return redirect(url_for('open_landing_page'))
 
 
@@ -149,6 +178,7 @@ def add_employee():
 
     # if form is empty, return jsonify object indicating failure
     if request.json is None:
+        logger.error("No employee data submitted: request.json is None.")
         return jsonify({"success": False, "message": "No JSON received by the server."})
 
     # create new employee entry in collection with the name entered in the form and all other fields default
@@ -166,7 +196,8 @@ def add_employee():
         "inactive": request.json['inactive']
         })
 
-    print("{} has been added to the database.".format(request.json['name']))
+    logger.info('%s added to employee database.',
+                request.json['first_name'] + ' ' + request.json['last_name'])
 
     # return a jsonify success object1
     return jsonify({"success": True, "message": "Employee added successfully"})
@@ -175,6 +206,7 @@ def add_employee():
 @app.route('/_add_role', methods=['POST'])
 def add_role():
     if request.json is None:
+        logger.error("No role data submitted: request.json is None.")
         return jsonify({"success": False, "message": "No JSON received by the server."})
 
     db = get_db()
@@ -186,6 +218,8 @@ def add_role():
     print(list(db.roles.find()))
 
     print("Role {} has been added to the database.".format(request.json['name']))
+    logger.info('%s added to role database.',
+                request.json['name'])
 
     # return a jsonify success object1
     return jsonify({"success": True, "message": "Role added successfully"})
@@ -198,6 +232,8 @@ def edit_role():
                     {"$set": {"color": request.json["color"]}}
                     )
 
+    logger.info('Role color updated: ' +
+                json.dumps({'name': request.json['name'], 'color': request.json['color']}))
     return jsonify({"success": True, "message": "Role updated successfully"})
 
 
@@ -230,6 +266,7 @@ def save_emp_data():
 
 @app.route("/landing_page")
 def open_landing_page():
+    logger.info("Redirecting to /landing_page.")
     return render_template("landing_page.html")
 
 
@@ -257,12 +294,15 @@ def select_schedule():
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
 
+    logger.info("Redirecting to /select_schedule.")
+
     return render_template("select_schedule.html", schedules=schedules, today=reformatted_today)
 
 
 @app.route("/view_schedule/<_id>", methods=['GET'])
 def view_schedule(_id=None):
     if _id is None:
+        logger.error("Schedule cannot be viewed: No ID associated with selected schedule.")
         return jsonify({"success": False, "message": "No schedule id associated with button."})
     db = get_db()
 
@@ -271,7 +311,9 @@ def view_schedule(_id=None):
         if schedule["_id"] == ObjectId(_id):
             schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
             schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+            logger.info("Redirecting to /view_schedule/%s", _id)
             return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
+    logger.error("Schedule ID %s not found in schedules database.", _id)
     return jsonify({"success": False, "message": "Schedule id is not in database."})
 
 
@@ -327,16 +369,21 @@ def add_schedule():
     schedule = ScheduleProcessor(schedule)
     schedule.save_schedule_data(current_user.username)
 
+    logger.info("New schedule saved: " +
+                json.dumps(schedule))
     return jsonify({"success": True, "message": "New schedule saved."})
 
 
 @app.route('/delete_schedule/<_id>', methods=["POST"])
 def delete_schedule(_id=None):
     if _id is None:
+        logger.error("Schedule cannot be deleted: No ID associated with schedule.")
         return jsonify({"success": False, "message": "No schedule id associated with button."})
     db = get_db()
     db.schedules.remove({"_id": ObjectId(_id)}, {"justOne": True})
     schedules = db.schedules.find({"username": current_user.username})
+    logger.info("Schedule removed from database: " +
+                json.dumps({"id": _id}))
     return render_template("select_schedule.html", schedules=schedules)
 
 
@@ -352,6 +399,7 @@ def employee_setup():
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
 
+    logger.info("Redirecting to /employees.")
     return render_template("employee_master.html", employees=employees, schedules=schedules)
 
 
@@ -364,6 +412,7 @@ def role_setup():
     for schedule in schedules:
         schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
         schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+    logger.info("Redirecting to /roles.")
     return render_template("role_setup.html", schedules=schedules)
 
 
@@ -376,6 +425,7 @@ def edit_employees():
 
     # if form is empty, return jsonify object indicating failure
     if request.json is None:
+        logger.error("No employee data submitted: request.json is None.")
         return jsonify({"success": False, "message": "No JSON received by the server."})
 
     db = get_db()
@@ -404,6 +454,8 @@ def edit_employees():
             print("_id: {} | Key: {} | Value: {}".format(_id, key, filtered_dict[key]))
             db.employees.update({"_id": ObjectId(_id)}, {"$set": {key: filtered_dict[key]}})
 
+    logger.info("Employees' info successfully updated: " +
+                json.dumps({"ids": _ids}))
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
 
@@ -413,8 +465,10 @@ def get_shift_data(date=None, _id=None):
     db = get_db()
     if date is None:
         shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+        logger.info("Returning shift data for all schedule dates.")
         return jsonify(shifts)
     if _id is None:
+        logger.error("Shift data cannot be found: No schedule associated with ID.")
         return jsonify({"success": False, "message": "No schedule id."})
     date = datetime.datetime.strptime(date, '%m%d%Y')
     shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
@@ -422,6 +476,7 @@ def get_shift_data(date=None, _id=None):
     for shift in shifts:
         if shift['date'] == date.strftime('%m/%d/%Y'):
             shifts_for_day.append(shift)
+    logger.info("Returning shift data for date %s", date)
     return jsonify(shifts_for_day)
 
 
@@ -429,8 +484,10 @@ def get_shift_data(date=None, _id=None):
 def get_all_shift_data(_id=None):
     db = get_db()
     if _id is None:
+        logger.error("Shift data cannot be found: No schedule associated with ID.")
         return jsonify({"success": False, "message": "No schedule id."})
     shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
+    logger.info("Returning shift data for all schedule dates.")
     return jsonify(shifts)
 
 
@@ -438,11 +495,13 @@ def get_all_shift_data(_id=None):
 def _get_prefs(_id=None):
     db = get_db()
     if _id is None:
+        logger.error("Preference data cannot be found: No schedule associated with ID.")
         return jsonify({"success": False, "message": "No schedule id."})
     prefs = db.schedules.find_one({"_id": ObjectId(_id)})["prefs"]
     print("----------------")
     pprint.pprint(prefs)
     print("----------------")
+    logger.info("Returning preference data for all schedule dates: " + json.dumps(prefs))
     return jsonify(prefs)
 
 
@@ -450,11 +509,13 @@ def _get_prefs(_id=None):
 def _get_shifts(_id=None):
     db = get_db()
     if _id is None:
+        logger.error("Shift data cannot be found: No schedule associated with ID.")
         return jsonify({"success": False, "message": "No schedule id."})
     shifts = db.schedules.find_one({"_id": ObjectId(_id)})["shifts"]
     employees = get_employees()
     for emp in employees:
         emp["_id"] = str(emp["_id"])
+    logger.info("Returning shift data for schedule %s: " + json.dumps([shifts, employees]), _id)
     return jsonify([shifts, employees])
 
 
@@ -466,6 +527,7 @@ def _get_employees():
         emp["_id"] = str(emp["_id"])
 
     print(employees)
+    logger.info("Returning master employees: " + json.dumps(employees))
     return jsonify(employees)
 
 
@@ -475,6 +537,7 @@ def _get_roles():
     roles = list(db.roles.find())
     for role in roles:
         role["_id"] = str(role["_id"])
+    logger.info("Returning master roles: " + json.dumps(roles))
     return jsonify(roles)
 
 
