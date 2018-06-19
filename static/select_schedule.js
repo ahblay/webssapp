@@ -16,12 +16,6 @@ $(document).ready(function () {
     });
 })
 
-function openSchedule(id) {
-    console.log(id)
-    //var scheduleID = $(this).data("schedule-id")
-    window.location.href = "/view_schedule/" + id
-}
-
 function dateToString(date) {
     var date_array = date.split("/");
     date_array[0] = Number(date_array[0])

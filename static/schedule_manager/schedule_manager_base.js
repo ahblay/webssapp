@@ -1,6 +1,11 @@
 //Path from root/templates/
-let SCHEDULE_MANAGER_TEMPLATE_DIR_PATH = "schedule_manager/"
+let SCHEDULE_MANAGER_TEMPLATE_DIR_PATH = "schedule_manager/";
 
+var SCHEDULE = {};
+var GLOBAL_ROLES = [];
+$.getJSON("/api/get_sorted_schedule/" + schedule_id, function(data) {
+    SCHEDULE = data;
+});
 $.getJSON("/_api/get_roles", function(data){
     GLOBAL_ROLES = data;
 });
@@ -151,16 +156,10 @@ $(document).on("click", "#options-tab", function () {
 })
 
 $(document).on("click", "#view-schedule-tab", function () {
-    $(this).siblings().removeClass("select-view-highlighted")
-
-    $(this).data("schedule-id");
-    $.getJSON("/api/get_sorted_schedule/" + schedule_id, success= function(data) {
-
-    });
-
-    $(this).addClass("select-view-highlighted")
-    $("[id$='-page-icon']").css("color", "#ababab")
-    $("#schedule-page-icon").css("color", "#d75749")
+    $(this).siblings().removeClass("select-view-highlighted");
+    $(this).addClass("select-view-highlighted");
+    $("[id$='-page-icon']").css("color", "#ababab");
+    $("#schedule-page-icon").css("color", "#d75749");
 })
 
 

@@ -1,9 +1,8 @@
 //On load
-let SCHEDULE_ID = window.location.pathname.split("/");
-SCHEDULE_ID = SCHEDULE_ID[SCHEDULE_ID.length-1]
-$.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
-    refresh_table_data(data['employees']);
-});
+let SCHEDULE_ID = SCHEDULE['_id']
+
+refresh_table_data(SCHEDULE['employees']);
+
 
 //Main table functions
 $("#check-all-employees").on("click", function(){
@@ -183,8 +182,8 @@ $(document).on("click", "#add-emps-submit", function() {
             $("#edit-employees").attr("disabled", "disabled");
             $("#remove-employees").attr("disabled", "disabled");
             $.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
-                employees = data['employees']
-                refresh_table_data(employees);
+                SCHEDULE = data;
+                refresh_table_data(SCHEDULE['employees']);
             });
         }
     });
@@ -221,7 +220,6 @@ $(document).on("click", "#edit-employees", function () {
 
         role_cell.append($("<div />").append("T? :").append(toggle));
 
-
         em_add_emp_role_grid.append(role_cell);
     }
 });
@@ -250,8 +248,8 @@ $(document).on("click", "#edit-emps-submit", function() {
             $("#edit-employees").attr("disabled", "disabled");
             $("#remove-employees").attr("disabled", "disabled");
             $.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
-                employees = data['employees']
-                refresh_table_data(employees);
+                SCHEDULE = data;
+                refresh_table_data(SCHEDULE['employees']);
             });
         }
     });
@@ -290,8 +288,8 @@ $(document).on("click", "#remove-employees", function() {
                 $("#edit-employees").attr("disabled", "disabled");
                 $("#remove-employees").attr("disabled", "disabled");
                 $.getJSON("/api/get_schedule/" + SCHEDULE_ID, function(data){
-                    employees = data['employees'];
-                    refresh_table_data(employees);
+                    SCHEDULE = data;
+                    refresh_table_data(SCHEDULE['employees']);
                 });
         };
 
