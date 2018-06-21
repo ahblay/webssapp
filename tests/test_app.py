@@ -1,5 +1,6 @@
 import pytest
-import app
+from webssapp import app
+
 
 def inc(x):
     return x + 1
