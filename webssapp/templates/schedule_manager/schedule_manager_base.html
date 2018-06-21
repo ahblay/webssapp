@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+
+{% block optionalmeta %}
+<title>Schedules</title>
+
+<meta name="user_schedule" content="{{ schedule }}">
+<style>
+    .wrapper {
+        height: 100%;
+        display: flex;
+    }
+    .row.content {flex: 1}
+    .main {
+        padding-bottom: 100px;
+    }
+    .schedules-row {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+</style>
+{% endblock %}
+
+{% block containedcontent %}
+<div class="sidenav">
+    <div id="shift-setup-tab"
+         class="sidenav-item active selected-tab"
+         data-view-id="shift-setup"
+         data-schedule-id="{{ schedule['_id'] }}"
+         data-schedule-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}">
+        <div id="shifts-page-small" class="sidenav-small">
+            <img id="shifts-page-icon" class="far fa-calendar-plus">
+        </div>
+        <div id="shifts-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="emp-management-tab"
+         class="sidenav-item"
+         data-view-id="emp-management">
+        <div id="employees-page-small" class="sidenav-small">
+            <img id="employees-page-icon" class="fas fa-users">
+        </div>
+        <div id="employees-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="employee-prefs-tab"
+         class="sidenav-item"
+         data-view-id="emp-prefs"
+         data-schedule-id="{{ schedule['_id'] }}">
+        <div id="preferences-page-small" class="sidenav-small">
+            <img id="preferences-page-icon" class="fas fa-sliders-h">
+        </div>
+        <div id="preferences-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="options-tab"
+         class="sidenav-item"
+         data-view-id="schedule-options">
+        <div id="options-page-small" class="sidenav-small">
+            <img id="options-page-icon" class="fas fa-cogs">
+        </div>
+        <div id="options-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+    <div id="view-schedule-tab"
+         class="sidenav-item"
+         data-view-id="view-schedule">
+        <div id="schedule-page-small" class="sidenav-small">
+            <img id="schedule-page-icon" class="far fa-calendar-check">
+        </div>
+        <div id="schedule-page-expanded" class="sidenav-expanded sidenav-hidden">
+            <a href="#">SHIFTS</a>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" id="navbar-line" data-status="{{ schedule['status'] }}">
+    <div class="row" id="title-row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 no-padding">
+            <div id="info-bar">
+                <div class="row">
+                    <div class="col-md-4" style="display: flex; align-items: center; padding-top: 1em; padding-bottom: 0.75em;">
+                        <div>
+                            <h4>{{ schedule["name"] }}</h4>
+                            <h6 class="dates" data-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"></h6>
+                        </div>
+                    </div>
+                    <div class="col-md-8" id="quick-info-panel">
+                        <div>
+
+                            <!-- Assigned employees counter
+                            <h5 style="text-align: center">Quick Info Panel</h5>
+                            <span title="Employees Assigned to Schedule" class="fas fa-users fa-3x"></span>
+                            <span style="font-size: 200%">
+                                {% if schedule["employees"] is none %}
+                                    0
+                                {% else %}
+                                    {{ schedule["employees"]|length }}
+                                {% endif %}
+                            </span>
+                            -->
+
+                            <!-- Schedule duration -->
+
+                            <!-- Shifts created -->
+
+                            <!-- # of employees who have reported availability -->
+
+                            <!-- Schedule status -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <!--
+    <div class="row">
+        <div class="col-md-12 no-padding" id="schedule-tabs">
+            <div class="btn-toolbar" id="tab-select" role="group" style="display: flex;">
+                <div class="col-md-1"></div>
+                <div class="col-md-10 schedule-tabs no-padding">
+
+                    <button type="button"
+                            class="btn-secondary active selected-tab"
+                            id="shift-setup-tab"
+                            data-view-id="shift-setup"
+                            data-schedule-id="{{ schedule['_id'] }}"
+                            data-schedule-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}"
+                            style="flex: 1">Shifts
+                    </button>
+
+                    <button type="button"
+                            class="btn-secondary"
+                            data-view-id="emp-management"
+                            style="flex: 1">Employees
+                    </button>
+
+                    <button type="button"
+                            class="btn-secondary"
+                            id="employee-prefs-tab"
+                            data-view-id="emp-prefs"
+                            data-schedule-id="{{ schedule['_id'] }}"
+                            style="flex: 1">Preferences
+                    </button>
+
+                    <button type="button"
+                            class="btn-secondary"
+                            data-view-id="schedule-options"
+                            style="flex: 1">Options
+                    </button>
+
+                    <button type="button"
+                            class="btn-secondary"
+                            data-view-id="view-schedule"
+                            style="flex: 1">Schedule
+                    </button>
+                </div>
+
+                <div class="col-md-1"></div>
+
+            </div>
+        </div>
+    </div>
+    -->
+    <div class="row">
+        <div class="col-md-12 no-padding">
+            <div class='smgr-tab' id="shift-setup">
+                {% include "/schedule_manager/shift_setup.html" %}
+            </div>
+            <div class='smgr-tab' id="emp-management" style="display: none">
+                {% include "/schedule_manager/emp_management.html" %}
+            </div>
+            <div class='smgr-tab' id="emp-prefs" style="display: none">
+                {% include "/schedule_manager/emp_prefs.html" %}
+            </div>
+            <div class='smgr-tab' id="schedule-options" style="display: none">
+                {% include "/schedule_manager/schedule_options.html" %}
+            </div>
+            <div class='smgr-tab' id="view-schedule" style="display: none">
+                {% include "/schedule_manager/view_schedule.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/schedule_manager/schedule_manager_base.js" type="text/javascript"></script>
+    <script src="/static/schedule_manager/shift_setup.js" type="text/javascript"></script>
+    <script src="/static/schedule_manager/emp_management.js" type="text/javascript"></script>
+    <script src="/static/schedule_manager/view_schedule.js" type="text/javascript"></script>
+    <script src="/static/schedule_manager/emp_prefs.js" type="text/javascript"></script>
+{% endblock %}

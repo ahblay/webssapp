@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block optionalmeta %}
+<title>Employees</title>
+<meta name="user_schedules" content="{{ schedules }}">
+{% endblock %}
+
+{% block containedcontent %}
+<div class="container-fluid alert-default">
+
+    <div class="row line-default" id="title-row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 no-padding">
+            <div class="row">
+                <div class="col-md-10" style="padding-top: 1em; padding-bottom: .75em;">
+                    <h4>Employees</h4>
+                </div>
+                <div class="col-md-2" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                    <span id="previous-schedule-icon"
+                          class="fas fa-share-square fa-flip-horizontal fa-2x"></span>
+                    <span id="current-schedule-icon"
+                          class="fas fa-flag fa-2x"></span>
+                    <span id="upcoming-schedule-icon"
+                          class="fas fa-share-square fa-2x float-right"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <!--
+    <div class="row">
+        <div class="col-md-12 no-padding alert-line">
+            <div class="alert alert-primary w100" role="alert">
+                <p>The information on this page will be loaded when a new schedule is created.
+                If you wish to make changes that apply to only one schedule, go to the "Home" page and select the schedule
+                you wish to manage, then go to the "Employee Management" tab.</p>
+            </div>
+        </div>
+    </div>
+    -->
+
+    <br>
+
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+
+        <div class="col-md-10 no-padding">
+            <div class="row">
+                <div class="col-md-12" style="padding-bottom: 1em;">
+                    <button type="button" class="btn btn-outline-dark" id="add-employee" data-target="#add-employee-modal" data-toggle="modal">Add Employee</button>
+                    <button type="button" class="btn btn-outline-dark" id="edit-employees" data-target="#edit-emps-modal" data-toggle="modal" disabled>Edit Selected</button>
+                    <button type="button" class="btn btn-outline-danger float-right" id="remove-employees" disabled>Remove Selected</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table rounded-table-basic table-hover" id="emp-info">
+                        <thead>
+                            <tr>
+                                <th data-dbkey="checkbox" scope="col">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" value="" id="check-all-employees">
+                                        <span class="custom-checkbox" style="top: -12px !important;">
+                                        </span>
+                                    </label>
+                                </th>
+                                <th data-dbkey="name" scope="col">Name</th>
+                                <th data-dbkey="training" scope="col">Training</th>
+                                <th data-dbkey="roles" scope="col">Roles</th>
+                                <th data-dbkey="min_shifts" scope="col">Min. Shifts</th>
+                                <th data-dbkey="max_shifts" scope="col">Max. Shifts</th>
+                                <th data-dbkey="seniority" scope="col">Seniority</th>
+                                <th data-dbkey="inactive" scope="col">Inactive</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employee-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="previous-schedules-tooltip" style="display: none;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="border-top: none;">Previous Schedules</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                        {% if schedule['status'] == 'default' %}
+                        <tr>
+                            <td id="{{ schedule['_id'] }}"
+                                onclick="openSchedule(this.id)"
+                                style="border-top: none;">{{ schedule['name'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="current-schedules-tooltip" style="display: none;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="border-top: none;">Current Schedules</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                        {% if schedule['status'] == 'active' %}
+                        <tr>
+                            <td id="{{ schedule['_id'] }}"
+                                onclick="openSchedule(this.id)"
+                                style="border-top: none;">{{ schedule['name'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="upcoming-schedules-tooltip" style="display: none;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="border-top: none;">Upcoming Schedules</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                        {% if schedule['status'] == 'upcoming' %}
+                        <tr>
+                            <td id="{{ schedule['_id'] }}"
+                                onclick="openSchedule(this.id)"
+                                style="border-top: none;">{{ schedule['name'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-1">
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="add-employee-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-employee-modal-title">Add Employee</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="add-employee-modal-body">
+          <form>
+          <div class="form-group em-add-emp-form-body">
+              <div class="em-add-emp-form-row">
+                    <div class="em-add-emp-name">
+                        <label for="em-add-emp-first-name">First Name</label>
+                        <input type="text" class="form-control" id="em-add-emp-first-name" placeholder="First Name">
+                    </div>
+                    <div class="em-add-emp-name">
+                        <label for="em-add-emp-last-name">Last Name</label>
+                        <input type="text" class="form-control" id="em-add-emp-last-name" placeholder="Last Name">
+                    </div>
+              </div>
+              <div class="em-add-emp-form-row">
+                    <div class="em-add-emp-email">
+                        <label for="em-add-emp-email">Email</label>
+                        <input type="text" class="form-control" id="em-add-emp-email" placeholder="ex. jsmith@example.xyz">
+                    </div>
+                    <div class="em-add-emp-phone">
+                        <label for="em-add-emp-phone">Cell Phone</label>
+                        <input type="text" class="form-control" id="em-add-emp-phone" placeholder="ex. (888) 888-8888">
+                    </div>
+              </div>
+              <div class="em-add-emp-shifts-row">
+                  <div class="em-add-emp-num-input">
+                      <label for="em-add-emp-min-shifts">Minimum Shifts</label>
+                      <div class="input-group">
+                        <input type="text" id="em-add-emp-min-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="em-add-emp-num-input">
+                      <label for="em-add-emp-max-shifts">Maximum Shifts</label>
+                      <div class="input-group">
+                        <input type="text" id="em-add-emp-max-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="em-add-emp-num-input">
+                      <label for="em-add-emp-seniority">Seniority</label>
+                      <div class="input-group">
+                        <input type="text" id="em-add-emp-seniority" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="em-add-emp-roles-row">
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                      <p>Additional Options</p>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="em-add-emp-inactive-flag" value="inactive">
+                          <label class="form-check-input" for="em-add-emp-inactive-flag">Set employee to inactive</label>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="add-employee-submit" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-emps-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Employee(s)</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="edit-emps-modal-body">
+          <div class="alert alert-danger" id="multi-name-change-alert" role="alert" style="display: none">
+              Modifying the name field with multiple selections is not recommended.</div>
+          <form>
+          <div class="form-group">
+              <label for="edit-emps-name-input">Employee Name</label>
+              <input type="text" class="form-control" id="edit-emps-name-input" placeholder="Employee Name">
+              <div class="row">
+                  <div class="col-md-4">
+                      <label for="edit-emps-min-shifts-input">Minimum Shifts</label>
+                      <div class="input-group">
+                        <input type="text" id="edit-emps-min-shifts-input" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <label for="edit-emps-max-shifts-input">Maximum Shifts</label>
+                      <div class="input-group">
+                        <input type="text" id="edit-emps-max-shifts-input" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <label for="edit-emps-seniority-input">Seniority</label>
+                      <div class="input-group">
+                        <input type="text" id="edit-emps-seniority-input" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                      <label for="edit-emps-role-input">Eligible Roles (Not case sensitive. Separate with commas.)</label>
+                      <input type="text" class="form-control" placeholder="e.g Host, Waiter, Bartender" id="edit-emps-role-input">
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                      <p>Additional Options</p>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="edit-emps-no-change-flag" value="no-change">
+                          <label class="form-check-input" for="edit-emps-no-change-flag">No change</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="edit-emps-training-flag" value="training">
+                          <label class="form-check-input" for="edit-emps-training-flag">Training</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="edit-emps-inactive-flag" value="inactive">
+                          <label class="form-check-input" for="edit-emps-inactive-flag">Inactive</label>
+                      </div>
+                  </div>
+              </div>
+              <div class="alert alert-warning">You must select "No Change" if you do not want unselected options to be toggled off.</div>
+          </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="edit-emps-submit" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/static/employee_master.js" type="text/javascript"></script>
+{% endblock %}
+

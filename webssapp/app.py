@@ -2,7 +2,7 @@ import datetime
 import json
 import logging
 import pprint
-from bson import ObjectId, json_util
+from bson import ObjectId
 from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
