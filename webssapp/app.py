@@ -1,21 +1,23 @@
-from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for
-from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
+import json
+import logging
+import pprint
+from bson import ObjectId
+from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
-from bson import json_util, ObjectId
-from Schedule import ScheduleProcessor
-import pprint
-from flask_scss import Scss
-import logging
-import json
+from raven import Client
+from werkzeug.security import generate_password_hash, check_password_hash
+from webssapp.Schedule import ScheduleProcessor
+from pathlib import Path
 
 app = Flask(__name__)
-Scss(app, static_dir='static', asset_dir='assets')
-app.secret_key = "Peter, that bulge in your pants is causing a tidal wave."
 
-app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config.update(dict(
+    DEBUG=True,
+    SECRET_KEY="Peter, that bulge in your pants is causing a tidal wave.",
+))
 
 # list of possible levels of seniority
 seniority_levels = list(range(10))
@@ -28,12 +30,14 @@ monday = today - datetime.timedelta(today.weekday())
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+#Raven setup (used to send info to Sentry)
+client = Client('https://39e5a61f3f7d493da5f2087caa1bdf4a:53334c7ea4a94c9da23e8c83969528bd@sentry.io/1229898')
+
 # create logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
 # create file handler and set level to debug
-fh = logging.FileHandler('data/logs/example.log', 'w')
+fh = logging.FileHandler(str(Path.cwd()) + '/data/logs/example.log', 'w')
 fh.setLevel(logging.DEBUG)
 
 # create console handler and set level to debug
@@ -50,7 +54,6 @@ ch.setFormatter(formatter)
 # add ch to logger
 logger.addHandler(fh)
 logger.addHandler(ch)
-
 
 class User():
 
@@ -537,7 +540,7 @@ def _get_roles():
     roles = list(db.roles.find())
     for role in roles:
         role["_id"] = str(role["_id"])
-    logger.info("Returning master roles: " + json.dumps(roles))
+    logger.info("Returning JSON for master roles.")
     return jsonify(roles)
 
 
@@ -1131,7 +1134,6 @@ def get_sorted_schedule(schedule_id=None):
         days = prefs[str(emp["_id"])]
         for day in days:
             datetime_day = day["date"]
-            print(datetime_day)
             day["date"] = datetime_day.strftime("%m/%d/%Y")
 
 
@@ -1204,11 +1206,21 @@ def change_shift_assignment():
 
     return jsonify(schedule.to_dict())
 
+
 @app.route("/_log_to_server")
 def log_to_server():
+    source = request.json['source']
+    level = request.json['level']
+    msg = request.json['msg']
+    json_data = request.json['json_data']
 
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    if level == "debug":
+        logger.debug(msg)
+    elif level == "info":
+        logger.info(msg)
+    elif level == "warning":
+        logger.warning(msg)
+    elif level == "error":
+        logger.error(msg)
+    elif level == "critical":
+        logger.critical(msg)

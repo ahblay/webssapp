@@ -1,5 +1,6 @@
-import Schedule
 import random
+
+from webssapp import Schedule
 
 name = "test_schedule"
 days = ["mon", "tues", "wed", "thurs", "fri", "sat", "sun"]

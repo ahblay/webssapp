@@ -1,11 +1,10 @@
-from pymongo import MongoClient
-from flask import g
-import zephyr_build_schedule as scheduling_algorithm
 import datetime
 import pprint
-import utilities
+import webssapp.utilities as utilities
+from flask import g
+from pymongo import MongoClient
 
-from bson import ObjectId
+from webssapp import zephyr_build_schedule as scheduling_algorithm
 
 
 class ScheduleProcessor:
@@ -285,7 +284,6 @@ class ScheduleProcessor:
                             'day': int(shift['date'][3:5])
                          }
             date = datetime.date(date_parts['yr'], date_parts['mo'], date_parts['day'])
-            print(time_parts["hr"])
             time = datetime.time(time_parts['hr'], time_parts['min'])
             return datetime.datetime.combine(date, time)
 

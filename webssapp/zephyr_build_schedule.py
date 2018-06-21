@@ -1,10 +1,9 @@
-import sys, os
+import pprint
+
 from pulp import *
 from pulp import solvers
-from itertools import product
-from sanity_checks import *
-from datetime import datetime
-import pprint
+
+from webssapp.sanity_checks import *
 
 
 class InfeasibleProblem(Exception):
