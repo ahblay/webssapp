@@ -1,4 +1,4 @@
-var schedule_id = $("#employee-prefs-tab").data("schedule-id")
+var schedule_id = SCHEDULE['_id']
 var selected_user_id = 'initial assignment'
 var employee_names = {}
 var shift_dict = {}

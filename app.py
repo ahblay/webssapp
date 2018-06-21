@@ -1246,5 +1246,11 @@ def change_shift_assignment():
 
     return jsonify(schedule.to_dict())
 
+@app.route("/_log_to_server")
+def log_to_server():
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

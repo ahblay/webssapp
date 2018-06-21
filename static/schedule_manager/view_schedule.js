@@ -1,24 +1,13 @@
-var SCHEDULE = [];
-var GLOBAL_ROLES;
 var SHIFT_CHANGE_JBOX = null;
 var VS_CALENDAR_DELAY_TIMER;
 var VS_CALENDAR_CELL_HOVER_DELAY = 200;
 
 $(document).on("click", "#view-schedule-tab", () => {
-    $.getJSON("/_api/get_roles", function(data){
-        GLOBAL_ROLES = data;
-        console.log(GLOBAL_ROLES);
-    });
-
-    $.getJSON("/api/get_sorted_schedule/" + SCHEDULE_ID, function(data){
-        SCHEDULE = data;
-        console.log(SCHEDULE);
-        if (SCHEDULE["output"] != null){
+    if (SCHEDULE["output"] != null){
             console.log("Rendering saved output.");
             render_vs_calendar(SCHEDULE);
             render_schedule(SCHEDULE);
-        };
-    });
+    };
 });
 
 $(document).on("click", "#create-schedule", () => {
@@ -40,7 +29,7 @@ $(document).on("click", "#create-schedule", () => {
     };
 });
 
-function render_vs_calendar(schedule) {
+function render_vs_calendar(schedule, global_roles) {
     console.log("Rendering vs-calendar.");
 
     //Empty things as needed
@@ -98,7 +87,7 @@ function render_vs_calendar(schedule) {
             //Set cell background color based on role
 
             if (shift_assignment['working'] == true){
-                cell_content.css("background", GLOBAL_ROLES[shift_assignment['role']]['color']);
+                cell_content.css("background", global_roles[shift_assignment['role']]['color']);
             } else {
                 cell_content.css("background", "#cccccc");
                 text_area.css("opacity", "0.5");
@@ -107,25 +96,11 @@ function render_vs_calendar(schedule) {
             cell_content.append(text_area);
 
             cell_content.append($("<div />").addClass("vs-calendar-shift-change-icon")
-                                            .attr("data-date", SCHEDULE['days'][day])
-                                            .attr("data-emp-id", SCHEDULE['employees'][emp]['_id'])
+                                            .attr("data-date", schedule['days'][day])
+                                            .attr("data-emp-id", schedule['employees'][emp]['_id'])
                                             .append($("<span />").addClass("fas fa-exchange-alt")));
 
             cell_content.append($("<div />").addClass("vs-calendar-shift-status-icon"));
-            /*
-            cell_content.hover(function (){
-                let current_cell = $(this);
-                VS_CALENDAR_DELAY_TIMER = setTimeout(function() {
-                    console.log("Entering hover state.");
-                    current_cell.children(".vs-calendar-shift-change-icon").children().show();
-                }, VS_CALENDAR_CELL_HOVER_DELAY)
-            }, function () {
-                let current_cell = $(this);
-                clearTimeout(VS_CALENDAR_DELAY_TIMER);
-                console.log("Leaving hover state.");
-                current_cell.children(".vs-calendar-shift-change-icon").children().hide();
-            });
-            */
 
             $("#vs-calendar-shifts").append(cell_content);
         }
@@ -234,7 +209,7 @@ function render_schedule(schedule){
         $("#schedule-output-body").append(row);
     };
 
-    update_shift_issue_flags(SCHEDULE['shifts'], SCHEDULE['output']);
+    update_shift_issue_flags(schedule['shifts'], schedule['output']);
 };
 
 //Shift Change Modal jBox
@@ -283,7 +258,7 @@ $(document).on("click", ".shift-change-modal-toggle", function () {
     let shift_date = $(this).attr("data-date");
     let emp_id = $(this).attr("data-emp-id");
 
-    set_shift_change_modal_content(shift_date, emp_id);
+    set_shift_change_modal_content(SCHEDULE, shift_date, emp_id);
 
     SHIFT_CHANGE_JBOX = new jBox("Modal", {
         id: "shift-change-jbox",
@@ -300,7 +275,7 @@ $(document).on("click", ".shift-change-modal-toggle", function () {
 });
 
 
-var set_shift_change_modal_content = (date, emp_id) => {
+var set_shift_change_modal_content = (schedule, date, emp_id) => {
     console.log("Rebuilding shift change modal content.")
     console.log(date);
     console.log(emp_id);
@@ -323,14 +298,14 @@ var set_shift_change_modal_content = (date, emp_id) => {
         shift_change_table_head.append($("<th />").text(headers[label]));
     };
 
-    let num_emps_per_shift = num_emps_assigned_per_shift(SCHEDULE['shifts'], SCHEDULE['output']);
+    let num_emps_per_shift = num_emps_assigned_per_shift(schedule['shifts'], schedule['output']);
 
     shift_change_table_body.append(build_off_row().attr("data-shift-date", date));
     let emp_role_names = [];
     for (role=0; role < emp['roles'].length; role++){
         emp_role_names.push(emp['roles'][role]['role_name']);
     }
-    emp_shifts_for_day = get_emp_shifts_for_day(emp_role_names, SCHEDULE['shifts'], SCHEDULE['days'], date)
+    emp_shifts_for_day = get_emp_shifts_for_day(emp_role_names, schedule['shifts'], schedule['days'], date)
 
     console.log(emp_shifts_for_day);
     console.log(num_emps_per_shift);
@@ -348,8 +323,8 @@ var set_shift_change_modal_content = (date, emp_id) => {
         shift_change_table_body.append(row);
     };
 
-    let emp_index = SCHEDULE['employees'].indexOf(emp);
-    let day_index = SCHEDULE['days'].indexOf(date);
+    let emp_index = schedule['employees'].indexOf(emp);
+    let day_index = schedule['days'].indexOf(date);
 
     shift_change_table.append(shift_change_table_head)
                       .append(shift_change_table_body);
