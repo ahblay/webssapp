@@ -2,7 +2,7 @@ import datetime
 import json
 import logging
 import pprint
-from bson import ObjectId
+from bson import ObjectId, json_util
 from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
@@ -36,23 +36,30 @@ client = Client('https://39e5a61f3f7d493da5f2087caa1bdf4a:53334c7ea4a94c9da23e8c
 # create logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-# create file handler and set level to debug
-fh = logging.FileHandler(str(Path.cwd()) + '/data/logs/example.log', 'w')
-fh.setLevel(logging.DEBUG)
 
-# create console handler and set level to debug
+# create file handler and set level to info
+fh_info = logging.FileHandler(str(Path.cwd()) + '/data/logs/fh_info.log', 'w')
+fh_info.setLevel(logging.INFO)
+
+# create file handler and set level to debug
+fh_debug = logging.FileHandler(str(Path.cwd()) + '/data/logs/fh_debug.log', 'w')
+fh_debug.setLevel(logging.DEBUG)
+
+# create console handler and set level to info
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.INFO)
 
 # create formatter
 formatter = logging.Formatter('%(levelname)s: line %(lineno)i in %(funcName)s() (%(asctime)s) - %(message)s')
 
 # add formatter to ch
-fh.setFormatter(formatter)
+fh_info.setFormatter(formatter)
+fh_debug.setFormatter(formatter)
 ch.setFormatter(formatter)
 
 # add ch to logger
-logger.addHandler(fh)
+logger.addHandler(fh_info)
+logger.addHandler(fh_debug)
 logger.addHandler(ch)
 
 class User():
@@ -138,7 +145,7 @@ def login():
     else:
         flash("Wrong username or password", category='error')
         logger.error('Login failed. Incorrect username or password: ' +
-                     json.dumps({'username': user['username'], 'password': password}))
+                     json.dumps({'username': user['username'], 'password': password}, indent=4))
         return jsonify({"success": False, "message": "Incorrect username or password."})
 
 
@@ -235,8 +242,9 @@ def edit_role():
                     {"$set": {"color": request.json["color"]}}
                     )
 
-    logger.info('Role color updated: ' +
-                json.dumps({'name': request.json['name'], 'color': request.json['color']}))
+    logger.info("Role color updated.")
+    logger.debug('Role color updated: ' +
+                json.dumps({'name': request.json['name'], 'color': request.json['color']}, indent=4))
     return jsonify({"success": True, "message": "Role updated successfully"})
 
 
@@ -372,8 +380,9 @@ def add_schedule():
     schedule = ScheduleProcessor(schedule)
     schedule.save_schedule_data(current_user.username)
 
-    logger.info("New schedule saved: " +
-                json.dumps(schedule))
+    logger.info("New schedule saved.")
+    logger.debug("New schedule saved: " +
+                json.dumps(schedule, indent=4))
     return jsonify({"success": True, "message": "New schedule saved."})
 
 
@@ -386,7 +395,7 @@ def delete_schedule(_id=None):
     db.schedules.remove({"_id": ObjectId(_id)}, {"justOne": True})
     schedules = db.schedules.find({"username": current_user.username})
     logger.info("Schedule removed from database: " +
-                json.dumps({"id": _id}))
+                json.dumps({"id": _id}, indent=4))
     return render_template("select_schedule.html", schedules=schedules)
 
 
@@ -457,8 +466,9 @@ def edit_employees():
             print("_id: {} | Key: {} | Value: {}".format(_id, key, filtered_dict[key]))
             db.employees.update({"_id": ObjectId(_id)}, {"$set": {key: filtered_dict[key]}})
 
-    logger.info("Employees' info successfully updated: " +
-                json.dumps({"ids": _ids}))
+    logger.info("Employees' info successfully updated.")
+    logger.debug("Employees' info successfully updated: " +
+                json.dumps({"ids": _ids}, indent=4))
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
 
@@ -504,7 +514,8 @@ def _get_prefs(_id=None):
     print("----------------")
     pprint.pprint(prefs)
     print("----------------")
-    logger.info("Returning preference data for all schedule dates: " + json.dumps(prefs))
+    logger.info("Returning preference data for all schedule dates.")
+    logger.debug("Returning preference data for all schedule dates: " + json.dumps(prefs, indent=4))
     return jsonify(prefs)
 
 
@@ -518,7 +529,8 @@ def _get_shifts(_id=None):
     employees = get_employees()
     for emp in employees:
         emp["_id"] = str(emp["_id"])
-    logger.info("Returning shift data for schedule %s: " + json.dumps([shifts, employees]), _id)
+    logger.info("Returning shift data for schedule %s.", _id)
+    logger.debug("Returning shift data for schedule %s: " + json.dumps([shifts, employees], indent=4), _id)
     return jsonify([shifts, employees])
 
 
@@ -530,7 +542,8 @@ def _get_employees():
         emp["_id"] = str(emp["_id"])
 
     print(employees)
-    logger.info("Returning master employees: " + json.dumps(employees))
+    logger.info("Returning master employees.")
+    logger.debug("Returning master employees: " + json.dumps(employees, indent=4))
     return jsonify(employees)
 
 
@@ -540,7 +553,8 @@ def _get_roles():
     roles = list(db.roles.find())
     for role in roles:
         role["_id"] = str(role["_id"])
-    logger.info("Returning JSON for master roles.")
+    logger.info("Returning master roles.")
+    logger.debug("Returning master roles: " + json.dumps(roles, indent=4))
     return jsonify(roles)
 
 
@@ -575,6 +589,8 @@ def save_shift_data():
     db.schedules.update({'_id': ObjectId(schedule_id)},
                         {'$push': {"shifts": entry}})
 
+    logger.info("Saved shift data to database.")
+
     emp_ids = []
     prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
     for emp in list(db.schedules.find_one({'_id': ObjectId(schedule_id)})["employees"]):
@@ -598,6 +614,8 @@ def save_shift_data():
                                         {'$pull': {"prefs." + emp_id[0]: {'date': datetime.datetime.strptime(date, '%m/%d/%Y')}}})
                     db.schedules.update({'_id': ObjectId(schedule_id)},
                                         {'$push': {"prefs." + emp_id[0]: day}})
+
+    logger.info("Updated employee eligibility.")
 
     date_id_for_callback = [[date, shift_id]]
 
@@ -624,6 +642,7 @@ def save_shift_data():
                         db.schedules.update({'_id': ObjectId(schedule_id)},
                                             {'$push': {"prefs." + emp_id[0]: day}})
 
+    logger.info("Updated employee eligibility for recurring shifts.")
     print("+++++++++++++++++++++++++++")
     pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
     print("+++++++++++++++++++++++++++")
@@ -693,6 +712,7 @@ def update_shift_data():
         print("+++++++++++++++++++++++++++")
         pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
         print("+++++++++++++++++++++++++++")
+        logger.info("Changes applied to shift with ID %s.", shift_id)
         return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
 
     if edit_type == "Apply All":
@@ -729,6 +749,7 @@ def update_shift_data():
         print("+++++++++++++++++++++++++++")
         pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
         print("+++++++++++++++++++++++++++")
+        logger.info("Changes applied to all shifts with role %s.", role_to_be_updated)
         return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
 
     if edit_type == "Delete":
@@ -749,6 +770,7 @@ def update_shift_data():
         print("+++++++++++++++++++++++++++")
         pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
         print("+++++++++++++++++++++++++++")
+        logger.info("Deleted shift with ID %s.", shift_id)
         return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
 
     if edit_type == "Delete All":
@@ -774,11 +796,13 @@ def update_shift_data():
         print("+++++++++++++++++++++++++++")
         pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
         print("+++++++++++++++++++++++++++")
+        logger.info("Deleted all shifts with role %s.", role_to_be_updated)
         return jsonify({"date_id": date_id_for_callback, "edit_type": edit_type})
 
     print("+++++++++++++++++++++++++++")
     pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
     print("+++++++++++++++++++++++++++")
+    logger.error("Shift update failed: No changes applied.")
 
     return jsonify({"success": False, "message": "Failed to apply any changes."})
 
@@ -792,6 +816,7 @@ def save_pref_data():
     db = get_db()
     db.schedules.update({"_id": ObjectId(_id)},
                         {"$set": {"prefs." + employee: pref_data[employee]}})
+    logger.info("Preferences saved for employee with ID %s.", employee)
     return jsonify({"success": True, "message": "Database updated with prefs."})
 
 
@@ -815,6 +840,7 @@ def update_pref():
             db.schedules.update({'_id': ObjectId(schedule_id)},
                                 {'$push': {"prefs." + emp_id: day}})
 
+    logger.info("Day preference updated for employee with ID %s.", emp_id)
     return jsonify({"success": True, "message": "Database updated with new day preference."})
 
 
@@ -839,12 +865,14 @@ def update_shift_pref():
             db.schedules.update({'_id': ObjectId(schedule_id)},
                                 {'$push': {"prefs." + emp_id: day}})
 
+    logger.info("Shift preference updated for employee with ID %s.", emp_id)
     return jsonify({"success": True, "message": "Database updated with new day preference."})
 
 
 @login_required
 @app.route('/settings')
 def settings():
+    logger.info("Redirecting to /settings.")
     return render_template("settings.html")
 
 
@@ -869,6 +897,7 @@ def remove_schedule_shifts():
         db.schedules.update({"_id": ObjectId(post_data["schedule_id"])},
                             {"$pull": {"shifts": {"_id": _id}}})
 
+    logger.info("Removed selected shifts from schedule.")
     return jsonify({"success": True, "message": "Request received by server."})
 
 
@@ -886,6 +915,7 @@ def remove_schedule_employees():
 
     pprint.pprint(dict(db.schedules.find_one({"_id": ObjectId(post_data["schedule_id"])})))
 
+    logger.info("Removed selected employees from schedule.")
     return jsonify({"success": True, "message": "Request received by server."})
 
 
@@ -901,6 +931,7 @@ def remove_employees():
         print("Removing {} from MASTER".format(_id))
         db.employees.remove({"_id": ObjectId(_id)})
 
+    logger.info("Removed selected employees from master list.")
     return jsonify({"success": True, "message": "Request received by server."})
 
 
@@ -916,6 +947,7 @@ def remove_roles():
         print("Removing role: {}".format(_id))
         db.roles.remove({"_id": ObjectId(_id)})
 
+    logger.info("Removed selected roles from master list.")
     return jsonify({"success": True, "message": "Request received by server."})
 
 
@@ -928,6 +960,8 @@ def edit_schedule_status():
                         {"$set": {
                             "status": status
                         }})
+
+    logger.info("Updated schedule status to %s.", status)
     return jsonify({"success": True, "message": "Schedule status updated."})
 
 
@@ -972,6 +1006,8 @@ def edit_schedule_employees():
                                                                                    {'_id': ObjectId(emp['_id'])}}})
             db.schedules.update({'_id': ObjectId(request.json['schedule_id'])}, {'$push': {"employees": emp}})
 
+    logger.info("Updated selected employee information.")
+
     if request.json['change_roles']:
         emp_ids = []
         prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
@@ -1007,6 +1043,7 @@ def edit_schedule_employees():
     print("+++++++++++++++++++++++++++")
     pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})))
     print("+++++++++++++++++++++++++++")
+    logger.info("Updated selected employee preferences.")
 
     # return a jsonify success object
     return jsonify({"success": True, "message": "Employee added successfully"})
@@ -1027,6 +1064,8 @@ def add_emps_to_schedule():
 
         db.schedules.update({'_id': ObjectId(request.json['schedule_id'])}, {'$push': {'employees': emp}})
 
+    logger.info("Employee(s) added to schedule.")
+
     schedule_dates = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["days"])
     shifts = list(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})["shifts"])
 
@@ -1035,7 +1074,6 @@ def add_emps_to_schedule():
         for date in schedule_dates:
             emp_prefs.append({"date": date, "status": "Empty"})
         emp_role_names = [role['role_name'] for role in emp['roles']]
-        print("?????????")
         pprint.pprint(emp_role_names)
         for shift in shifts:
             if shift["role"] in emp_role_names:
@@ -1053,6 +1091,7 @@ def add_emps_to_schedule():
     print("+++++++++++++++++++++++++++")
     pprint.pprint(dict(db.schedules.find_one({'_id': ObjectId(request.json['schedule_id'])})))
     print("+++++++++++++++++++++++++++")
+    logger.info("Default preferences added for new employee(s).")
 
     return jsonify({"success": True, "message": "Employee added successfully"})
 
@@ -1066,6 +1105,7 @@ def send_all_employees_json():
     for employee in employees:
         employee['_id'] = str(employee['_id'])
     print(employees)
+    logger.info("Returning all employee data as JSON.")
     return jsonify(employees)
 
 
@@ -1090,6 +1130,7 @@ def get_employee_delta(schedule_id=None):
     for emp in delta:
         emp['_id'] = str(emp['_id'])
 
+    logger.info("Returning all data for employees in master list and not in schedule list as JSON.")
     return jsonify(delta)
 
 
@@ -1111,6 +1152,7 @@ def get_schedule_json(schedule_id=None):
             if "_id" in key:
                 emp[key] = str(emp[key])
 
+    logger.info("Returning all schedule data as JSON.")
     return jsonify(schedule)
 
 
@@ -1139,6 +1181,7 @@ def get_sorted_schedule(schedule_id=None):
 
     schedule = ScheduleProcessor(schedule_dict)
     schedule.sort('shifts', 'chronological')
+    logger.info("Returning schedule with chronologically sorted shifts as JSON.")
     return jsonify(schedule.to_dict())
 
 
