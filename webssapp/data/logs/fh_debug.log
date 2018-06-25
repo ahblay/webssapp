@@ -1,80 +1,15 @@
-INFO: line 325 in view_schedule() (2018-06-21 13:18:56,155) - Redirecting to /view_schedule/5b06e8207af8b4269153de96
-INFO: line 1184 in get_sorted_schedule() (2018-06-21 13:18:56,656) - Returning schedule with chronologically sorted shifts as JSON.
-INFO: line 556 in _get_roles() (2018-06-21 13:18:56,670) - Returning master roles.
-DEBUG: line 557 in _get_roles() (2018-06-21 13:18:56,671) - Returning master roles: [
-    {
-        "_id": "5abd85007af8b49e34cfd478",
-        "name": "Barista",
-        "color": "#28b799"
-    },
-    {
-        "_id": "5abd85057af8b49e34cfd47b",
-        "name": "DJ",
-        "color": "#f8bf39"
-    },
-    {
-        "_id": "5abd850c7af8b49e34cfd47e",
-        "name": "Till",
-        "color": "#d75749"
-    },
-    {
-        "_id": "5afc89597af8b47079ad7e96",
-        "name": "Cook",
-        "color": "#225085"
-    },
-    {
-        "_id": "5afc89667af8b47079ad7e99",
-        "name": "Host",
-        "color": "#28b5c7"
-    },
-    {
-        "_id": "5afc897d7af8b47079ad7e9c",
-        "name": "Cleaner",
-        "color": "#ea7d33"
-    },
-    {
-        "_id": "5afc89a47af8b47079ad7e9f",
-        "name": "Bartender",
-        "color": "#c24b74"
-    }
-]
-INFO: line 1155 in get_schedule_json() (2018-06-21 13:18:56,778) - Returning all schedule data as JSON.
-INFO: line 556 in _get_roles() (2018-06-21 13:18:56,793) - Returning master roles.
-DEBUG: line 557 in _get_roles() (2018-06-21 13:18:56,793) - Returning master roles: [
-    {
-        "_id": "5abd85007af8b49e34cfd478",
-        "name": "Barista",
-        "color": "#28b799"
-    },
-    {
-        "_id": "5abd85057af8b49e34cfd47b",
-        "name": "DJ",
-        "color": "#f8bf39"
-    },
-    {
-        "_id": "5abd850c7af8b49e34cfd47e",
-        "name": "Till",
-        "color": "#d75749"
-    },
-    {
-        "_id": "5afc89597af8b47079ad7e96",
-        "name": "Cook",
-        "color": "#225085"
-    },
-    {
-        "_id": "5afc89667af8b47079ad7e99",
-        "name": "Host",
-        "color": "#28b5c7"
-    },
-    {
-        "_id": "5afc897d7af8b47079ad7e9c",
-        "name": "Cleaner",
-        "color": "#ea7d33"
-    },
-    {
-        "_id": "5afc89a47af8b47079ad7e9f",
-        "name": "Bartender",
-        "color": "#c24b74"
-    }
-]
-INFO: line 503 in get_all_shift_data() (2018-06-21 13:18:56,808) - Returning shift data for all schedule dates.
+INFO: line 308 in select_schedule() (2018-06-23 16:49:10,468) - Redirecting to /select_schedule.
+INFO: line 325 in view_schedule() (2018-06-23 16:49:19,307) - Redirecting to /view_schedule/5b2ed49ef085e63c3a437fb4
+INFO: line 1182 in get_sorted_schedule() (2018-06-23 16:49:20,025) - Returning schedule with chronologically sorted shifts as JSON.
+INFO: line 554 in _get_roles() (2018-06-23 16:49:20,041) - Returning master roles.
+DEBUG: line 555 in _get_roles() (2018-06-23 16:49:20,042) - Returning master roles: []
+INFO: line 1153 in get_schedule_json() (2018-06-23 16:49:20,229) - Returning all schedule data as JSON.
+INFO: line 554 in _get_roles() (2018-06-23 16:49:20,291) - Returning master roles.
+DEBUG: line 555 in _get_roles() (2018-06-23 16:49:20,291) - Returning master roles: []
+INFO: line 501 in get_all_shift_data() (2018-06-23 16:49:20,314) - Returning shift data for all schedule dates.
+INFO: line 308 in select_schedule() (2018-06-23 16:49:23,982) - Redirecting to /select_schedule.
+INFO: line 412 in employee_setup() (2018-06-23 16:49:28,027) - Redirecting to /employees.
+INFO: line 1106 in send_all_employees_json() (2018-06-23 16:49:29,985) - Returning all employee data as JSON.
+INFO: line 554 in _get_roles() (2018-06-23 16:49:30,023) - Returning master roles.
+DEBUG: line 555 in _get_roles() (2018-06-23 16:49:30,024) - Returning master roles: []
+INFO: line 308 in select_schedule() (2018-06-23 16:49:30,917) - Redirecting to /select_schedule.

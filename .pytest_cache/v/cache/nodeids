@@ -1,0 +1,6 @@
+[
+  "tests/test_app.py::test_landing_page",
+  "tests/test_app.py::test_new_user",
+  "tests/test_app.py::test_settings",
+  "tests/test_app.py::test_select_schedule"
+]

@@ -38,11 +38,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # create file handler and set level to info
-fh_info = logging.FileHandler(str(Path.cwd()) + '/data/logs/fh_info.log', 'w')
+fh_info = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_info.log', 'w')
 fh_info.setLevel(logging.INFO)
 
 # create file handler and set level to debug
-fh_debug = logging.FileHandler(str(Path.cwd()) + '/data/logs/fh_debug.log', 'w')
+fh_debug = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_debug.log', 'w')
 fh_debug.setLevel(logging.DEBUG)
 
 # create console handler and set level to info
@@ -381,8 +381,6 @@ def add_schedule():
     schedule.save_schedule_data(current_user.username)
 
     logger.info("New schedule saved.")
-    logger.debug("New schedule saved: " +
-                json.dumps(schedule, indent=4))
     return jsonify({"success": True, "message": "New schedule saved."})
 
 

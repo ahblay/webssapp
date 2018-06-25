@@ -1,0 +1,6 @@
+{
+  "tests/test_app.py::test_add_role": true,
+  "tests/test_app.py::test_answer": true,
+  "tests/test_app.py::test_empty_db": true,
+  "tests/test_app.py::test_select_schedule": true
+}
