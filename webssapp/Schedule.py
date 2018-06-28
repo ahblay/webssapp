@@ -5,6 +5,7 @@ from flask import g
 from pymongo import MongoClient
 
 from webssapp import zephyr_build_schedule as scheduling_algorithm
+from webssapp import build_schedule
 
 
 class ScheduleProcessor:
@@ -192,17 +193,14 @@ class ScheduleProcessor:
         return training
 
     def build_schedule(self):
-        s = scheduling_algorithm.Schedule(self.num_employees,
-                                            self.num_shifts,
-                                            self.num_roles,
-                                            self.num_days,
-                                            self.employee_info,
-                                            self.management_data,
-                                            self.training,
-                                            self)
+        s = build_schedule.Scheduler(self)
 
-        self.output = s.get_schedule()
-        self.save_output_to_db()
+        s.build_constraints()
+        s.build_objective()
+        s.solve()
+
+        #self.output = s.get_schedule()
+        #self.save_output_to_db()
 
     def build_employer_setup_dict(self):
         employer_setup = {day: self._get_shifts_by_day()[day]

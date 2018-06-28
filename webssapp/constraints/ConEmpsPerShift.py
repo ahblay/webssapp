@@ -1,4 +1,6 @@
-from webssapp.constraints.Constraints import *
+from webssapp.constraints.Constraints import Constraint, lpSum
+import pprint
+from webssapp.utilities import product_rang
 
 
 class ConEmpsPerShift(Constraint):
@@ -7,7 +9,9 @@ class ConEmpsPerShift(Constraint):
 
     def build(self, prob, x, s):
         shifts_by_day = s._get_shifts_by_day()
-        for role, day, shift in product_range(s.num_roles, s.num_days, s.num_shifts):
+        for role, day, shift in product_rang(num_roles=s.num_roles,
+                                              num_days=s.num_days,
+                                              num_shifts_per_day=s.num_shifts_per_day):
             if s.roles[str(role)] == shifts_by_day[day][shift]['role']:
                 shift_info = shifts_by_day[day][shift]
                 prob += lpSum(x[employee][role][day][shift] for employee in range(s.num_employees)) == shift_info['num_employees']
