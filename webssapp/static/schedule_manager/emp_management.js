@@ -1,5 +1,7 @@
 //On load
-refresh_table_data(SCHEDULE['employees']);
+$(function () {
+    refresh_table_data(SCHEDULE['employees']);
+});
 
 
 //Main table functions

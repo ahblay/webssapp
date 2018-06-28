@@ -228,8 +228,7 @@ def add_role():
     print(list(db.roles.find()))
 
     print("Role {} has been added to the database.".format(request.json['name']))
-    logger.info('%s added to role database.',
-                request.json['name'])
+    logger.info('%s added to role database.', request.json['name'])
 
     # return a jsonify success object1
     return jsonify({"success": True, "message": "Role added successfully"})
