@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="36db8070-40e7-4f83-a0d3-4c461cd9e4b7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_app.py" afterPath="$PROJECT_DIR$/tests/test_app.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webssapp/app.py" afterPath="$PROJECT_DIR$/webssapp/app.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webssapp/Schedule.py" afterPath="$PROJECT_DIR$/webssapp/Schedule.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webssapp/build_schedule.py" afterPath="$PROJECT_DIR$/webssapp/build_schedule.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webssapp/coefficients/coeffcombine.py" afterPath="$PROJECT_DIR$/webssapp/coefficients/coeffcombine.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webssapp/data/logs/fh_debug.log" afterPath="$PROJECT_DIR$/webssapp/data/logs/fh_debug.log" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webssapp/data/logs/fh_info.log" afterPath="$PROJECT_DIR$/webssapp/data/logs/fh_info.log" />
     </list>
@@ -19,32 +21,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="test_app.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/test_app.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pytest.ini" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/pytest.ini">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="27" lean-forward="false" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webssapp/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
+            <state relative-caret-position="-12946">
               <caret line="309" column="26" lean-forward="false" selection-start-line="309" selection-start-column="11" selection-end-line="309" selection-end-column="26" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
@@ -53,11 +33,61 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="zephyr_build_schedule.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webssapp/zephyr_build_schedule.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="273">
+              <caret line="155" column="26" lean-forward="false" selection-start-line="155" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Coefficients.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webssapp/coefficients/Coefficients.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="8" lean-forward="false" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Schedule.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webssapp/Schedule.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="250">
+              <caret line="40" column="63" lean-forward="false" selection-start-line="40" selection-start-column="63" selection-end-line="40" selection-end-column="63" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build_schedule.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/webssapp/build_schedule.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="930">
+              <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ids</find>
       <find>strftim</find>
       <find>get_prefs</find>
       <find>toggle</find>
@@ -87,6 +117,7 @@
       <find>json.dumps</find>
       <find>redirecting</find>
       <find>render_template</find>
+      <find>product_range</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -95,10 +126,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$USER_HOME$/Desktop/project_euler/puzzle1.py" />
-        <option value="$PROJECT_DIR$/sanity_checks.py" />
-        <option value="$PROJECT_DIR$/static/index.js" />
-        <option value="$PROJECT_DIR$/templates/schedule_manager/view_schedule.html" />
         <option value="$PROJECT_DIR$/static/schedule_manager/view_schedule.js" />
         <option value="$PROJECT_DIR$/static/employee_setup.js" />
         <option value="$PROJECT_DIR$/templates/employee_setup.html" />
@@ -138,6 +165,18 @@
         <option value="$PROJECT_DIR$/tests/test_app.py" />
         <option value="$PROJECT_DIR$/webssapp/app.py" />
         <option value="$PROJECT_DIR$/tests/pytest.ini" />
+        <option value="$PROJECT_DIR$/webssapp/coefficients.py" />
+        <option value="$PROJECT_DIR$/webssapp/coefficients/coefficients.py" />
+        <option value="$PROJECT_DIR$/webssapp/coefficients/preferences.py" />
+        <option value="$PROJECT_DIR$/webssapp/coefficients/seniority.py" />
+        <option value="$PROJECT_DIR$/webssapp/constraints/constraints.py" />
+        <option value="$PROJECT_DIR$/webssapp/zephyr_build_schedule.py" />
+        <option value="$PROJECT_DIR$/webssapp/constraints/Constraints.py" />
+        <option value="$PROJECT_DIR$/webssapp/Schedule.py" />
+        <option value="$PROJECT_DIR$/webssapp/constraints/ConEmpsPerShift.py" />
+        <option value="$PROJECT_DIR$/webssapp/coefficients/Coefficients.py" />
+        <option value="$PROJECT_DIR$/webssapp/coefficients/coeffcombine.py" />
+        <option value="$PROJECT_DIR$/webssapp/build_schedule.py" />
       </list>
     </option>
   </component>
@@ -173,25 +212,19 @@
             <path>
               <item name="scheduling" type="b2602c69:ProjectViewProjectNode" />
               <item name="scheduling" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="scheduling" type="b2602c69:ProjectViewProjectNode" />
-              <item name="scheduling" type="462c0819:PsiDirectoryNode" />
               <item name="webssapp" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="scheduling" type="b2602c69:ProjectViewProjectNode" />
               <item name="scheduling" type="462c0819:PsiDirectoryNode" />
               <item name="webssapp" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="coefficients" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="scheduling" type="b2602c69:ProjectViewProjectNode" />
               <item name="scheduling" type="462c0819:PsiDirectoryNode" />
               <item name="webssapp" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-              <item name="logs" type="462c0819:PsiDirectoryNode" />
+              <item name="constraints" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -206,6 +239,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/webssapp/coefficients" />
       <recent name="$PROJECT_DIR$/webssapp" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/assets" />
@@ -223,7 +257,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.test_app (1)">
+  <component name="RunManager" selected="Python.coeffcombine">
     <configuration name="app (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -241,36 +275,36 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="build_schedule" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/webssapp" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="scheduling" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/webssapp/build_schedule.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="app_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="coeffcombine" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/webssapp/coefficients" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="scheduling" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app_test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/webssapp/coefficients/coeffcombine.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -310,19 +344,19 @@
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.app" />
-      <item index="1" class="java.lang.String" itemvalue="Python.app_test" />
-      <item index="2" class="java.lang.String" itemvalue="Python.test_app" />
-      <item index="3" class="java.lang.String" itemvalue="Python.app (1)" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test_app (1)" />
+      <item index="0" class="java.lang.String" itemvalue="Python.test_app" />
+      <item index="1" class="java.lang.String" itemvalue="Python.app (1)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.test_app (1)" />
+      <item index="3" class="java.lang.String" itemvalue="Python.build_schedule" />
+      <item index="4" class="java.lang.String" itemvalue="Python.coeffcombine" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.test_app (1)" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_app" />
-        <item index="2" class="java.lang.String" itemvalue="Python.app (1)" />
-        <item index="3" class="java.lang.String" itemvalue="Python.app" />
-        <item index="4" class="java.lang.String" itemvalue="Python.app_test" />
+        <item index="0" class="java.lang.String" itemvalue="Python.coeffcombine" />
+        <item index="1" class="java.lang.String" itemvalue="Python.build_schedule" />
+        <item index="2" class="java.lang.String" itemvalue="Python.test_app (1)" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test_app" />
+        <item index="4" class="java.lang.String" itemvalue="Python.app (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -353,20 +387,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1436" height="877" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992327" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="DB Execution Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31925467" sideWeight="0.2931755" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13171355" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992327" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992327" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2685422" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33248082" sideWeight="0.70682454" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23886926" sideWeight="0.49333334" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16624041" sideWeight="0.70682454" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23886926" sideWeight="0.49333334" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23886926" sideWeight="0.50666666" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3989704" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23886926" sideWeight="0.50666666" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3293872" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -399,15 +432,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/templates/employee_setup.html" />
-    <entry file="file://$PROJECT_DIR$/static/schedule_manager/schedule_options.js" />
-    <entry file="file://$PROJECT_DIR$/assets/base.scss" />
-    <entry file="file://$PROJECT_DIR$/templates/schedule_manager/emp_prefs.html" />
-    <entry file="file://$PROJECT_DIR$/templates/employer_prefs.html" />
-    <entry file="file://$PROJECT_DIR$/static/base.css" />
-    <entry file="file://$PROJECT_DIR$/static/schedule_manager/emp_management.js.orig" />
-    <entry file="file://$PROJECT_DIR$/templates/login.html" />
-    <entry file="file://$PROJECT_DIR$/templates/schedule_manager/schedule_options.html" />
     <entry file="file://$PROJECT_DIR$/utilities.py" />
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -450,54 +474,33 @@
     <entry file="file://$PROJECT_DIR$/test_app.py" />
     <entry file="file://$PROJECT_DIR$/app.py" />
     <entry file="file://$PROJECT_DIR$/webssapp/data/logs/fh_debug.log">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
       <provider selected="true" editor-type-id="LogFileEditorProvider">
         <state relative-caret-position="-489">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webssapp/Schedule.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webssapp/data/logs/fh_info.log">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/data/logs/fh_info.log">
       <provider selected="true" editor-type-id="LogFileEditorProvider">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webssapp/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
+      <provider editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webssapp/app.py">
+    <entry file="file://$PROJECT_DIR$/tests/pytest.ini">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="309" column="26" lean-forward="false" selection-start-line="309" selection-start-column="11" selection-end-line="309" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="15">
+          <caret line="1" column="21" lean-forward="false" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -505,17 +508,101 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/coefficients/__init__.py" />
+    <entry file="file://$PROJECT_DIR$/webssapp/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/coefficients/CoeffPreferences.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="28" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-12946">
+          <caret line="309" column="26" lean-forward="false" selection-start-line="309" selection-start-column="11" selection-end-line="309" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/Schedule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="40" column="63" lean-forward="false" selection-start-line="40" selection-start-column="63" selection-end-line="40" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/constraints/ConEmpsPerShift.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/constraints/Constraints.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#49#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/coefficients/Coefficients.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="8" lean-forward="false" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/coefficients/CoeffSeniority.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="29" lean-forward="false" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/coefficients/coeffcombine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="20" lean-forward="true" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webssapp/zephyr_build_schedule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="155" column="26" lean-forward="false" selection-start-line="155" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/pytest.ini">
+    <entry file="file://$PROJECT_DIR$/webssapp/build_schedule.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="27" lean-forward="false" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
-          <folding />
+        <state relative-caret-position="930">
+          <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
