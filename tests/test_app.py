@@ -2,9 +2,40 @@ import pytest
 from webssapp import app
 
 
-def inc(x):
-    return x + 1
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    client = app.test_client()
+
+    yield client
+
+'''
+def test_empty_db(client):
+    """Start with a blank database."""
+
+    print(client)
+
+    rv = client.get('/_add_role')
+    print(rv)
+    assert b'No entries here so far' in rv.data
+'''
 
 
-def test_answer():
-    assert inc(3) == 5
+def test_landing_page(client):
+    response = client.get('/landing_page', follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_new_user(client):
+    response = client.get('/new_user', follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_settings(client):
+    response = client.get('/settings', follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_select_schedule(client):
+    response = client.get('/select_schedule', follow_redirects=True)
+    assert response.status_code == 200

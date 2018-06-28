@@ -36,8 +36,9 @@ class ScheduleProcessor:
 
         self.num_employees = self.get_length(self.employees)
         self.num_days = self.get_length(self.days)
-        self.num_shifts = self.build_num_shifts()
         self.num_roles = self.get_length(self.roles)
+        self.num_shifts = self.build_num_shifts()
+        self.num_shifts_per_day = self.get_num_shifts_per_day()
 
         self.management_data = []
         self.employee_info = []
@@ -74,6 +75,20 @@ class ScheduleProcessor:
                     daily_shifts[index] += 1
 
         return max(daily_shifts)
+
+    def get_num_shifts_per_day(self):
+
+        if self.shifts == []:
+            return None
+
+        daily_shifts = [0] * self.num_days
+
+        for index, _ in enumerate(daily_shifts):
+            for shift in self.shifts:
+                if shift['date'] == self.days[index].strftime('%m/%d/%Y'):
+                    daily_shifts[index] += 1
+
+        return daily_shifts
 
     def build_management_data(self):
         print("Building management data.")
