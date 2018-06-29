@@ -5,6 +5,7 @@ from pulp import solvers
 
 from webssapp.sanity_checks import *
 from webssapp.constraints.ConEmpsPerShift import ConEmpsPerShift
+from webssapp.constraints.ConMinShifts import ConMinShifts
 from webssapp.coefficients.CoeffSeniority import SeniorityCoefficient
 from webssapp.coefficients import coeffcombine
 from webssapp.utilities import product_rang
@@ -38,6 +39,8 @@ class Scheduler:
 
     def build_constraints(self):
         ConEmpsPerShift().build(self.prob, self.x, self.schedule)
+        ConMinShifts().build(self.prob, self.x, self.schedule)
+
 
     def build_coefficient(self, variable):
 
@@ -54,6 +57,19 @@ class Scheduler:
 
     def solve(self):
         self.prob.solve(solvers.PULP_CBC_CMD())
+
+    def output(self):
+        dimensions = [self.schedule.num_employees, self.schedule.num_roles, self.schedule.num_days,
+                      self.schedule.num_shifts_per_day]
+        output_matrix = [[[[int(value(self.x[emp][role][day][shift])) for shift in range(dimensions[-1][day])]
+                                                                for day in range(dimensions[-2])]
+                                                                for role in range(dimensions[-3])]
+                                                                for emp in range(dimensions[-4])]
+
+        pprint.pprint(output_matrix)
+        print(LpStatus[self.prob.status])
+        print(self.prob.constraints)
+        print(self.prob.objective)
 
 
 var_mat = VarMatrix("x", [2, 3, 4, [2, 3, 4, 5]])
