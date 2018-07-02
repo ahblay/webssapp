@@ -5,7 +5,7 @@ var VS_CALENDAR_CELL_HOVER_DELAY = 200;
 $(document).on("click", "#view-schedule-tab", () => {
     if (SCHEDULE["output"] != null){
             console.log("Rendering saved output.");
-            render_vs_calendar(SCHEDULE);
+            render_vs_calendar(SCHEDULE, GLOBAL_ROLES);
             render_schedule(SCHEDULE);
     };
 });
@@ -18,13 +18,13 @@ $(document).on("click", "#create-schedule", () => {
         if (confirm_reschedule) {
             $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
                 SCHEDULE = data;
-                render_vs_calendar(SCHEDULE);
+                render_vs_calendar(SCHEDULE, GLOBAL_ROLES);
             });
         };
     } else {
         $.getJSON("/api/create_schedule/" + SCHEDULE_ID, function(data){
                 SCHEDULE = data;
-                render_vs_calendar(SCHEDULE);
+                render_vs_calendar(SCHEDULE, GLOBAL_ROLES);
         });
     };
 });

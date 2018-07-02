@@ -42,20 +42,26 @@ def get_schedule(schedule_id):
 
 
 def product_rang(num_emps=None, num_roles=None, num_days=None, num_shifts=None, num_shifts_per_day=None):
-    if num_shifts_per_day is not None and num_days is None:
-        raise Exception("num_days must be provided with shifts_per_day")
 
     if num_shifts is not None and num_shifts_per_day is not None:
         raise Exception("num_shifts and shifts_per_day cannot both be provided")
+    provided_args = {"num_emps": num_emps,
+                     "num_roles": num_roles,
+                     "num_days": num_days,
+                     "num_shifts": num_shifts,
+                     "num_shifts_per_day": num_shifts_per_day}
+    provided_args = {var_name: arg for var_name, arg in provided_args.items() if arg is not None}
 
-    provided_args = [num_emps, num_roles, num_days, num_shifts, num_shifts_per_day]
-    provided_args = [arg for arg in provided_args if arg is not None]
-
-    if type(provided_args[-1]) is list:
+    if 'num_shifts_per_day' in list(provided_args.keys()):
         var_space = []
-        for day in range(len(num_shifts_per_day)):
-            print(provided_args[-1])
-            var_space += list(product(*(range(x) for x in provided_args[:-2]), [day], range(provided_args[-1][day])))
+        unspecified_keys = [key for key in list(provided_args.keys()) if key != 'num_shifts_per_day']
+        if 'num_days' in list(provided_args.keys()):
+            unspecified_keys.remove('num_days')
+            for day in range(len(num_shifts_per_day)):
+                var_space += list(product(*(range(provided_args[key]) for key in unspecified_keys), [day], range(provided_args["num_shifts_per_day"][day])))
+        else:
+            for day in range(len(num_shifts_per_day)):
+                var_space.append(list(product(*(range(provided_args[key]) for key in unspecified_keys), range(provided_args["num_shifts_per_day"][day]))))
         return var_space
     else:
-        return list(product(*(range(x) for x in provided_args)))
+        return list(product(*(range(x) for x in provided_args.values())))

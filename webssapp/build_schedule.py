@@ -6,6 +6,9 @@ from pulp import solvers
 from webssapp.sanity_checks import *
 from webssapp.constraints.ConEmpsPerShift import ConEmpsPerShift
 from webssapp.constraints.ConMinShifts import ConMinShifts
+from webssapp.constraints.ConMaxShifts import ConMaxShifts
+from webssapp.constraints.ConMaxShiftsPerDay import ConMaxShiftsPerDay
+from webssapp.constraints.ConEligibleRoles import ConEligibleRoles
 from webssapp.coefficients.CoeffSeniority import SeniorityCoefficient
 from webssapp.coefficients import coeffcombine
 from webssapp.utilities import product_rang
@@ -36,10 +39,15 @@ class Scheduler:
                                      self.schedule.num_shifts_per_day])
         self.prob = LpProblem("Schedule", LpMaximize)
         self.schedule = schedule
+        self.output = []
 
     def build_constraints(self):
+        pprint.pprint(self.x.matrix)
         ConEmpsPerShift().build(self.prob, self.x, self.schedule)
         ConMinShifts().build(self.prob, self.x, self.schedule)
+        ConMaxShifts().build(self.prob, self.x, self.schedule)
+        ConMaxShiftsPerDay().build(self.prob, self.x, self.schedule)
+        ConEligibleRoles().build(self.prob, self.x, self.schedule)
 
 
     def build_coefficient(self, variable):
@@ -62,17 +70,47 @@ class Scheduler:
         dimensions = [self.schedule.num_employees, self.schedule.num_roles, self.schedule.num_days,
                       self.schedule.num_shifts_per_day]
         output_matrix = [[[[int(value(self.x[emp][role][day][shift])) for shift in range(dimensions[-1][day])]
-                                                                for day in range(dimensions[-2])]
-                                                                for role in range(dimensions[-3])]
-                                                                for emp in range(dimensions[-4])]
+                                                                     for day in range(dimensions[-2])]
+                                                                     for role in range(dimensions[-3])]
+                                                                     for emp in range(dimensions[-4])]
 
         pprint.pprint(output_matrix)
         print(LpStatus[self.prob.status])
-        print(self.prob.constraints)
-        print(self.prob.objective)
+        pprint.pprint(self.prob.constraints)
 
+    def retrieve_declined_requests(self, employee, role, day, shift):
+        return self.build_coefficient([employee, role, day, shift]) < 0 and value(self.x[employee][role][day][shift]) == 1
 
-var_mat = VarMatrix("x", [2, 3, 4, [2, 3, 4, 5]])
-pprint.pprint(var_mat.matrix)
+    def get_schedule(self):
 
-pprint.pprint(product_rang(num_roles=3, num_days=4, num_shifts_per_day=[2, 2, 3, 2]))
+        print("Status:", LpStatus[self.prob.status])
+        print("Score:", sum(self.build_coefficient([employee, role, day, shift])*value(self.x[employee][role][day][shift])
+                            for employee, role, day, shift
+                            in product_rang(num_emps=self.schedule.num_employees,
+                                             num_roles=self.schedule.num_roles,
+                                             num_days=self.schedule.num_days,
+                                             num_shifts_per_day=self.schedule.num_shifts_per_day)))
+
+        if LpStatus[self.prob.status] == "Infeasible":
+            raise InfeasibleProblem("Oops. It appears that you have attempted an impossible problem. " 
+                                    "Would you like to bury your head in the sand?!?")
+
+        # employee, day: {"working": True/False, "role": role, "shift": shift}
+        output = [[{"working": False} for _ in range(self.schedule.num_days)] for _ in range(self.schedule.num_employees)]
+
+        for employee, role, day, shift in product_rang(num_emps=self.schedule.num_employees,
+                                                       num_roles=self.schedule.num_roles,
+                                                       num_days=self.schedule.num_days,
+                                                       num_shifts_per_day=self.schedule.num_shifts_per_day):
+            if value(self.x[employee][role][day][shift]):
+                shift_info = self.schedule._get_shifts_by_day()[day][shift]
+                output[employee][day]["employee_id"] = str(self.schedule.employees[employee]['_id'])
+                output[employee][day]["working"] = True
+                output[employee][day]["shift_id"] = str(shift_info['_id'])
+                output[employee][day]["shift"] = shift_info['start'] + " - " + shift_info['end']
+                output[employee][day]["role"] = role
+                output[employee][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
+
+        self.output = output
+        return output
+

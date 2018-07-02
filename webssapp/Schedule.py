@@ -198,10 +198,9 @@ class ScheduleProcessor:
         s.build_constraints()
         s.build_objective()
         s.solve()
-        s.output()
 
-        #self.output = s.get_schedule()
-        #self.save_output_to_db()
+        self.output = s.get_schedule()
+        self.save_output_to_db()
 
     def build_employer_setup_dict(self):
         employer_setup = {day: self._get_shifts_by_day()[day]
