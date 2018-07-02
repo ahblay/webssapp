@@ -15,6 +15,8 @@ class ConEmpsPerShift(Constraint):
                                              num_shifts_per_day=s.num_shifts_per_day):
             if s.roles[str(role)] == shifts_by_day[day][shift]['role']:
                 shift_info = shifts_by_day[day][shift]
-                prob += lpSum(x[employee][role][day][shift] for employee in range(s.num_employees)) == shift_info['num_employees']
+                prob += lpSum(x[employee][role][day][shift]
+                              for employee in range(s.num_employees)) == shift_info['num_employees']
             else:
-                prob += lpSum(x[employee][role][day][shift] for employee in range(s.num_employees)) == 0
+                prob += lpSum(x[employee][role][day][shift]
+                              for employee in range(s.num_employees)) == 0

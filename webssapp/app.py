@@ -38,11 +38,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # create file handler and set level to info
-fh_info = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_info.log', 'w')
+fh_info = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_info.log', 'w')
 fh_info.setLevel(logging.INFO)
 
 # create file handler and set level to debug
-fh_debug = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_debug.log', 'w')
+fh_debug = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_debug.log', 'w')
 fh_debug.setLevel(logging.DEBUG)
 
 # create console handler and set level to info
@@ -1192,6 +1192,7 @@ def create_schedule(schedule_id=None):
 
     db = get_db()
     schedule_dict = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
+    pprint.pprint(schedule_dict)
 
     roles = list(db.roles.find())
     schedule_dict['roles'] = [role['name'] for role in roles]
@@ -1202,6 +1203,7 @@ def create_schedule(schedule_id=None):
     print('Schedule output created.')
 
     return jsonify(schedule.to_dict())
+
 
 @app.route('/_change_shift_assignment', methods=['POST'])
 def change_shift_assignment():

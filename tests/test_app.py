@@ -9,17 +9,6 @@ def client():
 
     yield client
 
-'''
-def test_empty_db(client):
-    """Start with a blank database."""
-
-    print(client)
-
-    rv = client.get('/_add_role')
-    print(rv)
-    assert b'No entries here so far' in rv.data
-'''
-
 
 def test_landing_page(client):
     response = client.get('/landing_page', follow_redirects=True)
