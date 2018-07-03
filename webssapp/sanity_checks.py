@@ -17,23 +17,30 @@ class EmployeeDictError(Exception):
 
 def check_employee_data(employee_info, num_employees, num_days, num_roles, num_shifts):
     # check we have all the employees
+    @internal
     if type(employee_info) is not list:
         raise EmployeeDictError("Employee_data is not a list. "
                                 "Recieved Employee_data as {}. "
                                 "Please contact a representative of "
                                 "SlobodinScheduling for assistance.". format(type(employee_info)))
+
+    @internal
     if len(employee_info) != num_employees:
         raise EmployeeDictError("Employee_data is of length ({}) "
                                 "when expected is length ({}). "
                                 "Please contact a representative of "
                                 "SlobodinScheduling for assistance.".format(len(employee_info), num_employees))
 
+
     for i, employee in enumerate(employee_info):
         # check name
+        @form_validation
         if "name" not in employee:
             raise EmployeeDictError("Employee: {} is missing 'name'. "
                                     "Please contact a representative of "
                                     "SlobodinScheduling for assistance.".format(i))
+
+        @form_validation
         if type(employee["name"]) is not str:
             raise EmployeeDictError("Employee: {}'s 'name' is not string. "
                                     "Recieved Employee: {}'s 'name' as {}. "
@@ -42,73 +49,89 @@ def check_employee_data(employee_info, num_employees, num_days, num_roles, num_s
 
         # min/max shifts
         for limit in ("min_shifts", "max_shifts"):
+            @internal
             if limit not in employee:
                 raise EmployeeDictError("Employee: {} is missing '{}'. "
                                         "Please contact a representative of "
                                         "SlobodinScheduling for assistance.".format(employee["name"], limit))
+            @form_validation
             if type(employee[limit]) is not int:
                 raise EmployeeDictError("Employee: {}'s '{}' is not integer. "
                                         "Recieved Employee {}'s '{}' as {}. "
                                         "Please contact a representative of "
                                         "SlobodinScheduling for assistance."
                                         .format(employee["name"], limit, employee["name"], limit, type(employee[limit])))
+            @form_validation
             if employee[limit] < 0:
                 raise EmployeeDictError("Employee: {}'s '{}' less than 0. "
                                         "Please contact a representative of "
                                         "SlobodinScheduling for assistance.".format(employee["name"], limit))
+
+        @form_validation or @user_error
         if employee["min_shifts"] > employee["max_shifts"]:
             raise ConstraintError("In Employee Tab, {}'s Min Shift is greater than Max Shift."
                                   "\n\nPlease make {}'s Max Shift greater than their Min Shift."
                                   .format(employee["name"], employee["name"]))
 
         # role seniority
+        @form_validation
         if "role_seniority" not in employee:
             raise EmployeeDictError("Employee: {} is missing 'role_seniority'. "
                                     "Please contact a representative of "
                                     "SlobodinScheduling for assistance.".format(employee["name"]))
+        @form_validation
         if type(employee["role_seniority"]) is not list:
             raise EmployeeDictError("Employee: {}'s 'role_seniority' is not list. "
                                     "Recieved Employee {}'s 'role_seniority' as {}. "
                                     "Please contact a representative of "
                                     "SlobodinScheduling for assistance.".
                                     format(employee["name"], employee["name"], type(employee["role_seniority"])))
+        @internal
         if len(employee["role_seniority"]) != num_roles:
             raise EmployeeDictError("Employee: {}'s 'role_seniority' is of length ({}) "
                                     "when expected is length ({}). "
                                     "Please contact a representative of SlobodinScheduling for assistance."
                                     .format(employee["name"], len(employee["role_seniority"]), num_roles))
+
         for rs in employee["role_seniority"]:
+            @form_validation
             if type(rs) is not int:
                 raise EmployeeDictError("Employee: {}'s 'role_seniority' is not integer. "
                                         "Recieved Employee {}'s 'role_seniority' as {}. "
                                         "Please contact a representative of SlobodinScheduling for assistance."
                                         .format(employee["name"], employee["name"], type(rs)))
+            @internal
             if rs < 0:
                 raise EmployeeDictError("Employee: {}'s 'role_seniority' contains a value less than 0. "
                                         "Please contact a representative of SlobodinScheduling for assistance."
                                         .format(employee["name"]))
 
         # shift preferences
+        @internal
         if "shift_pref" not in employee:
             raise EmployeeDictError("Employee: {} is missing 'shift_pref'. "
                                     "Please contact a representative of SlobodinScheduling for assistance."
                                     .format(employee["name"]))
+        @internal
         if type(employee["shift_pref"]) is not list:
             raise EmployeeDictError("Employee: {}'s 'shift_pref' is not list. "
                                     "Recieved Employee {}'s 'shift_pref' as {}. "
                                     "Please contact a representative of "
                                     "SlobodinScheduling for assistance."
                                     .format(employee["name"], employee["name"], type(employee["shift_pref"])))
+        @internal
         if len(employee["shift_pref"]) != num_days:
             raise EmployeeDictError("Employee: {}'s 'shift_pref' is of length ({}) when expected is length ({}). "
                                     "Please contact a representative of SlobodinScheduling for assistance."
                                     .format(employee["name"], len(employee["shift_pref"]), num_days))
         for sp in employee["shift_pref"]:
+            @internal
             if type(sp) is not list:
                 raise EmployeeDictError("Employee: {}'s 'shift_pref' is not list. "
                                         "Recieved Employee {}'s 'shift_pref' as {}. "
                                         "Please contact a representative of SlobodinScheduling for assistance."
                                         .format(employee["name"], employee["name"], type(rs)))
+            @internal
             if len(sp) != num_shifts:
                 raise EmployeeDictError("Employee: {}'s 'shift_pref' contains a list of length ({})"
                                         " when expected is length ({}). Please contact a representative of "
@@ -117,23 +140,28 @@ def check_employee_data(employee_info, num_employees, num_days, num_roles, num_s
             index = -1
             for s in sp:
                 index += 1
+                @internal
                 if type(s) is not dict:
                     raise EmployeeDictError("Employee: {}'s 'shift_pref'[{}] is not a dict. "
                                             "Recieved Employee {}'s 'shift_pref'[{}] as {}. "
                                             "Please contact a representative of SlobodinScheduling for assistance."
                                             .format(employee["name"], index, employee["name"], index, type(s)))
+                @internal
                 if "lock_in_role" not in s:
                     raise EmployeeDictError("Employee: {}'s 'shift_pref'[{}]['lock_in_role'] does not exist. "
                                             "Please contact a representative of SlobodinScheduling for assistance."
                                             .format(employee["name"], index))
+                @internal
                 if not (s["lock_in_role"] is None or type(s["lock_in_role"]) is int):
                     raise EmployeeDictError("Employee: {}'s 'shift_pref'[{}]['lock_in_role'] has type {} and value {}. "
                                             "Please contact a representative of SlobodinScheduling for assistance."
                                             .format(employee["name"], index, type(s["lock_in_role"]), s["lock_in_role"]))
+                @internal
                 if "pref" not in s:
                     raise EmployeeDictError("Employee: {}'s 'shift_pref'[{}]['pref'] does not exist. "
                                             "Please contact a representative of SlobodinScheduling for assistance."
                                             .format(employee["name"], index))
+                @internal
                 if s["pref"] not in (0, 1, 2):
                     raise EmployeeDictError("Employee: {}'s 'shift_pref'[{}]['pref'] is invalid. "
                                             "Recieved Employee {}'s 'shift_pref'[{}]['pref'] as {}. "
@@ -222,6 +250,7 @@ def check_management_employee_constraints(config_data, management_data, employee
     employees_maximum_shift_availability = sum(employee_data[employee]['max_shifts'] for employee in range(config_data['num_employees']))
     employees_minimum_shift_availability = sum(employee_data[employee]['min_shifts'] for employee in range(config_data['num_employees']))
 
+    @user_error
     # Check if required number of employees in management tab exceeds maximum availabilty of employees in employee tab
     if required_num_employees > employees_maximum_shift_availability:
         raise ConstraintError("In Management Tab, required number of employees to work is ({}). "
@@ -229,6 +258,7 @@ def check_management_employee_constraints(config_data, management_data, employee
                               "\n\nPlease reduce the required number of employees to work in Management Tab "
                               "or increase your employees' maximum availability in Employee Information Tab."
                               .format(str(required_num_employees), str(employees_maximum_shift_availability)))
+    @user_error
     # Check if required number of employees in management tab is less than minimum availabilty of employees in employee tab
     if required_num_employees < employees_minimum_shift_availability: 
         raise ConstraintError("In Employee Information Tab, the minimum availability of your employees is ({}). "
@@ -237,6 +267,7 @@ def check_management_employee_constraints(config_data, management_data, employee
                               "or increase the required number of employees to work in Management Tab."
                               .format(str(employees_minimum_shift_availability), str(required_num_employees)))
 
+    @user_error
     for role in range(config_data['num_roles']):
         required_num_employees_per_role = sum(management_data[role][day]['num_employees'][shift] for day, shift in product_range(config_data['num_days'], config_data['num_shifts']))
         #Check if required employees per role in management tab exceeds maximum shift availability of employees who can work that role
@@ -254,6 +285,7 @@ def check_management_employee_constraints(config_data, management_data, employee
                                   .format(config_data['role_names'][role], str(required_num_employees_per_role), config_data['role_names'][role], str(employees_maximum_shift_availability_per_role), config_data['role_names'][role], config_data['role_names'][role]))
 
     # Check if number of employees to work a given role on a given day on a given shift exceeds possible number of employees who can work that role
+    @user_error
     for role in range(config_data['num_roles']):
         num_employees_able_to_work_role = 0
         for employee in range(config_data['num_employees']):
@@ -269,7 +301,7 @@ def check_management_employee_constraints(config_data, management_data, employee
                                           "during {} shift in Management Tab or increase the number of employees "
                                           "who can work as {} role."
                                           .format(config_data['role_names'][role], config_data['day_names'][day], config_data['shift_names'][shift], str(management_data[role][day]['num_employees'][shift]),config_data['role_names'][role], str(num_employees_able_to_work_role), config_data['role_names'][role], config_data['day_names'][day], config_data['shift_names'][shift], config_data['role_names'][role]))
-
+    @user_error
     # ASSUMING PEOPLE CAN ONLY WORK ONE SHIFT A DAY!!!!!!!!!!!!
     # Check if number of employees to work a given role on a given day exceeds possible number of employees who can work that role
     for role in range(config_data['num_roles']):
@@ -286,7 +318,7 @@ def check_management_employee_constraints(config_data, management_data, employee
                                       "as {} role on {} in Management Tab or increase the number of employees who "
                                       "can work as {} role in Employee Tab."
                                       .format(config_data['role_names'][role], config_data['day_names'][day], str(num_employees_required_to_work_role), config_data['role_names'][role], str(num_employees_able_to_work_role), config_data['role_names'][role], config_data['day_names'][day], config_data['role_names'][role]))
-
+    @user_error
     # ASSUMING PEOPLE CAN ONLY WORK ONE SHIFT A DAY!!!!!!!!!!!!
     # Check if number of employees to work on a given day exceeds total number of employees 
     for day in range(config_data['num_days']):
