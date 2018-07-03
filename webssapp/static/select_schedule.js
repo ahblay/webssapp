@@ -162,23 +162,40 @@ $(function () {
     $('#datepickerend').datepicker('update', now);
 });
 
-$("#submit-new-schedule").on("click", function () {
-    console.log("Button clicked.")
-    $.ajax({
-        type: "POST",
-        url: "/add_schedule",
-        data: {schedule_name: $("#name").val(), start: $("#start-date").val(), end: $("#end-date").val()},
-        success: function(json_response) {
-            console.log(json_response);
-                if (json_response["success"] == true) {
-                    location.reload(true);
+$(function() {
+    console.log("Validating new schedule form.")
+    $("#new-schedule-form").validate({
+        rules: {
+            schedulename: {
+                required: true,
+                maxlength: 20
+            }
+        },
+        messages: {
+            schedulename: {
+                required: "Please enter a schedule name.",
+                maxlength: "Please limit schedule name to 20 characters or less."
+            }
+        },
+        submitHandler: function(form) {
+            console.log("New schedule created.")
+            $.ajax({
+                type: "POST",
+                url: "/add_schedule",
+                data: {schedule_name: $("#name").val(), start: $("#start-date").val(), end: $("#end-date").val()},
+                success: function(json_response) {
+                    console.log(json_response);
+                        if (json_response["success"] == true) {
+                            location.reload(true);
+                        }
+                        else {
+                            console.log("Failed to send data to server.");
+                        }
                 }
-                else {
-                    console.log("Failed to send data to server.");
-                }
+            });
         }
     });
-})
+});
 
 $(".close-schedule").on("click", function (event) {
     preventClickPropogation(event);

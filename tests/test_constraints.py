@@ -40,4 +40,3 @@ def test_min_shifts():
 # basically, we want to assert that the constraints formed on the test schedule are of the type we'd expect. In this
 # case, we want constraints of the form "x1 + x2 + ... + xn >= min_shifts" where xn represents every role/day/shift
 # combo for a given employee.
-    

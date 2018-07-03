@@ -1,4 +1,4 @@
-from webssapp.build_schedule import product_range
+from webssapp.utilities import product_rang
 from pulp import lpSum
 
 

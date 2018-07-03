@@ -59,26 +59,39 @@ $(document).on("change", ".row-select-checkbox", function(){
     };
 });
 
-$(document).on("click", "#add-role-submit", function () {
-    var data = {name: $("#add-role").val(), color: $("#role-color-select").spectrum('get').toHexString()}
-    console.log(data)
-    $.ajax({
-        type: "POST",
-        url: "/_add_role",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        dataType: "json",
-        encode: "true",
-        success: function(){
-            $("#edit-roles").attr("disabled", "disabled");
-            $("#remove-roles").attr("disabled", "disabled");
-            $("#role-table-body").empty();
-            $.getJSON("/_api/get_roles", function(data) {
-                refresh_table_data(data);
+$(function() {
+    console.log("Validating add master role form.")
+    $("#add-roles-master-form").validate({
+        rules: {
+            rmaddrole: {
+                required: true
+            }
+        },
+        messages: {
+            rmaddrole: "Please enter a role."
+        },
+        submitHandler: function(form) {
+            var data = {name: $("#add-role").val(), color: $("#role-color-select").spectrum('get').toHexString()}
+            $.ajax({
+                type: "POST",
+                url: "/_add_role",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                dataType: "json",
+                encode: "true",
+                success: function(){
+                    $("#add-roles-modal").modal("hide");
+                    $("#edit-roles").attr("disabled", "disabled");
+                    $("#remove-roles").attr("disabled", "disabled");
+                    $("#role-table-body").empty();
+                    $.getJSON("/_api/get_roles", function(data) {
+                        refresh_table_data(data);
+                    });
+                }
             });
         }
     });
-})
+});
 
 function refresh_table_data(data) {
     console.log(data)

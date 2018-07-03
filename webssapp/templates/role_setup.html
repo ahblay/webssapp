@@ -168,11 +168,14 @@
                     <div class="col-md-1">
                     </div>
                     <div class="col-md-10">
-                        <form>
+                        <form id="add-roles-master-form">
                             <div class="form-group">
                                 <label for="add-role">Name</label>
-                                <input type="text" class="form-control" id="add-role" placeholder="Role Name"
-                                       style="border: 1px solid;">
+                                <input type="text"
+                                       class="form-control"
+                                       id="add-role"
+                                       placeholder="Role Name"
+                                       style="border: 1px solid;" name="rmaddrole">
                                 <br>
                                 <label for="role-color-select">Color</label>
                                 <br>
@@ -189,6 +192,8 @@
                                 </select>
                                 -->
                             </div>
+                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-outline-dark" id="add-role-submit">Save</button>
                         </form>
                     </div>
                     <div class="col-md-1">
@@ -196,8 +201,6 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-dark" id="add-role-submit" data-dismiss="modal">Save</button>
             </div>
         </div>
     </div>

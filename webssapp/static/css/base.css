@@ -985,6 +985,12 @@ select {
     padding-bottom: 10px;
 }
 
+/* form error styling */
+form .error {
+    color: red;
+    font-size: 15px;
+}
+
 /* just for funsies */
 .ugly {
     font-family: "Times New Roman", Times, serif;

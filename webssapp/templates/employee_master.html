@@ -160,77 +160,108 @@
         </button>
       </div>
       <div class="modal-body" id="add-employee-modal-body">
-          <form>
-          <div class="form-group em-add-emp-form-body">
-              <div class="em-add-emp-form-row">
-                    <div class="em-add-emp-name">
-                        <label for="em-add-emp-first-name">First Name</label>
-                        <input type="text" class="form-control" id="em-add-emp-first-name" placeholder="First Name">
-                    </div>
-                    <div class="em-add-emp-name">
-                        <label for="em-add-emp-last-name">Last Name</label>
-                        <input type="text" class="form-control" id="em-add-emp-last-name" placeholder="Last Name">
-                    </div>
-              </div>
-              <div class="em-add-emp-form-row">
-                    <div class="em-add-emp-email">
-                        <label for="em-add-emp-email">Email</label>
-                        <input type="text" class="form-control" id="em-add-emp-email" placeholder="ex. jsmith@example.xyz">
-                    </div>
-                    <div class="em-add-emp-phone">
-                        <label for="em-add-emp-phone">Cell Phone</label>
-                        <input type="text" class="form-control" id="em-add-emp-phone" placeholder="ex. (888) 888-8888">
-                    </div>
-              </div>
-              <div class="em-add-emp-shifts-row">
-                  <div class="em-add-emp-num-input">
-                      <label for="em-add-emp-min-shifts">Minimum Shifts</label>
-                      <div class="input-group">
-                        <input type="text" id="em-add-emp-min-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
-                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+          <form id="add-employee-master-form">
+              <div class="form-group em-add-emp-form-body">
+                  <div class="em-add-emp-form-row">
+                        <div class="em-add-emp-name">
+                            <label for="em-add-emp-first-name">First Name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="em-add-emp-first-name"
+                                   placeholder="First Name"
+                                   name="emfirstname">
                         </div>
-                      </div>
-                  </div>
-                  <div class="em-add-emp-num-input">
-                      <label for="em-add-emp-max-shifts">Maximum Shifts</label>
-                      <div class="input-group">
-                        <input type="text" id="em-add-emp-max-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
-                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        <div class="em-add-emp-name">
+                            <label for="em-add-emp-last-name">Last Name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="em-add-emp-last-name"
+                                   placeholder="Last Name"
+                                   name="emlastname">
                         </div>
-                      </div>
                   </div>
-                  <div class="em-add-emp-num-input">
-                      <label for="em-add-emp-seniority">Seniority</label>
-                      <div class="input-group">
-                        <input type="text" id="em-add-emp-seniority" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
-                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                  <div class="em-add-emp-form-row">
+                        <div class="em-add-emp-email">
+                            <label for="em-add-emp-email">Email</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="em-add-emp-email"
+                                   placeholder="ex. jsmith@example.xyz"
+                                   name="ememail">
                         </div>
+                        <div class="em-add-emp-phone">
+                            <label for="em-add-emp-phone">Cell Phone</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="em-add-emp-phone"
+                                   placeholder="ex. (888) 888-8888"
+                                   name="emphone">
+                        </div>
+                  </div>
+                  <div class="em-add-emp-shifts-row">
+                      <div class="em-add-emp-num-input">
+                          <label for="em-add-emp-min-shifts">Minimum Shifts</label>
+                          <div class="input-group">
+                            <input type="text"
+                                   id="em-add-emp-min-shifts"
+                                   class="form-control"
+                                   placeholder="1, 2, 3..."
+                                   aria-label="Minimum Shifts"
+                                   name="emminshifts">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                                <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="em-add-emp-num-input">
+                          <label for="em-add-emp-max-shifts">Maximum Shifts</label>
+                          <div class="input-group">
+                            <input type="text"
+                                   id="em-add-emp-max-shifts"
+                                   class="form-control"
+                                   placeholder="1, 2, 3..."
+                                   aria-label="Maximum Shifts"
+                                   name="emmaxshifts">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                                <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="em-add-emp-num-input">
+                          <label for="em-add-emp-seniority">Seniority</label>
+                          <div class="input-group">
+                            <input type="text"
+                                   id="em-add-emp-seniority"
+                                   class="form-control"
+                                   placeholder="1-10"
+                                   aria-label="Maximum Shifts"
+                                   name="emseniority">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                                <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                            </div>
+                          </div>
                       </div>
                   </div>
-              </div>
-              <div class="em-add-emp-roles-row">
-              </div>
-              <div class="row">
-                  <div class="col-md-12">
-                      <p>Additional Options</p>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="em-add-emp-inactive-flag" value="inactive">
-                          <label class="form-check-input" for="em-add-emp-inactive-flag">Set employee to inactive</label>
+                  <div class="em-add-emp-roles-row">
+                  </div>
+                  <div class="row">
+                      <div class="col-md-12">
+                          <p>Additional Options</p>
+                          <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="checkbox" id="em-add-emp-inactive-flag" value="inactive">
+                              <label class="form-check-input" for="em-add-emp-inactive-flag">Set employee to inactive</label>
+                          </div>
                       </div>
                   </div>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" id="add-employee-submit">Save</button>
               </div>
-          </div>
           </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="add-employee-submit" data-dismiss="modal">Save</button>
       </div>
     </div>
   </div>
@@ -251,12 +282,21 @@
           <form>
           <div class="form-group">
               <label for="edit-emps-name-input">Employee Name</label>
-              <input type="text" class="form-control" id="edit-emps-name-input" placeholder="Employee Name">
+              <input type="text"
+                     class="form-control"
+                     id="edit-emps-name-input"
+                     placeholder="Employee Name"
+                     name="emeditname">
               <div class="row">
                   <div class="col-md-4">
                       <label for="edit-emps-min-shifts-input">Minimum Shifts</label>
                       <div class="input-group">
-                        <input type="text" id="edit-emps-min-shifts-input" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
+                        <input type="text"
+                               id="edit-emps-min-shifts-input"
+                               class="form-control"
+                               placeholder="1, 2, 3..."
+                               aria-label="Minimum Shifts"
+                               name="emeditminshifts">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
@@ -266,7 +306,12 @@
                   <div class="col-md-4">
                       <label for="edit-emps-max-shifts-input">Maximum Shifts</label>
                       <div class="input-group">
-                        <input type="text" id="edit-emps-max-shifts-input" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
+                        <input type="text"
+                               id="edit-emps-max-shifts-input"
+                               class="form-control"
+                               placeholder="1, 2, 3..."
+                               aria-label="Maximum Shifts"
+                               name="emeditmaxshifts">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
@@ -276,7 +321,12 @@
                   <div class="col-md-4">
                       <label for="edit-emps-seniority-input">Seniority</label>
                       <div class="input-group">
-                        <input type="text" id="edit-emps-seniority-input" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
+                        <input type="text"
+                               id="edit-emps-seniority-input"
+                               class="form-control"
+                               placeholder="1-10"
+                               aria-label="Maximum Shifts"
+                               name="emeditseniority">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
                             <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>

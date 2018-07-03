@@ -2,8 +2,6 @@ import pprint
 
 from pulp import *
 from pulp import solvers
-
-from webssapp.sanity_checks import *
 from webssapp.constraints.ConEmpsPerShift import ConEmpsPerShift
 from webssapp.constraints.ConMinShifts import ConMinShifts
 from webssapp.constraints.ConMaxShifts import ConMaxShifts

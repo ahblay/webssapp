@@ -4,7 +4,6 @@ import webssapp.utilities as utilities
 from flask import g
 from pymongo import MongoClient
 
-from webssapp import zephyr_build_schedule as scheduling_algorithm
 from webssapp import build_schedule
 
 
