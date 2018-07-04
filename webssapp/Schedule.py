@@ -29,7 +29,7 @@ class ScheduleProcessor:
         self.employees = schedule['employees'] if 'employees' in schedule.keys() else None
         self.shifts = schedule['shifts'] if 'shifts' in schedule.keys() else []
         self.days = self.get_days(schedule['start_date'], schedule['end_date']) if schedule else None
-        self.roles = utilities.get_roles()
+        self.roles = schedule['roles'] if 'roles' in schedule.keys() else utilities.get_roles()
         self.start_date = schedule['start_date'] if 'start_date' in schedule.keys() else None
         self.end_date = schedule['end_date'] if 'end_date' in schedule.keys() else None
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
