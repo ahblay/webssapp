@@ -27,7 +27,11 @@ $(function() {
             $.ajax({
                 type: "POST",
                 url: "/create_account",
-                data: {username: $("#username").val(), email: $("#email").val(), password: $("#pwd").val()},
+                data: {username: $("#username").val(),
+                       email: $("#email").val(),
+                       password: $("#pwd").val(),
+                       user_role: $('#user-role').val(),
+                       business: $("#business").val()},
                 success: function(json_response) {
                     console.log(json_response);
                         if (json_response["success"] == true) {

@@ -54,8 +54,17 @@
                         <label for="pwd">Password:</label>
                         <input type="password" class="form-control" id="pwd" name="pwd">
                     </div>
-                    <div class="checkbox">
-                        <label><input type="checkbox">Remember me</label>
+                    <div class="form-group">
+                        <label for="user-role">User Role:</label>
+                        <select class="form-control" id="user-role" name="user-role">
+                            <option value="owner">Owner</option>
+                            <option value="admin">Admin</option>
+                            <option value="employee">Employee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="business">Business:</label>
+                        <input type="text" class="form-control" id="business" name="business">
                     </div>
                     <button type="submit" id="submit-new-user" class="btn btn-default">Submit</button>
                 </form>

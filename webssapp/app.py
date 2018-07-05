@@ -3,7 +3,7 @@ import json
 import logging
 import pprint
 from bson import ObjectId
-from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for
+from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
@@ -11,6 +11,7 @@ from raven import Client
 from werkzeug.security import generate_password_hash, check_password_hash
 from webssapp.Schedule import ScheduleProcessor
 from pathlib import Path
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -62,10 +63,12 @@ logger.addHandler(fh_info)
 logger.addHandler(fh_debug)
 logger.addHandler(ch)
 
+
 class User():
 
-    def __init__(self, username):
+    def __init__(self, username, level):
         self.username = username
+        self.level = level
 
     def is_authenticated(self):
         return True
@@ -84,6 +87,19 @@ class User():
         return check_password_hash(password_hash, password)
 
 
+def login_required(role="ANY"):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            if not current_user.is_authenticated():
+                return login_manager.unauthorized()
+            if (current_user.level[session['business']] != role) or (role == "ANY"):
+                return login_manager.unauthorized()
+            return fn(*args, **kwargs)
+        return decorated_view
+    return wrapper
+
+
 @login_manager.user_loader
 def load_user(user_id):
 
@@ -93,7 +109,7 @@ def load_user(user_id):
     if not user:
         return None
 
-    return User(user['username'])
+    return User(user['username'], user['level'])
 
 
 @app.route("/new_user")
@@ -110,11 +126,14 @@ def create_account():
     username = request.form.get("username", None)
     email = request.form.get('email', None)
     password = request.form.get('password', None)
+    level = request.form.get('user_role', None)
+    business = request.form.get('business', None)
 
     pass_hash = generate_password_hash(password, method='pbkdf2:sha256')
 
     try:
-        users.insert({"username": username, "email": email, "pwd": pass_hash})
+        users.insert({"username": username, "email": email, "pwd": pass_hash, "level": {business: level}})
+        session['business'] = business
         print("User created.")
         return jsonify({"success": True, "message": "User added successfully"})
     except DuplicateKeyError:
@@ -137,8 +156,10 @@ def login():
     user = db.users.find_one({"username": username})
     logger.info("Attempting login: " + user['username'])
     if user and User.validate_login(user['pwd'], password):
-        user_obj = User(user['username'])
+        user_obj = User(user['username'], user['level'])
         login_user(user_obj)
+        session["logged_in"] = True
+        session["username"] = username
         flash("Logged in successfully", category='success')
         logger.info('Login successful: ' + user['username'])
         return jsonify({"success": True, "message": "Logged in successfully."})
@@ -281,6 +302,7 @@ def open_landing_page():
 
 
 @app.route("/select_schedule")
+@login_required(role="admin")
 def select_schedule():
     db = get_db()
 
