@@ -928,6 +928,7 @@ def clear():
     #db.employees.delete_many({})
     db.users.delete_many({})
     db.schedules.delete_many({})
+    db.business_clients.delete_many({})
     return render_template('landing_page.html')
 
 
@@ -1337,6 +1338,7 @@ def render_emp_portal():
 def build_test_client(client_name):
     with app.app_context():
         db = get_db()
+        if db.business_clients.find
         new_client = BusinessClient.BusinessClient(client_name)
         print(new_client)
         new_loc = build_test_location('Squamish')
