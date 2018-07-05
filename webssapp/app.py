@@ -926,7 +926,7 @@ def settings():
 @app.route('/clear_database')
 def clear():
     db = get_db()
-    #db.employees.delete_many({})
+    db.employees.delete_many({})
     db.users.delete_many({})
     db.schedules.delete_many({})
     db.business_clients.delete_many({})
