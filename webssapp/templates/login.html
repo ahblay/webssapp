@@ -21,20 +21,20 @@
             <h3>Log In</h3>
             <br>
             <div class="card bg-light login-card">
-                <form>
+                <form id="login-form">
                     <div class="form-group">
                         <label for="login-username">Username:</label>
-                        <input type="text" class="form-control" id="login-username">
+                        <input type="text" class="form-control" id="login-username" name="loginusername">
                     </div>
                     <div class="form-group">
                         <label for="login-pwd">Password:</label>
-                        <input type="password" class="form-control" id="login-pwd">
+                        <input type="password" class="form-control" id="login-pwd" name="loginpassword">
                     </div>
                     <div class="checkbox">
                         <label><input type="checkbox"> Remember me</label>
                     </div>
                     <br>
-                    <button type="button" id="log-me-in" class="btn btn-dark">Submit</button>
+                    <button type="submit" id="log-me-in" class="btn btn-dark">Submit</button>
                 </form>
             </div>
         </div>

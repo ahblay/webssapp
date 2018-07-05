@@ -22,11 +22,18 @@ class TestSchedule():
         self.employee_info = []
         self.training = []
 
+        self.num_employees = None
+        self.num_days = len(self.days)
+        self.num_roles = None
+        self.num_shifts = None
+        self.num_shifts_per_day = None
+
     def set_roles(self, num_roles):
-        roles = []
-        for _ in range(num_roles):
-            roles.append(fake.job())
+        roles = {}
+        for i in range(num_roles):
+            roles[str(i)] = fake.job()
         self.roles = roles
+        self.num_roles = num_roles
 
     def set_employees(self,
                       num_emps,
@@ -69,6 +76,7 @@ class TestSchedule():
                 emp["roles"] = [{"role_name": role, "training": False} for role in self.roles]
                 emps.append(emp)
             self.employees = emps
+        self.num_employees = num_emps
 
     def set_shifts(self,
                    num_shifts_per_day,
@@ -88,7 +96,7 @@ class TestSchedule():
                         shift["end"] = "5:00pm"
                         shift["num_employees"] = num_emps_per_shift
                         shift["parent_shift"] = shift["_id"]
-                        shift["role"] = self.roles[0]
+                        shift["role"] = self.roles["0"]
                         shift["start"] = "8:00am"
                         shifts.append(shift)
                 if type(num_shifts_per_day) is list:
@@ -99,11 +107,15 @@ class TestSchedule():
                         shift["end"] = "5:00pm"
                         shift["num_employees"] = num_emps_per_shift
                         shift["parent_shift"] = shift["_id"]
-                        shift["role"] = self.roles[0]
+                        shift["role"] = self.roles["0"]
                         shift["start"] = "8:00am"
                         shifts.append(shift)
                     day_counter += 1
             self.shifts = shifts
+        if type(num_shifts_per_day) is int:
+            self.num_shifts = num_shifts_per_day
+        elif type(num_shifts_per_day) is list:
+            self.num_shifts_per_day = num_shifts_per_day
 
     def set_length(self, length):
         days = []

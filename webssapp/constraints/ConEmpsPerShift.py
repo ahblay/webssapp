@@ -8,7 +8,7 @@ class ConEmpsPerShift(Constraint):
         self.description = "Assigns proper number of employees to each shift."
 
     def build(self, prob, x, s):
-        print("Building ConempsPerShift.")
+        print("Building ConEmpsPerShift.")
         shifts_by_day = s._get_shifts_by_day()
         for role, day, shift in product_rang(num_roles=s.num_roles,
                                              num_days=s.num_days,

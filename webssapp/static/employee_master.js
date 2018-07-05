@@ -158,9 +158,78 @@ $(document).on("click", "#add-employee", function () {
     }
 });
 
-$("#add-employee-submit").on("click", function() {
-    // posts the modal form data to /_add_employee, where the associated function adds an employee to the table
-    var data = {
+$.validator.addMethod("greaterThan",
+    function (value, element, param) {
+          var $otherElement = $(param);
+          return parseInt(value, 10) >= parseInt($otherElement.val(), 10);
+    }
+);
+
+$(function() {
+    console.log("Validating add master employee form.")
+    $("#add-employee-master-form").validate({
+        rules: {
+            emfirstname: {
+                required: true
+            },
+            emlastname: {
+                required: true
+            },
+            ememail: {
+                required: true,
+                email: true
+            },
+            emphone: {
+                required: true,
+                phoneUS: true
+            },
+            emminshifts: {
+                required: true,
+                digits: true
+            },
+            emmaxshifts: {
+                required: true,
+                digits: true,
+                greaterThan: "#em-add-emp-min-shifts"
+            },
+            emseniority: {
+                required: true,
+                digits: true,
+                range: [1, 10]
+            }
+        },
+        messages: {
+            emfirstname: {
+                required: "Please provide a first name."
+            },
+            emlastname: {
+                required: "Please provide a last name."
+            },
+            ememail: {
+                required: "Please provide an email.",
+                email: "Please provide a valid email."
+            },
+            emphone: {
+                required: "Please provide a phone number.",
+                phoneUS: "Please provide a 10-digit phone number."
+            },
+            emminshifts: {
+                required: "Please provide an integer number.",
+                digits: "Please provide an integer."
+            },
+            emmaxshifts: {
+                required: "Please provide an integer number.",
+                digits: "Please provide an integer.",
+                greaterThan: "Max shifts larger than min shifts."
+            },
+            emseniority: {
+                required: "Please provide an integer number.",
+                digits: "Please provide an integer.",
+                range: "Seniority must be a number between 1 and 10."
+            }
+        },
+        submitHandler: function(form) {
+            var data = {
                     name: $("#em-add-emp-first-name").val() + " " + $("#em-add-emp-last-name").val(),
                     first_name: $("#em-add-emp-first-name").val(),
                     last_name: $("#em-add-emp-last-name").val(),
@@ -172,20 +241,23 @@ $("#add-employee-submit").on("click", function() {
                     roles: process_role_selection(),
                     inactive: document.getElementById("em-add-emp-inactive-flag").checked
                };
-    console.log(data);
-    $.ajax({
-        type: "POST",
-        url: "/_add_employee",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        dataType: "json",
-        encode: "true",
-        success: function(){
-            $("#edit-employees").attr("disabled", "disabled");
-            $("#remove-employees").attr("disabled", "disabled");
-            $("#employee-table-body").empty();
-            $.getJSON("/api/get_employees", function(data){
-                refresh_table_data(data);
+            console.log(data);
+            $.ajax({
+                type: "POST",
+                url: "/_add_employee",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                dataType: "json",
+                encode: "true",
+                success: function(){
+                    $('#add-employee-modal').modal('hide');
+                    $("#edit-employees").attr("disabled", "disabled");
+                    $("#remove-employees").attr("disabled", "disabled");
+                    $("#employee-table-body").empty();
+                    $.getJSON("/api/get_employees", function(data){
+                        refresh_table_data(data);
+                    });
+                }
             });
         }
     });
