@@ -88,13 +88,13 @@ class User:
         return check_password_hash(password_hash, password)
 
 
-def login_required(role="ANY"):
+def login_required(roles=["ANY"]):
     def wrapper(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
             if not current_user.is_authenticated():
                 return login_manager.unauthorized()
-            if (current_user.level[session['business']] != role) or (role == "ANY"):
+            if (current_user.level[session['business']] in roles) or (roles == ["ANY"]):
                 return login_manager.unauthorized()
             return fn(*args, **kwargs)
         return decorated_view
@@ -303,7 +303,7 @@ def open_landing_page():
 
 
 @app.route("/select_schedule")
-@login_required(role="admin")
+@login_required(roles=["admin", "employee"])
 def select_schedule():
     db = get_db()
 
