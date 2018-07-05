@@ -70,7 +70,13 @@ $(function() {
                 success: function(json_response) {
                     console.log(json_response);
                         if (json_response["success"] == true) {
-                            location.assign("/select_schedule");
+                            if (json_response["level"] == "owner" || json_response["level"] == "admin") {
+                                location.assign("/select_schedule");
+                            }
+                            if (json_response["level"] == "employee") {
+                                console.log("Level is employee.")
+                                location.assign("/employee_portal");
+                            }
                         }
                         else {
                             location.assign("/login_page");

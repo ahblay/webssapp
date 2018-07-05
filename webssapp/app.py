@@ -4,7 +4,7 @@ import logging
 import pprint
 from bson import ObjectId
 from flask import Flask, render_template, jsonify, g, request, flash, redirect, url_for, session
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager, login_user, logout_user, current_user
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 from raven import Client
@@ -40,11 +40,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # create file handler and set level to info
-fh_info = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_info.log', 'w')
+fh_info = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_info.log', 'w')
 fh_info.setLevel(logging.INFO)
 
 # create file handler and set level to debug
-fh_debug = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_debug.log', 'w')
+fh_debug = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_debug.log', 'w')
 fh_debug.setLevel(logging.DEBUG)
 
 # create console handler and set level to info
@@ -66,7 +66,6 @@ logger.addHandler(ch)
 
 
 class User:
-
     def __init__(self, username, level):
         self.username = username
         self.level = level
@@ -88,13 +87,13 @@ class User:
         return check_password_hash(password_hash, password)
 
 
-def login_required(role="ANY"):
+def login_required(roles=["ANY"]):
     def wrapper(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
             if not current_user.is_authenticated():
                 return login_manager.unauthorized()
-            if (current_user.level[session['business']] != role) or (role == "ANY"):
+            if (current_user.level[session['business']] not in roles) or (roles == ["ANY"]):
                 return login_manager.unauthorized()
             return fn(*args, **kwargs)
         return decorated_view
@@ -163,7 +162,8 @@ def login():
         session["username"] = username
         flash("Logged in successfully", category='success')
         logger.info('Login successful: ' + user['username'])
-        return jsonify({"success": True, "message": "Logged in successfully."})
+        return jsonify({"success": True, "message": "Logged in successfully.",
+                        "level": user["level"][session["business"]]})
     else:
         flash("Wrong username or password", category='error')
         logger.error('Login failed. Incorrect username or password: ' +
@@ -303,7 +303,7 @@ def open_landing_page():
 
 
 @app.route("/select_schedule")
-@login_required(role="admin")
+@login_required(roles=["admin", "owner"])
 def select_schedule():
     db = get_db()
 
