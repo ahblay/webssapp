@@ -204,7 +204,7 @@ def get_employees_dict():
     return {str(emp["_id"]): emp for emp in db.employees.find()}
 
 def get_business_client(client_name):
-
+    return dict()
 
 
 # adds employee to the database
