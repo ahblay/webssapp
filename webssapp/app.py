@@ -40,11 +40,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # create file handler and set level to info
-fh_info = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_info.log', 'w')
+fh_info = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_info.log', 'w')
 fh_info.setLevel(logging.INFO)
 
 # create file handler and set level to debug
-fh_debug = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_debug.log', 'w')
+fh_debug = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_debug.log', 'w')
 fh_debug.setLevel(logging.DEBUG)
 
 # create console handler and set level to info
@@ -926,7 +926,7 @@ def settings():
 def clear():
     db = get_db()
     #db.employees.delete_many({})
-    #db.users.delete_many({})
+    db.users.delete_many({})
     db.schedules.delete_many({})
     return render_template('landing_page.html')
 
@@ -1335,9 +1335,19 @@ def render_emp_portal():
 
 
 def build_test_client(client_name):
-    db = get_db()
-    new_client = BusinessClient.BusinessClient(client_name)
-    new_client.save_new_client(db)
+    with app.app_context():
+        db = get_db()
+        new_client = BusinessClient.BusinessClient(client_name)
+        print(new_client)
+        new_loc = build_test_location('Squamish')
+        print(new_loc)
+        new_client.add_location(new_loc)
+        new_client.save_new_client(db)
 
 
+def build_test_location(loc_name):
+    return BusinessClient.BusinessLocation(loc_name)
+
+
+build_test_client('Zephyr Cafe')
 
