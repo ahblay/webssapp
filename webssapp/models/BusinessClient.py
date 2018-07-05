@@ -23,15 +23,18 @@ class BusinessClient:
         self.name = db_dict['name']
         self._id = str(db_dict['_id'])
         self.active = db_dict['active']
-        self.locations = [BusinessLocation().from_dict(loc) for loc in db_dict['locations']]
+        self.locations = {loc['name']: BusinessLocation().from_dict(loc) for loc in db_dict['locations']}
 
     # save to db
     def save_new_client(self, db_conn):
         # catch if schedule already exists; suggest update_db
+        print(self.name)
+        print(self.active)
+        print(self.locations)
         client_dict = {
             'name': self.name,
             'active': self.active,
-            'locations': [loc.to_dict() for loc in self.locations]
+            'locations': {loc_name: loc.to_dict() for loc_name, loc in self.locations.items()}
         }
         db_conn.business_clients.insert(client_dict)
 
