@@ -28,9 +28,7 @@ class BusinessClient:
     # save to db
     def save_new_client(self, db_conn):
         # catch if schedule already exists; suggest update_db
-        print(self.name)
-        print(self.active)
-        print(self.locations)
+
         client_dict = {
             'name': self.name,
             'active': self.active,

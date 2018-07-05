@@ -389,6 +389,7 @@ def load_html(path_to_html=None):
 def add_schedule():
     schedule = {}
 
+    schedule['business'] = session['business']
     schedule['name'] = request.form.get("schedule_name", None)
     schedule['start_date'] = datetime.datetime.strptime(request.form.get("start", None), '%m/%d/%Y')
     schedule['end_date'] = datetime.datetime.strptime(request.form.get("end", None), '%m/%d/%Y')
@@ -1338,13 +1339,13 @@ def render_emp_portal():
 def build_test_client(client_name):
     with app.app_context():
         db = get_db()
-        if db.business_clients.find
-        new_client = BusinessClient.BusinessClient(client_name)
-        print(new_client)
-        new_loc = build_test_location('Squamish')
-        print(new_loc)
-        new_client.add_location(new_loc)
-        new_client.save_new_client(db)
+        if not db.business_clients.find().count() > 0:
+            new_client = BusinessClient.BusinessClient(client_name)
+            new_loc = build_test_location('Squamish')
+            new_client.add_location(new_loc)
+            new_client.save_new_client(db)
+        else:
+            print("Skipping test BusinessClient creation, businesses exist.")
 
 
 def build_test_location(loc_name):
