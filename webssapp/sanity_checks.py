@@ -318,7 +318,7 @@ def check_management_employee_constraints(config_data, management_data, employee
                                       "as {} role on {} in Management Tab or increase the number of employees who "
                                       "can work as {} role in Employee Tab."
                                       .format(config_data['role_names'][role], config_data['day_names'][day], str(num_employees_required_to_work_role), config_data['role_names'][role], str(num_employees_able_to_work_role), config_data['role_names'][role], config_data['day_names'][day], config_data['role_names'][role]))
-    @user_error
+    @user_e
     # ASSUMING PEOPLE CAN ONLY WORK ONE SHIFT A DAY!!!!!!!!!!!!
     # Check if number of employees to work on a given day exceeds total number of employees 
     for day in range(config_data['num_days']):

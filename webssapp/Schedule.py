@@ -4,8 +4,8 @@ import webssapp.utilities as utilities
 from flask import g
 from pymongo import MongoClient
 
-from webssapp import zephyr_build_schedule as scheduling_algorithm
 from webssapp import build_schedule
+from webssapp.errors import error_handlers
 
 
 class ScheduleProcessor:
@@ -143,6 +143,15 @@ class ScheduleProcessor:
 
         return shifts_by_day
 
+    def get_shifts_for_role(self, role):
+        # role should be numerical string repring role
+        # TODO: fix this horrible broken shit with string to int conversion and role key vs name
+
+        return [shift for shift in self.shifts if shift['role'] == self.roles[role]]
+
+    def get_emps_for_role(self, role):
+        return [emp for emp in self.employees if self.roles[role] in [role['role_name'] for role in emp['roles']]]
+
     def _init_role_seniority(self, employee):
 
         emp_role_names = [role['role_name'] for role in employee['roles']]
@@ -191,6 +200,24 @@ class ScheduleProcessor:
 
             training.append(emp_training)
         return training
+
+    def check_errors(self):
+        errors = []
+
+        errors.append(error_handlers.check_for_emp_info(self))
+        errors.append(error_handlers.check_for_shift_info(self))
+        errors.append(error_handlers.check_num_shifts(self))
+        errors.append(error_handlers.check_num_shifts_for_day(self))
+        errors.append(error_handlers.check_num_shifts_for_role(self))
+        errors.append(error_handlers.check_num_shifts_for_role_and_day(self))
+
+        print(errors)
+
+        if errors:
+            errors = [error for error in errors if error is not None]
+            errors = [error.send() for sublist in errors for error in sublist]
+
+        return errors
 
     def build_schedule(self):
         s = build_schedule.Scheduler(self)

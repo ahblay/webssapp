@@ -3,9 +3,6 @@ import pprint
 from pulp import *
 from pulp import solvers
 
-from webssapp.sanity_checks import *
-
-
 class InfeasibleProblem(Exception):
     name = "No Solution Possible"
     pass

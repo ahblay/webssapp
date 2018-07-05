@@ -11,6 +11,7 @@ from raven import Client
 from werkzeug.security import generate_password_hash, check_password_hash
 from webssapp.Schedule import ScheduleProcessor
 from pathlib import Path
+from webssapp.models import BusinessClient
 
 app = Flask(__name__)
 
@@ -38,11 +39,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # create file handler and set level to info
-fh_info = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_info.log', 'w')
+fh_info = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_info.log', 'w')
 fh_info.setLevel(logging.INFO)
 
 # create file handler and set level to debug
-fh_debug = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_debug.log', 'w')
+fh_debug = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_debug.log', 'w')
 fh_debug.setLevel(logging.DEBUG)
 
 # create console handler and set level to info
@@ -62,7 +63,8 @@ logger.addHandler(fh_info)
 logger.addHandler(fh_debug)
 logger.addHandler(ch)
 
-class User():
+
+class User:
 
     def __init__(self, username):
         self.username = username
@@ -308,6 +310,32 @@ def select_schedule():
 
     return render_template("select_schedule.html", schedules=schedules, today=reformatted_today)
 
+
+@app.route("/get_user_schedules")
+def get_user_schedules():
+
+    db = get_db()
+
+    schedules = list(db.schedules.find({"username": current_user.username}))
+
+    schedule_dicts = []
+    for schedule in schedules:
+        if schedule['start_date'].date() <= today <= schedule['end_date'].date():
+            schedule['status'] = 'active'
+        elif schedule['start_date'].date() >= today:
+            schedule['status'] = 'upcoming'
+        else:
+            schedule['status'] = 'default'
+
+        db.schedules.update({"_id": schedule["_id"]},
+                            {"$set": {
+                                "status": schedule["status"]
+                            }})
+
+        schedule = ScheduleProcessor(schedule)
+        schedule_dicts.append(schedule.to_dict())
+
+    return jsonify(schedule_dicts)
 
 @app.route("/view_schedule/<_id>", methods=['GET'])
 def view_schedule(_id=None):
@@ -1249,6 +1277,18 @@ def change_shift_assignment():
     return jsonify(schedule.to_dict())
 
 
+@app.route("/check_errors/<schedule_id>")
+def check_schedule(schedule_id=None):
+
+    if schedule_id is None:
+        return jsonify({"success": False, "message": "No schedule id in URL."})
+    db = get_db()
+    schedule_dict = dict(db.schedules.find_one({"_id": ObjectId(schedule_id)}))
+    schedule = ScheduleProcessor(schedule_dict)
+
+    return jsonify(schedule.check_errors())
+
+
 @app.route("/_log_to_server")
 def log_to_server():
     source = request.json['source']
@@ -1266,3 +1306,17 @@ def log_to_server():
         logger.error(msg)
     elif level == "critical":
         logger.critical(msg)
+
+
+@app.route("/employee_portal")
+def render_emp_portal():
+    return render_template("/employee_portal/emp_portal_base.html")
+
+
+def build_test_client(client_name):
+    db = get_db()
+    new_client = BusinessClient.BusinessClient(client_name)
+    new_client.save_new_client(db)
+
+
+

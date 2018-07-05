@@ -43,11 +43,6 @@ $('.sidenav .sidenav-item').on('click', function(){
         return;
     };
 
-    if ($(this).data("view-id") == "schedule-options"){
-        alert("This tab is under development and currently unavailable.")
-        return;
-    };
-
     current_view.removeClass("active");
     current_view.removeClass("selected-tab");
     $(this).addClass("active");
@@ -121,17 +116,6 @@ $(document).on("click", "#employee-prefs-tab", function() {
     $.getJSON("/api/get_sorted_schedule/" + schedule_id, renderPrefCalendar)
 })
 
-/*
-$(".sidenav").hover(function () {
-        $(".sidenav-small").addClass("sidenav-hidden")
-        $(".sidenav-expanded").removeClass("sidenav-hidden")
-    },
-    function () {
-        $(".sidenav-small").removeClass("sidenav-hidden")
-        $(".sidenav-expanded").addClass("sidenav-hidden")
-    })
-*/
-
 $(document).on("click", "#shift-setup-tab", function () {
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
@@ -150,13 +134,16 @@ $(document).on("click", "#employee-prefs-tab", function () {
     $("[id$='-page-icon']").css("color", "#ababab")
     $("#preferences-page-icon").css("color", "#d75749")
 })
+
 $(document).on("click", "#options-tab", function () {
-    /*
     $(this).siblings().removeClass("select-view-highlighted")
     $(this).addClass("select-view-highlighted")
     $("[id$='-page-icon']").css("color", "#ababab")
     $("#options-page-icon").css("color", "#d75749")
-    */
+
+    $.getJSON('/check_errors/' + SCHEDULE_ID, function(data){
+        renderScheduleErrors(data);
+    });
 })
 
 $(document).on("click", "#view-schedule-tab", function () {
