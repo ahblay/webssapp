@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block optionalmeta %}
+{% endblock optionalmeta %}
+
+{% block containedcontent %}
+<div class="row">
+<div class="col-md-1"></div>
+<div class="col-md-10">
+    <div class="row">
+        <div class="emp-portal-shifts-this-week"></div>
+        <div class="emp-portal-upcoming-schedules"></div>
+        <div class="emp-portal-schedule-history"></div>
+    </div>
+</div>
+<div class="col-md-1"></div>
+</div>
+{% endblock containedcontent %}
+
+{% block js %}
+<script src="/static/employee_portal/emp_portal_base.js" type="text/javascript"></script>
+{% endblock js %}

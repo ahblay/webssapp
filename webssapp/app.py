@@ -203,6 +203,9 @@ def get_employees_dict():
     db = get_db()
     return {str(emp["_id"]): emp for emp in db.employees.find()}
 
+def get_business_client(client_name):
+
+
 
 # adds employee to the database
 @app.route("/_add_employee", methods=["POST"])
