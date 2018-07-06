@@ -1,0 +1,49 @@
+.header {
+    height: 50px;
+    margin-top: 25px;
+    color: #333741;
+}
+
+.upcoming-schedule {
+    display: grid;
+    grid-template-rows: 100px;
+    grid-template-columns: 150px auto;
+}
+
+.upcoming-schedule-thumbnail {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    border: 1px solid #939b9e;
+    border-radius: 5px;
+    display: grid;
+    grid-template-rows: auto 14px auto;
+    grid-template-columns: 1fr;
+    text-align: center;
+}
+
+.upcoming-schedule-name {
+    grid-column: 1 / 2;
+    font-size: 18px;
+    align-self: end;
+    justify-self: center;
+}
+
+.upcoming-schedule-dates {
+    grid-column: 1 / 2;
+    font-size: 12px;
+    align-self: center;
+    justify-self: center;
+}
+
+.upcoming-schedule-location {
+    grid-column: 1 / 2;
+    font-size: 12px;
+    align-self: start;
+    justify-self: center;
+}
+
+.upcoming-schedule-prefs {
+    grid-column: 2 / 3;
+    display: grid;
+    grid-template-rows: 15px auto;
+}
