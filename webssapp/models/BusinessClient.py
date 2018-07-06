@@ -3,10 +3,10 @@ from bson import ObjectId
 
 class BusinessClient:
 
-    def __init__(self, name):
+    def __init__(self, name=None):
         self.name = name
         self._id = None
-        self.active = False
+        self.active = True
         self.locations = {}
 
     # activate client
@@ -19,12 +19,15 @@ class BusinessClient:
 
     # load from db
     def load_from_db(self, db_conn, client_name):
-        db_dict = dict(db_conn.business_clients.find_one({'name': client_name}))
-        self.name = db_dict['name']
-        self._id = str(db_dict['_id'])
-        self.active = db_dict['active']
-        self.locations = {loc['name']: BusinessLocation().from_dict(loc) for loc in db_dict['locations']}
 
+        db_dict = db_conn.business_clients.find_one({'name': client_name})
+        if db_dict:
+            self.name = db_dict['name']
+            self._id = str(db_dict['_id'])
+            self.active = db_dict['active']
+            self.locations = {loc_name: BusinessLocation().from_dict(loc) for loc_name, loc in list(db_dict['locations'].items())}
+
+            return self
     # save to db
     def save_new_client(self, db_conn):
         # catch if schedule already exists; suggest update_db
@@ -42,7 +45,7 @@ class BusinessClient:
                                             {'$set': {
                                                'name': self.name,
                                                'active': self.active,
-                                               'locations': [loc.to_dict() for loc in self.locations]
+                                               'locations': {loc_name: loc.to_dict() for loc_name, loc in self.locations.items()}
                                             }})
 
     def add_location(self, loc):
@@ -91,3 +94,5 @@ class BusinessLocation:
         self.name = db_dict['name']
         self.accounts = db_dict['accounts']
         self.schedules = db_dict['schedules']
+
+        return self

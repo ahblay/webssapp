@@ -40,11 +40,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # create file handler and set level to info
-fh_info = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_info.log', 'w')
+fh_info = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_info.log', 'w')
 fh_info.setLevel(logging.INFO)
 
 # create file handler and set level to debug
-fh_debug = logging.FileHandler(str(Path.home()) + '/scheduling/webssapp/data/logs/fh_debug.log', 'w')
+fh_debug = logging.FileHandler(str(Path.home()) + '/PycharmProjects/scheduling/webssapp/data/logs/fh_debug.log', 'w')
 fh_debug.setLevel(logging.DEBUG)
 
 # create console handler and set level to info
@@ -203,8 +203,10 @@ def get_employees_dict():
     db = get_db()
     return {str(emp["_id"]): emp for emp in db.employees.find()}
 
+
 def get_business_client(client_name):
-    return dict()
+    db = get_db()
+    return BusinessClient.BusinessClient().load_from_db(db, client_name)
 
 
 # adds employee to the database
@@ -312,7 +314,12 @@ def select_schedule():
 
     reformatted_today = today.strftime('%m/%d/%Y')
 
-    schedules = list(db.schedules.find({"username": current_user.username}))
+    business_client = get_business_client(session['business'])
+    schedule_ids = []
+    for loc in business_client.locations.values():
+        schedule_ids.append(loc.schedules)
+    schedule_ids = [ObjectId(_id) for sublist in schedule_ids for _id in sublist]
+    schedules = list(db.schedules.find({'_id': {'$in': schedule_ids}}))
 
     for schedule in schedules:
         if schedule['start_date'].date() <= today <= schedule['end_date'].date():
@@ -339,8 +346,12 @@ def select_schedule():
 def get_user_schedules():
 
     db = get_db()
-
-    schedules = list(db.schedules.find({"username": current_user.username}))
+    business_client = get_business_client(session['business'])
+    schedule_ids = []
+    for loc in business_client.locations.values():
+        schedule_ids.append(loc.schedules)
+    schedule_ids = [ObjectId(_id) for sublist in schedule_ids for _id in sublist]
+    schedules = list(db.schedules.find({'_id': {'$in': schedule_ids}}))
 
     schedule_dicts = []
     for schedule in schedules:
@@ -392,7 +403,7 @@ def load_html(path_to_html=None):
 def add_schedule():
     schedule = {}
 
-    schedule['business'] = session['business']
+    schedule['_id'] = ObjectId()
     schedule['name'] = request.form.get("schedule_name", None)
     schedule['start_date'] = datetime.datetime.strptime(request.form.get("start", None), '%m/%d/%Y')
     schedule['end_date'] = datetime.datetime.strptime(request.form.get("end", None), '%m/%d/%Y')
@@ -406,6 +417,11 @@ def add_schedule():
 
     db = get_db()
     employee_master = list(db.employees.find({"username": current_user.username, "inactive": False}))
+
+    business_client = get_business_client(session['business'])
+    for loc in business_client.locations.values():
+        loc.add_schedule(str(schedule['_id']))
+    business_client.update_db(db, business_client._id)
 
     for emp in employee_master:
 
@@ -929,8 +945,8 @@ def settings():
 @app.route('/clear_database')
 def clear():
     db = get_db()
-    db.employees.delete_many({})
-    db.users.delete_many({})
+    #db.employees.delete_many({})
+    #db.users.delete_many({})
     db.schedules.delete_many({})
     db.business_clients.delete_many({})
     return render_template('landing_page.html')

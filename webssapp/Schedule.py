@@ -34,7 +34,6 @@ class ScheduleProcessor:
         self.start_date = schedule['start_date'] if 'start_date' in schedule.keys() else None
         self.end_date = schedule['end_date'] if 'end_date' in schedule.keys() else None
         self.prefs = schedule['prefs'] if 'prefs' in schedule.keys() else {}
-        self.business = schedule['business']
 
         self.num_employees = self.get_length(self.employees)
         self.num_days = self.get_length(self.days)
@@ -248,7 +247,8 @@ class ScheduleProcessor:
         db = self.get_db()
 
         payload = {
-                    "username": username,
+                     "_id": self._id,
+                     "username": username,
                      "name": self.name,
                      "start_date": self.start_date,
                      "end_date": self.end_date,
