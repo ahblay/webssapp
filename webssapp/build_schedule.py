@@ -40,6 +40,7 @@ class Scheduler:
         self.prob = LpProblem("Schedule", LpMaximize)
         self.schedule = schedule
         self.output = []
+        self.output_for_emp_portal = {}
 
     def build_constraints(self):
         pprint.pprint(self.x.matrix)
@@ -113,3 +114,23 @@ class Scheduler:
         self.output = output
         return output
 
+    def get_output_for_emp_portal(self):
+        output = {str(self.schedule.employees[employee]["_id"]): [{"working": False} for _ in range(self.schedule.num_days)]
+                  for employee in range(self.schedule.num_employees)}
+
+        for employee, role, day, shift in product_rang(num_emps=self.schedule.num_employees,
+                                                       num_roles=self.schedule.num_roles,
+                                                       num_days=self.schedule.num_days,
+                                                       num_shifts_per_day=self.schedule.num_shifts_per_day):
+            if value(self.x[employee][role][day][shift]):
+                shift_info = self.schedule._get_shifts_by_day()[day][shift]
+                emp_id = str(self.schedule.employees[employee]['_id'])
+                output[emp_id][day]["working"] = True
+                output[emp_id][day]["shift_id"] = str(shift_info['_id'])
+                output[emp_id][day]["shift_start"] = shift_info['start']
+                output[emp_id][day]["shift_end"] = shift_info['end']
+                output[emp_id][day]["role"] = self.schedule.roles[role]
+                output[emp_id][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
+
+        self.output_for_emp_portal = output
+        return output

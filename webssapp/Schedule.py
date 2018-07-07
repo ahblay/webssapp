@@ -46,6 +46,8 @@ class ScheduleProcessor:
         self.training = []
 
         self.output = schedule['output'] if 'output' in schedule.keys() else None
+        self.output_for_emp_portal = schedule['output_for_emp_portal'] if 'output_for_emp_portal' in schedule.keys() \
+            else None
 
     def get_length(self, item):
         if item is not None:
@@ -229,6 +231,9 @@ class ScheduleProcessor:
         self.output = s.get_schedule()
         self.save_output_to_db()
 
+        self.output_for_emp_portal = s.get_output_for_emp_portal()
+        self.save_output_for_emp_portal_to_db()
+
     def build_employer_setup_dict(self):
         employer_setup = {day: self._get_shifts_by_day()[day]
                           for day in self.days}
@@ -264,6 +269,11 @@ class ScheduleProcessor:
         db.schedules.insert(payload)
 
         print("Saved schedule data to database.")
+
+    def save_output_for_emp_portal_to_db(self):
+        db = self.get_db()
+        print("saving output to db")
+        db.schedules.update({"_id": self._id}, {"$set": {"output_for_emp_portal": self.output_for_emp_portal}})
 
     def save_output_to_db(self):
         db = self.get_db()
@@ -351,7 +361,7 @@ class ScheduleProcessor:
         self.sort('shifts', 'chronological')
         #self.sort('employees', 'alphabetical')
 
-        self._rebuild_alg_data()
+        #self._rebuild_alg_data()
 
     def _rebuild_alg_data(self):
 
