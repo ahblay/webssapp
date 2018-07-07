@@ -123,6 +123,10 @@ def create_account():
     db = get_db()
     users = db.users
 
+    # TODO: error out if fields don't exist rather than returning none since that indicates validation issue
+    first_name = request.form.get("first_name", None)
+    last_name = request.form.get("last_name", None)
+    phone = request.form.get("phone", None)
     username = request.form.get("username", None)
     email = request.form.get('email', None)
     password = request.form.get('password', None)
@@ -131,14 +135,63 @@ def create_account():
 
     pass_hash = generate_password_hash(password, method='pbkdf2:sha256')
 
+    # Check if business exists
+    business_client_names = [business['name'] for business in list(db.business_clients.find())]
+    print(business_client_names)
+    if business not in business_client_names:
+        # TODO: Make these messages appear as alerts on the website
+        return jsonify({"success": False, "message": 'Sorry, that business name does not exist.'})
+
+    print("Business found, attempting to add account.")
+
     try:
-        users.insert({"username": username, "email": email, "pwd": pass_hash, "level": {business: level}})
+        users.insert({
+            "first_name": first_name,
+            "last_name": last_name,
+            "phone": phone,
+            "username": username,
+            "email": email,
+            "pwd": pass_hash,
+            "level": {business: level}
+        })
         session['business'] = business
         print("User created.")
+
+        # Add users id to business client
+        business_client = BusinessClient.BusinessClient().load_from_db(db, business)
+        for loc in business_client.locations.values():
+            loc.add_account(username, level)
+        business_client.update_db(db)
+
+        create_employee_entry(first_name, last_name, phone, username, email)
+
         return jsonify({"success": True, "message": "User added successfully"})
     except DuplicateKeyError:
         print("The user {} already exists").format(username)
         return jsonify({"success": False, "message": "User already created"})
+
+
+def create_employee_entry(first_name, last_name, phone, username, email):
+
+    db = get_db()
+    employees = db.employees
+
+    employees.insert({
+        "username": username,
+        "name": first_name + " " + last_name,
+        "first_name": first_name,
+        "last_name": last_name,
+        "phone": phone,
+        "email": email,
+        "min_shifts": 0,
+        "max_shifts": 100,
+        "seniority": 1,
+        "roles": [],
+        "inactive": False
+    })
+
+    logger.info('%s added to employee database.',
+                first_name + ' ' + last_name)
 
 
 @app.route("/login_page")
@@ -188,9 +241,31 @@ def get_db():
 # goes into the db collection and returns a list of all existing employees
 def get_employees():
     db = get_db()
-
     employees = db.employees.find()
     return list(employees)
+
+
+def get_business_employees(client_name):
+
+    db = get_db()
+
+    business_client = get_business_client(client_name)
+    print([loc.accounts for loc in business_client.locations.values()])
+    business_emps = []
+    for loc in business_client.locations.values():
+        business_emps += loc.get_all_accounts()
+
+    employees = list(db.employees.find())
+
+    filtered_employees = [emp for emp in employees if emp['username'] in business_emps]
+    for emp in filtered_employees:
+        emp['_id'] = str(emp['_id'])
+
+    return filtered_employees
+
+@app.route('/_get_business_emp_json')
+def get_business_emp_json():
+    return jsonify(get_business_employees(session['business']))
 
 
 def load_employees_by_id(_ids):
@@ -352,6 +427,8 @@ def get_user_schedules():
         schedule_ids.append(loc.schedules)
     schedule_ids = [ObjectId(_id) for sublist in schedule_ids for _id in sublist]
     schedules = list(db.schedules.find({'_id': {'$in': schedule_ids}}))
+    schedules = [schedule for schedule in schedules if current_user.username in
+                 [emp['username'] for emp in schedule['employees']]]
 
     schedule_dicts = []
     for schedule in schedules:
@@ -372,6 +449,7 @@ def get_user_schedules():
 
     return jsonify(schedule_dicts)
 
+
 @app.route("/view_schedule/<_id>", methods=['GET'])
 def view_schedule(_id=None):
     if _id is None:
@@ -379,15 +457,15 @@ def view_schedule(_id=None):
         return jsonify({"success": False, "message": "No schedule id associated with button."})
     db = get_db()
 
-    schedules = db.schedules.find({"username": current_user.username})
-    for schedule in schedules:
-        if schedule["_id"] == ObjectId(_id):
-            schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
-            schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
-            logger.info("Redirecting to /view_schedule/%s", _id)
-            return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
-    logger.error("Schedule ID %s not found in schedules database.", _id)
-    return jsonify({"success": False, "message": "Schedule id is not in database."})
+    schedule = db.schedules.find_one({"_id": ObjectId(_id)})
+    if schedule:
+        schedule['start_date'] = schedule['start_date'].strftime('%m/%d/%Y')
+        schedule['end_date'] = schedule['end_date'].strftime('%m/%d/%Y')
+        logger.info("Redirecting to /view_schedule/%s", _id)
+        return render_template("/schedule_manager/schedule_manager_base.html", schedule=schedule)
+    else:
+        logger.error("Schedule ID %s not found in schedules database.", _id)
+        return jsonify({"success": False, "message": "Schedule id is not in database."})
 
 
 @app.route('/load_html/<path:path_to_html>')
@@ -416,12 +494,16 @@ def add_schedule():
         schedule['status'] = 'default'
 
     db = get_db()
-    employee_master = list(db.employees.find({"username": current_user.username, "inactive": False}))
+    business_client = BusinessClient.BusinessClient().load_from_db(db, session['business'])
+    employee_master = [loc.get_all_accounts() for loc in business_client.locations.values()]
+    employee_master = [account for loc in employee_master for account in loc]
+    print(employee_master)
+    employee_master = list(db.employees.find({"username": {"$in": employee_master}}))
 
     business_client = get_business_client(session['business'])
     for loc in business_client.locations.values():
         loc.add_schedule(str(schedule['_id']))
-    business_client.update_db(db, business_client._id)
+    business_client.update_db(db)
 
     for emp in employee_master:
 
@@ -945,8 +1027,8 @@ def settings():
 @app.route('/clear_database')
 def clear():
     db = get_db()
-    #db.employees.delete_many({})
-    #db.users.delete_many({})
+    db.employees.delete_many({})
+    db.users.delete_many({})
     db.schedules.delete_many({})
     db.business_clients.delete_many({})
     return render_template('landing_page.html')

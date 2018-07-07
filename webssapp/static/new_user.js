@@ -2,6 +2,16 @@ $(function() {
     console.log("Validating sign-up form.")
     $("#signup-form").validate({
         rules: {
+            first: {
+                required: true
+            },
+            last: {
+                required: true
+            },
+            phone: {
+                required: true,
+                phoneUS: true
+            },
             username: {
                 required: true
             },
@@ -27,11 +37,16 @@ $(function() {
             $.ajax({
                 type: "POST",
                 url: "/create_account",
-                data: {username: $("#username").val(),
+                data: {
+                       first_name: $("#first-name").val(),
+                       last_name: $("#last-name").val(),
+                       phone: $("#phone").val(),
+                       username: $("#username").val(),
                        email: $("#email").val(),
                        password: $("#pwd").val(),
                        user_role: $('#user-role').val(),
-                       business: $("#business").val()},
+                       business: $("#business").val()
+                },
                 success: function(json_response) {
                     console.log(json_response);
                         if (json_response["success"] == true) {

@@ -184,13 +184,13 @@ $(function() {
                 url: "/add_schedule",
                 data: {schedule_name: $("#name").val(), start: $("#start-date").val(), end: $("#end-date").val()},
                 success: function(json_response) {
-                    console.log(json_response);
-                        if (json_response["success"] == true) {
-                            location.reload(true);
-                        }
-                        else {
-                            console.log("Failed to send data to server.");
-                        }
+                            console.log(json_response);
+                            if (json_response["success"] == true) {
+                                location.reload(true);
+                            }
+                            else {
+                                console.log("Failed to send data to server.");
+                            }
                 }
             });
         }

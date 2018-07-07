@@ -1,7 +1,7 @@
 var GLOBAL_ROLES;
 
 //On load
-$.getJSON("/api/get_employees", function(data){
+$.getJSON("/_get_business_emp_json", function(data){
     refresh_table_data(data);
 });
 

@@ -18,6 +18,7 @@ class BusinessClient:
         self.active = False
 
     # load from db
+    # TODO: Change this from class to global method returning a business client
     def load_from_db(self, db_conn, client_name):
 
         db_dict = db_conn.business_clients.find_one({'name': client_name})
@@ -28,6 +29,8 @@ class BusinessClient:
             self.locations = {loc_name: BusinessLocation().from_dict(loc) for loc_name, loc in list(db_dict['locations'].items())}
 
             return self
+        else:
+            print('There is no entry for the business "{}"'.format(client_name))
     # save to db
     def save_new_client(self, db_conn):
         # catch if schedule already exists; suggest update_db
@@ -39,9 +42,9 @@ class BusinessClient:
         }
         db_conn.business_clients.insert(client_dict)
 
-    def update_db(self, db_conn, client_id):
+    def update_db(self, db_conn):
         # catch if schedule does not exist; suggest save_new_client
-        db_conn.business_clients.update_one({'_id': ObjectId(client_id)},
+        db_conn.business_clients.update_one({'_id': ObjectId(self._id)},
                                             {'$set': {
                                                'name': self.name,
                                                'active': self.active,
@@ -96,3 +99,6 @@ class BusinessLocation:
         self.schedules = db_dict['schedules']
 
         return self
+
+    def get_all_accounts(self):
+        return [user for sublist in self.accounts.values() for user in sublist]
