@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+<head>
+    {% block optionalmeta %}
+    <title>Schedules</title>
+
+    <!--
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
+    -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.standalone.min.css" />
+
+    <meta name="user_schedules" content="{{ schedules }}">
+    <meta content="{{ today }}">
+    <style>
+        .sidenav {
+            flex: 1;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            background-color: #f1f1f1;
+            height: 100%;
+        }
+        .schedules-row {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+        #create-schedule-modal {
+            display: none;
+            padding-top: 5em;
+            position: fixed;
+        }
+        #create-schedule-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 2em;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        #confirm-delete-schedule {
+            display: none;
+            padding-top: 5em;
+            position: fixed;
+        }
+        #confirm-delete-schedule-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 1em;
+            padding-bottom: 2em;
+            border: 1px solid #888;
+            width: 25%;
+        }
+        .close {
+            float: right;
+            font-weight: bold;
+        }
+        .new-schedule-card {
+            padding: 1em;
+        }
+    </style>
+    {% endblock %}
+</head>
+
+<body>
+
+{% block containedcontent %}
+
+<div class="container-fluid wrapper alert-default" id="outer-wrapper">
+
+    <div class="row line-default" id="title-row">
+
+        <div class="col-md-1"></div>
+        <div class="col-md-10 no-padding">
+            <div class="row">
+                <div class="col-md-10" style="padding-bottom: .75em; padding-top: 1em;">
+                    <h4>Schedules</h4>
+                </div>
+                <div class="col-md-2" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                    <span id="previous-schedule-icon"
+                          class="fas fa-share-square fa-flip-horizontal fa-2x"></span>
+                    <span id="current-schedule-icon"
+                          class="fas fa-flag fa-2x"></span>
+                    <span id="upcoming-schedule-icon"
+                          class="fas fa-share-square fa-2x float-right"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+        <!--
+        <div class="row">
+            <div class="col-md-12 no-padding">
+                <div class="alert alert-primary w100" role="alert">
+                    <p>Welcome to your schedules! Please select whichever schedule you would like to
+                        modify or distribute. Schedules may be arranged by date created, date of use, or name.
+                    </p>
+                </div>
+            </div>
+        </div>
+        -->
+    </div>
+
+    <br>
+
+    <div class="row">
+        <!--side border-->
+        <div class="col-md-1">
+        </div>
+
+        <!--center content-->
+        <div class="col-md-10 no-padding">
+
+            <div class="row" style="padding-bottom: 1em;">
+                <div class="col-md-12">
+                    <a href="#"
+                       class="btn btn-outline-dark float-right"
+                       id="new-schedule-button">Create New Schedule
+                    </a>
+
+                    <div class="dropdown float-left" style="padding-right: 1em;">
+                        <button class="btn btn-outline-dark dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            Sort Schedules
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Date Created</a>
+                            <a class="dropdown-item" href="#">Start Date</a>
+                            <a class="dropdown-item" href="#">Name</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--new schedule modal-->
+            <div class="modal" id="create-schedule-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content text-center" id="create-schedule-modal-content">
+                        <span class="close text-right" id="close-new-schedule-modal">&times;</span>
+                        <h4>Create New Schedule</h4>
+                        <br>
+                        <div class="card bg-light new-schedule-card">
+                            <form id="new-schedule-form">
+                                <div class="form-group">
+                                    <label class="pull-left" for="name"><b>Name:</b></label>
+                                    <input id="name" type="text" class="form-control" name="schedulename">
+                                </div>
+                                <div class="form-group">
+                                    <label class="pull-left" for="start-date"><b>Start:</b></label>
+                                    <div class='input-group date' id='datepickerstart'>
+                                        <input type='text' class="form-control" id="start-date" />
+                                        <span class="input-group-addon">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="pull-left" for="end-date"><b>End:</b></label>
+                                    <div class="input-group date" id="datepickerend">
+                                        <input type="text" class="form-control" id="end-date" />
+                                        <span class="input-group-addon">
+                                        </span>
+                                    </div>
+                                </div>
+                                <button type="submit"
+                                        id="submit-new-schedule"
+                                        class="btn btn-dark pull-right">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--schedule thumbnails-->
+            <div class="row schedules-row">
+                <div class="card-deck" style="display: flex; justify-content: space-between;">
+                {% for schedule in schedules %}
+                    {% if schedule['status'] == 'active' %}
+                        <div class="card border-dark mb-3 schedule-card schedule-active {{ schedule['status'] }}"
+                             data-id="{{ schedule['_id'] }}"
+                             style="max-width:207px; min-width:207px;">
+                    {% elif schedule['status'] == 'upcoming' %}
+                        <div class="card border-dark mb-3 schedule-card schedule-upcoming {{ schedule['status'] }}"
+                             data-id="{{ schedule['_id'] }}"
+                             style="max-width:207px; min-width:207px;">
+                    {% else %}
+                        <div class="card border-dark mb-3 schedule-card schedule-default {{ schedule['status'] }}"
+                             data-id="{{ schedule['_id'] }}"
+                             style="max-width:207px; min-width:207px;">
+                    {% endif %}
+                        <div class="card-header">
+                            <!--
+                            <div class="dropdown">
+                                <span class="float-left schedule-options fas fa-ellipsis-v dropdown-toggle"
+                                    id="options-dropdown"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"></span>
+                                <div class="dropdown-menu" aria-labelledby="options-dropdown">
+                                    <a class="dropdown-item d" href="#">Default</a>
+                                    <a class="dropdown-item a" href="#">Active</a>
+                                    <a class="dropdown-item u" href="#">Upcoming</a>
+                                </div>
+                            </div>
+                            -->
+                            <span class="close text-right close-schedule"
+                                  data-schedule-id="{{ schedule['_id'] }}">&times;</span>
+                            <br>
+                            <h5 class="card-title">{{ schedule['name'] }}</h5>
+                        </div>
+                        <!--
+                        <div class="text-center">
+                            <br>
+                            <img
+                                 src='{{url_for("static", filename="document_icon.png")}}'
+                                 alt="Card image"
+                                 style="width:20%">
+                        </div>
+                        -->
+                        <div class="card-body">
+                            <p class="card-text"
+                               data-dates="{{ schedule['start_date'] }} {{ schedule['end_date'] }}">
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="fas fa-folder-open fa-2x"
+                                  data-schedule-id="{{ schedule['_id'] }}" style="cursor: pointer;"></span>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+
+            <!--confirm delete modal-->
+            <div class="modal" id="confirm-delete-schedule">
+                <div class="modal-dialogue">
+                    <div class="modal-content text-center" id="confirm-delete-schedule-modal-content">
+                        <p>Are you sure? This is your LAST CHANCE.</p>
+                        <div class="col text-left">
+                            <button type="button" class="btn btn-dark" id="cancel-delete">Cancel</button>
+                        </div>
+                        <div class="col text-right">
+                            <button type="button" class="btn btn-dark" id="confirm-delete">Confirm</button>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+
+            <div id="previous-schedules-tooltip" style="display: none;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="border-top: none;">Previous Schedules</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in schedules %}
+                            {% if schedule['status'] == 'default' %}
+                            <tr>
+                                <td id="{{ schedule['_id'] }}"
+                                    onclick="openSchedule(this.id)"
+                                    style="border-top: none;">{{ schedule['name'] }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="current-schedules-tooltip" style="display: none;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="border-top: none;">Current Schedules</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in schedules %}
+                            {% if schedule['status'] == 'active' %}
+                            <tr>
+                                <td id="{{ schedule['_id'] }}"
+                                    onclick="openSchedule(this.id)"
+                                    style="border-top: none;">{{ schedule['name'] }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="upcoming-schedules-tooltip" style="display: none;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="border-top: none;">Upcoming Schedules</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in schedules %}
+                            {% if schedule['status'] == 'upcoming' %}
+                            <tr>
+                                <td id="{{ schedule['_id'] }}"
+                                    onclick="openSchedule(this.id)"
+                                    style="border-top: none;">{{ schedule['name'] }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!--side border-->
+        <div class="col-md-1">
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+</body>
+
+{% block js %}
+<script src="/static/new_user.js" type="text/javascript"></script>
+<script src="/static/select_schedule.js" type="text/javascript"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sprite-js/0.1.1/sprite.min.js"
+        type="text/javascript"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-hover-dropdown/2.2.1/bootstrap-hover-dropdown.min.js"
+        type="text/javascript"></script>
+{% endblock %}

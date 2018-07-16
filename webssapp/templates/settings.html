@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block optionalmeta %}
+<title>Settings</title>
+
+<style>
+    .card-content {
+        padding-left: 1em;
+        padding-bottom: 1em;
+        padding-top: 1em;
+    }
+</style>
+{% endblock %}
+
+{% block containedcontent %}
+<div class="container-fluid wrapper">
+    <div class="row line-default">
+        <div class="col-md-4" style="padding-top: 1em; padding-bottom: .75em;">
+            <h3>Settings</h3>
+        </div>
+        <div class="col-md-8">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 no-padding alert-line">
+            <div class="alert alert-primary w100" role="alert">
+                <p>Update our algorithm to take into account your personal preferences on constraints, training shifts,
+                seniority and other options.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-1">
+        </div>
+
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="card bg-light outline">
+                        <div class="card-content">
+                            <h5 class="text-center">Style Settings</h5>
+                            <p class="text-center">Toggle switches to select your preferred constraints for your schedule.
+                            </p>
+                            <div>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="ugly" name="style-settings">
+                                    <span class="custom-checkbox"></span>
+                                    Ugly
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="still-bad" name="style-settings">
+                                    <span class="custom-checkbox"></span>
+                                    Still Bad
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="normal" name="style-settings">
+                                    <span class="custom-checkbox"></span>
+                                    Normal
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="pink" name="style-settings">
+                                    <span class="custom-checkbox"></span>
+                                    Beautify!
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="radio" id="lit" name="style-settings">
+                                    <span class="custom-checkbox"></span>
+                                    Lit
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="card bg-light outline">
+                        <div class="card-content">
+                            <h5 class="text-center">Constraint Settings</h5>
+                            <p class="text-center">Toggle switches to select your preferred constraints for your schedule.
+                            </p>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="Constraint1">
+                                <span class="custom-checkbox"></span>
+                                Constraint1
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="constraint2">
+                                <span class="custom-checkbox"></span>
+                                Constraint2
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="constraint3">
+                                <span class="custom-checkbox"></span>
+                                Constraint3
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="constraint4">
+                                <span class="custom-checkbox"></span>
+                                Constraint4
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card bg-light outline">
+                        <div class="card-content">
+                            <h5 class="text-center">Data</h5>
+                            <ul>
+                                <li>Optimization Time: ******** minutes</li>
+                                <li>Number of Combinations: 2,555,645,321</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-1">
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/settings.js" type="text/javascript"></script>
+{% endblock %}

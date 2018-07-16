@@ -1,0 +1,166 @@
+<!--
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert w100" role="alert">
+            <p>The information on this page applies to only the current schedule. To
+                make changes to the master Employees list, click on "Employees" in the navigation bar at the top of the
+                page.
+            </p>
+        </div>
+    </div>
+</div>
+-->
+
+<div class="row">
+    <!-- border -->
+    <div class="col-md-1">
+    </div>
+
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-12" style="padding-bottom: 20px">
+                <button type="button" class="btn btn-outline-dark" id="add-employees" data-target="#add-emps-modal" data-toggle="modal">Add Employees</button>
+                <button type="button" class="btn btn-outline-dark" id="edit-employees" data-target="#edit-emps-modal" data-toggle="modal" disabled>Edit Selected</button>
+                <button type="button" class="btn btn-outline-danger float-right" id="remove-employees" disabled>Remove Selected</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover rounded-table-basic" id="emp-info">
+                    <thead>
+                        <tr>
+                            <th data-dbkey="checkbox" scope="col">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="" id="check-all-employees">
+                                    <span class="custom-checkbox" style="top: -12px !important;">
+                                    </span>
+                                </label>
+                            </th>
+                            <th data-dbkey="name" scope="col">Name</th>
+                            <th data-dbkey="training" scope="col">Training</th>
+                            <th data-dbkey="roles" scope="col">Roles</th>
+                            <th data-dbkey="min_shifts" scope="col">Min. Shifts</th>
+                            <th data-dbkey="max_shifts" scope="col">Max. Shifts</th>
+                            <th data-dbkey="seniority" scope="col">Seniority</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employee-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- border -->
+    <div class="col-md-1">
+    </div>
+
+</div>
+
+<!-- Add emps modal -->
+<div class="modal fade" id="add-emps-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Employees</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="add-emps-modal-body">
+          <div class="row">
+              <div class="col-md-12">
+                  <table class="table" id="add-emps-table">
+                      <thead>
+                        <tr>
+                            <th scope="col"><input class="emp-select-checkbox" type="checkbox" value="" id="add-all-emps"></th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Inactive</th>
+                        </tr>
+                      </thead>
+                      <tbody id="add-emps-tbody">
+                        <div class="alert alert-info" id="all-emps-added-alert" role="alert" style="display:none">
+                            All of your employees are already added to this schedule! Add new employees on the
+                            "Employees" tab in the navigation bar above.
+                        </div>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="add-emps-submit" data-dismiss="modal" disabled>Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit employees modal -->
+<div class="modal fade" id="edit-emps-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Employee(s)</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="edit-emps-modal-body">
+          <div class="alert alert-danger" id="multi-name-change-alert" role="alert" style="display: none">
+              Modifying the name field with multiple selections is not recommended.</div>
+          <form>
+          <div class="form-group emp-man-edit-emp-form">
+              <div class="em-add-emp-shifts-row">
+                  <div class="em-add-emp-num-input">
+                      <label for="emp-man-edit-min-shifts">Minimum Shifts</label>
+                      <div class="input-group">
+                        <input type="text" id="emp-man-edit-min-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Minimum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="em-add-emp-num-input">
+                      <label for="emp-man-edit-max-shifts">Maximum Shifts</label>
+                      <div class="input-group">
+                        <input type="text" id="emp-man-edit-max-shifts" class="form-control" placeholder="1, 2, 3..." aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="em-add-emp-num-input">
+                      <label for="emp-man-edit-seniority">Seniority</label>
+                      <div class="input-group">
+                        <input type="text" id="emp-man-edit-seniority" class="form-control" placeholder="1-10" aria-label="Maximum Shifts">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-up"></span></button>
+                            <button class="btn btn-outline-secondary" type="button"><span class="fas fa-angle-down"></span></button>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="em-add-emp-roles-row"></div>
+              <div class="row">
+                  <div class="col-md-12">
+                      <p>Additional Options</p>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" id="emp-man-edit-inactive" value="inactive">
+                          <label class="form-check-input" for="emp-man-edit-inactive">Set employee to inactive</label>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="edit-emps-submit" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+

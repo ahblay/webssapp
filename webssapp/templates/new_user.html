@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block optionalmeta %}
+<title>Sign Up</title>
+<style>
+    .wrapper {
+        height: 100%;
+        display: flex;
+    }
+    .row.content {flex: 1}
+    .main {
+        padding-bottom: 100px;
+    }
+    .sidenav {
+        flex: 1;
+        padding-top: 20px;
+        padding-bottom: 100px;
+        background-color: #f1f1f1;
+        height: 90vh;
+    }
+    .signup-card {
+        padding: 1em;
+    }
+    .main-content {
+        padding-top: 5em;
+    }
+</style>
+{% endblock %}
+
+{% block containedcontent %}
+<div class="container-fluid text-center wrapper">
+    <div class="row content">
+
+        <!--side border-->
+        <div class="col-sm-4">
+        </div>
+
+        <!--main content-->
+        <div class="col-sm-4 main-content">
+            <br>
+            <h3>Sign Up</h3>
+            <br>
+            <div class="card bg-light signup-card">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="first-name">First Name:</label>
+                        <input type="text" class="form-control" id="first-name" name="first">
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name:</label>
+                        <input type="text" class="form-control" id="last-name" name="last">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone:</label>
+                        <input type="tel" class="form-control" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" class="form-control" id="pwd" name="pwd">
+                    </div>
+                    <div class="form-group">
+                        <label for="user-role">User Role:</label>
+                        <select class="form-control" id="user-role" name="user-role">
+                            <option value="owner">Owner</option>
+                            <option value="admin">Admin</option>
+                            <option value="employee">Employee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="business">Business:</label>
+                        <input type="text" class="form-control" id="business" name="business">
+                    </div>
+                    <button type="submit" id="submit-new-user" class="btn btn-default">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!--side border-->
+        <div class="col-sm-4">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script src="/static/new_user.js" type="text/javascript"></script>
+
+{% endblock %}
+
+
+
+
