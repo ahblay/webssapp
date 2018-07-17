@@ -25,12 +25,18 @@ $(function() {
             }
         },
         messages: {
+            first: "Please enter a first name.",
+            last: "Please enter a last name.",
+            phone: {
+                required: "Please enter a phone number.",
+                phoneUS: "Please enter a valid phone number."
+            },
             username: "Please enter a username.",
-            password: {
+            email: "Please enter a valid email address.",
+            pwd: {
                 required: "Please provide a password.",
                 minlength: "Your password must be at least 5 characters long."
-            },
-            email: "Please enter a valid email address."
+            }
         },
         submitHandler: function(form) {
             console.log("Creating new account.");
@@ -48,13 +54,14 @@ $(function() {
                        business: $("#business").val()
                 },
                 success: function(json_response) {
-                    console.log(json_response);
-                        if (json_response["success"] == true) {
-                            location.assign("/landing_page");
-                        }
-                        else {
-                            location.assign("/new_user");
-                        }
+                    if (json_response["success"] == true) {
+                        location.assign("/landing_page");
+                        console.log(json_response);
+                    }
+                    else {
+                        location.assign("/new_user");
+                        console.log(json_response);
+                    }
                 }
             });
         }

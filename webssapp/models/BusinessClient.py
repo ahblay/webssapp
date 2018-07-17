@@ -31,6 +31,7 @@ class BusinessClient:
             return self
         else:
             print('There is no entry for the business "{}"'.format(client_name))
+
     # save to db
     def save_new_client(self, db_conn):
         # catch if schedule already exists; suggest update_db

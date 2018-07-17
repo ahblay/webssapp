@@ -66,9 +66,10 @@ logger.addHandler(ch)
 
 
 class User:
-    def __init__(self, username, level):
+    def __init__(self, username, level, id):
         self.username = username
         self.level = level
+        self.id = id
 
     def is_authenticated(self):
         return True
@@ -109,7 +110,7 @@ def load_user(user_id):
     if not user:
         return None
 
-    return User(user['username'], user['level'])
+    return User(user['username'], user['level'], user["_id"])
 
 
 @app.route("/new_user")
@@ -209,7 +210,7 @@ def login():
     user = db.users.find_one({"username": username})
     logger.info("Attempting login: " + user['username'])
     if user and User.validate_login(user['pwd'], password):
-        user_obj = User(user['username'], user['level'])
+        user_obj = User(user['username'], user['level'], user["_id"])
         login_user(user_obj)
         session["logged_in"] = True
         session["username"] = username
@@ -447,7 +448,9 @@ def get_user_schedules():
         schedule = ScheduleProcessor(schedule)
         schedule_dicts.append(schedule.to_dict())
 
-    return jsonify(schedule_dicts)
+    info = {"schedule_dicts": schedule_dicts, "username": current_user.username, "id": str(current_user.id)}
+
+    return jsonify(info)
 
 
 @app.route("/view_schedule/<_id>", methods=['GET'])
@@ -999,6 +1002,7 @@ def update_shift_pref():
     schedule_id = request.json["schedule_id"]
     pref = request.json["pref"]
     shift_id = request.json["shift_id"]
+    status = "Available"
 
     db = get_db()
 
@@ -1007,6 +1011,7 @@ def update_shift_pref():
     for day in prefs[emp_id]:
         if day["date"] == datetime.datetime.strptime(date, '%m/%d/%Y'):
             day[shift_id] = pref
+            day["status"] = status
             db.schedules.update({'_id': ObjectId(schedule_id)},
                                 {'$pull':
                                      {"prefs." + emp_id: {'date': datetime.datetime.strptime(date, '%m/%d/%Y')}}})

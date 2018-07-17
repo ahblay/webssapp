@@ -10,6 +10,7 @@ from webssapp.constraints.ConEligibleRoles import ConEligibleRoles
 from webssapp.coefficients.CoeffSeniority import SeniorityCoefficient
 from webssapp.coefficients import coeffcombine
 from webssapp.utilities import product_rang
+from datetime import datetime
 
 
 class InfeasibleProblem(Exception):
@@ -115,7 +116,7 @@ class Scheduler:
         return output
 
     def get_output_for_emp_portal(self):
-        output = {str(self.schedule.employees[employee]["_id"]): [{"working": False} for _ in range(self.schedule.num_days)]
+        output = {str(self.schedule.employees[employee]["username"]): [{"working": False} for _ in range(self.schedule.num_days)]
                   for employee in range(self.schedule.num_employees)}
 
         for employee, role, day, shift in product_rang(num_emps=self.schedule.num_employees,
@@ -124,13 +125,15 @@ class Scheduler:
                                                        num_shifts_per_day=self.schedule.num_shifts_per_day):
             if value(self.x[employee][role][day][shift]):
                 shift_info = self.schedule._get_shifts_by_day()[day][shift]
-                emp_id = str(self.schedule.employees[employee]['_id'])
-                output[emp_id][day]["working"] = True
-                output[emp_id][day]["shift_id"] = str(shift_info['_id'])
-                output[emp_id][day]["shift_start"] = shift_info['start']
-                output[emp_id][day]["shift_end"] = shift_info['end']
-                output[emp_id][day]["role"] = self.schedule.roles[role]
-                output[emp_id][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
+                emp_username = str(self.schedule.employees[employee]['username'])
+                output[emp_username][day]["working"] = True
+                output[emp_username][day]["shift_id"] = str(shift_info['_id'])
+                output[emp_username][day]["shift_start"] = shift_info['start']
+                output[emp_username][day]["shift_end"] = shift_info['end']
+                output[emp_username][day]["role"] = self.schedule.roles[role]
+                output[emp_username][day]["declined"] = self.retrieve_declined_requests(employee, role, day, shift)
+                output[emp_username][day]["date"] = self.schedule.days[day].strftime("%m/%d/%Y")
+                output[emp_username][day]["upcoming"] = True if self.schedule.days[day].date() >= datetime.today().date() else False
 
         self.output_for_emp_portal = output
         return output
