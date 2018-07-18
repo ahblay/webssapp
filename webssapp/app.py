@@ -214,6 +214,7 @@ def login():
         login_user(user_obj)
         session["logged_in"] = True
         session["username"] = username
+        session["business"] = list(user["level"].keys())[0]
         flash("Logged in successfully", category='success')
         logger.info('Login successful: ' + user['username'])
         return jsonify({"success": True, "message": "Logged in successfully.",
@@ -229,6 +230,7 @@ def login():
 def logout():
     logout_user()
     logger.info("User logged out.")
+    session['business'] = None
     return redirect(url_for('open_landing_page'))
 
 
