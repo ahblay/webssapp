@@ -1,0 +1,18 @@
+INFO: line 464 in view_schedule() (2018-07-17 14:05:14,975) - Redirecting to /view_schedule/5b4d13ff7af8b424d2ad8b9a
+INFO: line 1333 in get_sorted_schedule() (2018-07-17 14:05:15,267) - Returning schedule with chronologically sorted shifts as JSON.
+INFO: line 704 in _get_roles() (2018-07-17 14:05:15,277) - Returning master roles.
+INFO: line 1304 in get_schedule_json() (2018-07-17 14:05:15,360) - Returning all schedule data as JSON.
+INFO: line 704 in _get_roles() (2018-07-17 14:05:15,369) - Returning master roles.
+INFO: line 651 in get_all_shift_data() (2018-07-17 14:05:15,378) - Returning shift data for all schedule dates.
+INFO: line 1333 in get_sorted_schedule() (2018-07-17 14:05:17,217) - Returning schedule with chronologically sorted shifts as JSON.
+INFO: line 991 in update_pref() (2018-07-17 14:09:56,887) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:09:58,523) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:09:59,307) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:09:59,845) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:10:00,274) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:10:00,882) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:10:01,586) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:10:01,779) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:10:02,759) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:10:03,308) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.
+INFO: line 991 in update_pref() (2018-07-17 14:10:05,601) - Day preference updated for employee with ID 5b4d13ff7af8b424d2ad8b9f.

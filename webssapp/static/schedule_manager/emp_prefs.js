@@ -14,7 +14,6 @@ $(function () {
         //offset: {x: 20, y: 35},
         animation: {open: 'zoomIn', close: 'zoomIn'}
     });
-    //$('#pref-availability').bootstrapToggle();
 })
 
 function renderEmpTable(data) {
@@ -51,11 +50,13 @@ function renderPrefCalendar(data) {
     let pref_calendar_labels = document.createElement("div")
     $(pref_calendar_labels).addClass("pref-calendar-labels")
     let pref_calendar_day_label = document.createElement("div")
-    $(pref_calendar_day_label).addClass("pref-calendar-label").text("Days:")
+    $(pref_calendar_day_label).addClass("pref-calendar-label")
     $(pref_calendar_labels).append(pref_calendar_day_label)
     for (i = 0; i < employees.length; i ++) {
         let pref_calendar_name_label = document.createElement("div")
-        $(pref_calendar_name_label).addClass("pref-calendar-name-label").text(employees[i]["name"])
+        $(pref_calendar_name_label).addClass("pref-calendar-name-label")
+        $(pref_calendar_name_label).append($("<div />").text(employees[i]['name'])
+                                                       .addClass("pref-calendar-name-label-text"));
         $(pref_calendar_labels).append(pref_calendar_name_label)
     }
     $(".pref-calendar").append(pref_calendar_labels)
@@ -73,6 +74,7 @@ function renderPrefCalendar(data) {
 
         let pref_calendar_day_title = document.createElement("div")
         $(pref_calendar_day_title).addClass("pref-calendar-title").text(dateToAbbreviatedString(days[i]))
+                                                                  .attr("data-date", days[i]);
         $(pref_calendar_day).append(pref_calendar_day_title)
 
         let pref_calendar_all_prefs = document.createElement("div")
@@ -121,81 +123,43 @@ function renderPrefCalendar(data) {
             }
             else if (day["status"] == "Empty") {
                 $(pref_calendar_pref).addClass("pref-empty")
-                for (k = 0; k < Object.keys(pref).length - 2; k++) {
-                    let pref_text = document.createElement("p")
-                    $(pref_text).addClass("pref-text")
-                    $(pref_text).addClass("fa fa-circle").css("color", "grey")
-                    $(pref_calendar_pref).append(pref_text)
-                }
             }
             else if (day["status"] == "Available") {
                 $(pref_calendar_pref).addClass("pref-available")
-                for (k = 0; k < Object.values(pref).length; k++) {
-                    if (Object.values(pref)[k] == 5) {
-                        let pref_text = document.createElement("p")
-                        $(pref_text).addClass("pref-text").addClass("circle-icon-prefer")
-                        $(pref_text).addClass("fa fa-circle").css("color", "green")
-                        $(pref_calendar_pref).append(pref_text)
-                    }
-                    if (Object.values(pref)[k] == 1) {
-                        let pref_text = document.createElement("p")
-                        $(pref_text).addClass("pref-text").addClass("circle-icon-not-prefer")
-                        $(pref_text).addClass("fa fa-circle").css("color", "yellow")
-                        $(pref_calendar_pref).append(pref_text)
+
+                let has_preferred_shift = false;
+                let has_not_preferred_shift = false;
+
+                for (pref_value=0; pref_value < Object.values(pref).length; pref_value++){
+
+                    if (Object.values(pref)[pref_value] == 5){
+                        has_preferred_shift = true;
+                    };
+
+                    if (Object.values(pref)[pref_value] == 1){
+                        has_not_preferred_shift = true;
+                    };
+
+                    if (has_preferred_shift && has_not_preferred_shift){
+                        $(pref_calendar_pref).addClass("pref-split");
+                        break;
                     }
                 }
+
+                if (has_preferred_shift && !has_not_preferred_shift){
+                    $(pref_calendar_pref).addClass("pref-prefer");
+                } else if (!has_preferred_shift && has_not_preferred_shift){
+                    $(pref_calendar_pref).addClass("pref-dont-prefer");
+                };
             }
+
             else if (day["status"] == "Unavailable") {
                 $(pref_calendar_pref).addClass("pref-unavailable")
-                for (k = 0; k < Object.keys(pref).length - 2; k++) {
-                    let pref_text = document.createElement("p")
-                    $(pref_text).addClass("pref-text")
-                    $(pref_text).addClass("fa fa-circle").css("color", "red")
-                    $(pref_calendar_pref).append(pref_text)
-                }
             }
-
-
-            /*
-            if (eligible_employees.includes(emp_id)) {
-                $(pref_calendar_pref).prepend(expand_icon)
-            }
-            if (!eligible_employees.includes(emp_id)) {
-                $(pref_calendar_pref).addClass("pref-ineligible")
-            }
-            else if (Object.keys(data['prefs']).length === 0) {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_text).text("Empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            } else if (!Object.keys(data['prefs']).includes(emp_id)) {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_text).text("Empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            } else if (!Object.keys(data['prefs'][emp_id]).includes(shift_id)) {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_text).text("Empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            } else if (data["prefs"][emp_id][shift_id] == -1000) {
-                $(pref_calendar_pref).addClass("pref-unavailable")
-                $(pref_text).text("Unavailable")
-                $(pref_calendar_pref).data("current-pref", "pref-unavailable")
-            } else if (data["prefs"][emp_id][shift_id] == 1) {
-                $(pref_calendar_pref).addClass("pref-available")
-                $(pref_text).text("Available")
-                $(pref_calendar_pref).data("current-pref", "pref-available")
-            } else if (data["prefs"][emp_id][shift_id] == 5) {
-                $(pref_calendar_pref).addClass("pref-prefer")
-                $(pref_text).text("Prefer")
-                $(pref_calendar_pref).data("current-pref", "pref-prefer")
-            } else {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            }
-            */
 
             $(pref_calendar_pref).on("click", viewShifts)
-
-            $(pref_calendar_prefs).append(pref_calendar_pref)
+            let wrapped_pref = $("<div />").append($(pref_calendar_pref)).addClass("pref-calendar-pref-wrapper");
+            $(pref_calendar_prefs).append(wrapped_pref);
         }
 
         $(pref_calendar_all_prefs).append(pref_calendar_prefs)
@@ -208,6 +172,94 @@ function renderPrefCalendar(data) {
 
 };
 
+$(document).on({
+    mouseenter: function(){
+        highlightColumnHeader($($(this).children()[0]));
+        highlightRowLabel($($(this).children()[0]));
+        highlightColumn($(this));
+        highlightRow($(this));
+    },
+    mouseleave: function(){
+        removeHighlights();
+    }
+}, ".pref-calendar-pref-wrapper");
+
+
+// Mouseover column highlighting for pref calendar
+function highlightColumnHeader(pref_cell){
+    $(".pref-calendar-title").each(function(){
+        if ($(this).attr("data-date") == pref_cell.data("date")){
+            $(this).addClass("highlight-grid-cell");
+        };
+    });
+};
+
+function highlightColumn(pref_cell_wrapper){
+    pref_cell_wrapper.parent().addClass('highlight-grid-cell');
+};
+
+function highlightRow(pref_cell_wrapper){
+    $(".pref-calendar-pref").filter(function () {
+        return $(this).data("emp-name") == $(pref_cell_wrapper.children()[0]).data("emp-name");
+    }).each(function(){
+        $(this).parent().addClass("highlight-grid-cell");
+    });
+};
+
+// Mouseover row highlighting for pref calendar
+function highlightRowLabel(pref_cell){
+    $(".pref-calendar-name-label").each(function(){
+        if ($(this).text() == pref_cell.data("emp-name")){
+            $(this).addClass("highlight-grid-cell");
+        };
+    });
+};
+
+function removeHighlights(){
+    $(".highlight-grid-cell").removeClass("highlight-grid-cell");
+};
+
+function renderShiftPrefModal(){
+
+    // Make the header block
+    let header = renderModalHeader($(this));
+
+    // Make the table body
+        // rows = shifts, role/start/end to left, smile/frown buttons to right
+            //make sure scrolling / overflow works in an ok way
+
+    // Make a button to click in and view all of an emps prefs
+}
+
+function renderModalHeader(pref_calendar_cell){
+    let header = $("<div />").addClass("pref-modal-header");
+    let name_cell = $("<div />").addClass("pref-modal-header-name")
+                                .text(pref_calendar_cell.data("emp-name"));
+    let date_cell = $("<div />").addClass("pref-modal-header-date")
+                                .text(pref_calendar_cell.data("date"));
+    let available_cell = $("<div />").addClass("pref-modal-header-available")
+                                     .text("Available");
+
+    header.append(name_cell);
+    header.append(date_cell);
+    header.append(available_cell);
+    header.append(renderAvailabilityButtons(pref_calendar_cell));
+
+    return header
+};
+
+function renderAvailabilityButtons(pref_calendar_cell){
+    let button_container = $("<div />").addClass("pref-modal-header-button-container");
+    let available_button = $("<button />").addClass("btn btn-success pref-modal-header-yes-btn")
+                                          .prop("type", "button")
+                                          .text("Yes");
+    let unavailable_button = $("<button />").addClass("btn btn-danger pref-modal-header-no-btn")
+                                            .prop("type", "button")
+                                            .text("Yes");
+    button_container.append(available_button).append(unavailable_button);
+    return button_container
+}
+
 function viewShifts() {
     // variables
     let emp_name = $(this).data("emp-name")
@@ -217,8 +269,6 @@ function viewShifts() {
     let emp_id = $(this).data("emp-id")
     let roles = Object.keys(all_info)
     let outerButton = $(this)
-    console.log(all_info)
-    console.log(prefs)
 
     // title elements
     let main_div = document.createElement("div")
