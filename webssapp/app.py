@@ -745,6 +745,7 @@ def save_shift_data():
     emp_ids = []
     prefs = dict(db.schedules.find_one({'_id': ObjectId(schedule_id)})["prefs"])
     for emp in list(db.schedules.find_one({'_id': ObjectId(schedule_id)})["employees"]):
+        pprint.pprint(emp["roles"])
         emp_roles = [role['role_name'] for role in emp['roles']]
         emp_ids.append([str(emp['_id']), emp_roles])
 
