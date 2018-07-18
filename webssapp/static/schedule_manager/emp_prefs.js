@@ -121,91 +121,47 @@ function renderPrefCalendar(data) {
             }
             else if (day["status"] == "Empty") {
                 $(pref_calendar_pref).addClass("pref-empty")
-                for (k = 0; k < Object.keys(pref).length - 2; k++) {
-                    let pref_text = document.createElement("p")
-                    $(pref_text).addClass("pref-text")
-                    $(pref_text).addClass("fa fa-circle").css("color", "grey")
-                    $(pref_calendar_pref).append(pref_text)
-                }
-            }
-            else if (day["status"] == "Available") {
+            } else if (day["status"] == "Available") {
                 $(pref_calendar_pref).addClass("pref-available")
-                for (k = 0; k < Object.values(pref).length; k++) {
-                    if (Object.values(pref)[k] == 5) {
-                        let pref_text = document.createElement("p")
-                        $(pref_text).addClass("pref-text").addClass("circle-icon-prefer")
-                        $(pref_text).addClass("fa fa-circle").css("color", "green")
-                        $(pref_calendar_pref).append(pref_text)
-                    }
-                    if (Object.values(pref)[k] == 1) {
-                        let pref_text = document.createElement("p")
-                        $(pref_text).addClass("pref-text").addClass("circle-icon-not-prefer")
-                        $(pref_text).addClass("fa fa-circle").css("color", "yellow")
-                        $(pref_calendar_pref).append(pref_text)
+
+                let has_preferred_shift = false;
+                let has_not_preferred_shift = false;
+
+                for (pref_value=0; pref_value < Object.values(pref).length; pref_value++){
+
+                    if (Object.values(pref)[pref_value] == 5){
+                        has_preferred_shift = true;
+                    };
+
+                    if (Object.values(pref)[pref_value] == 1){
+                        has_not_preferred_shift = true;
+                    };
+
+                    if (has_preferred_shift && has_not_preferred_shift){
+                        $(pref_calendar_pref).addClass("pref-split");
+                        break;
                     }
                 }
-            }
-            else if (day["status"] == "Unavailable") {
-                $(pref_calendar_pref).addClass("pref-unavailable")
-                for (k = 0; k < Object.keys(pref).length - 2; k++) {
-                    let pref_text = document.createElement("p")
-                    $(pref_text).addClass("pref-text")
-                    $(pref_text).addClass("fa fa-circle").css("color", "red")
-                    $(pref_calendar_pref).append(pref_text)
-                }
-            }
 
-
-            /*
-            if (eligible_employees.includes(emp_id)) {
-                $(pref_calendar_pref).prepend(expand_icon)
-            }
-            if (!eligible_employees.includes(emp_id)) {
-                $(pref_calendar_pref).addClass("pref-ineligible")
-            }
-            else if (Object.keys(data['prefs']).length === 0) {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_text).text("Empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            } else if (!Object.keys(data['prefs']).includes(emp_id)) {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_text).text("Empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            } else if (!Object.keys(data['prefs'][emp_id]).includes(shift_id)) {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_text).text("Empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            } else if (data["prefs"][emp_id][shift_id] == -1000) {
+                if (has_preferred_shift && !has_not_preferred_shift){
+                    $(pref_calendar_pref).addClass("pref-prefer");
+                } else if (!has_preferred_shift && has_not_preferred_shift){
+                    $(pref_calendar_pref).addClass("pref-dont-prefer");
+                };
+            } else if (day["status"] == "Unavailable") {
                 $(pref_calendar_pref).addClass("pref-unavailable")
-                $(pref_text).text("Unavailable")
-                $(pref_calendar_pref).data("current-pref", "pref-unavailable")
-            } else if (data["prefs"][emp_id][shift_id] == 1) {
-                $(pref_calendar_pref).addClass("pref-available")
-                $(pref_text).text("Available")
-                $(pref_calendar_pref).data("current-pref", "pref-available")
-            } else if (data["prefs"][emp_id][shift_id] == 5) {
-                $(pref_calendar_pref).addClass("pref-prefer")
-                $(pref_text).text("Prefer")
-                $(pref_calendar_pref).data("current-pref", "pref-prefer")
-            } else {
-                $(pref_calendar_pref).addClass("pref-empty")
-                $(pref_calendar_pref).data("current-pref", "pref-empty")
-            }
-            */
+            };
 
             $(pref_calendar_pref).on("click", viewShifts)
+            let wrapped_pref = $("<div />").append($(pref_calendar_pref)).addClass("pref-calendar-pref-wrapper");
+            $(pref_calendar_prefs).append(wrapped_pref);
 
-            $(pref_calendar_prefs).append(pref_calendar_pref)
+            $(pref_calendar_all_prefs).append(pref_calendar_prefs)
+
+            $(pref_calendar_day).append(pref_calendar_all_prefs)
+            $(pref_calendar_content).append(pref_calendar_day)
         }
-
-        $(pref_calendar_all_prefs).append(pref_calendar_prefs)
-
-        $(pref_calendar_day).append(pref_calendar_all_prefs)
-        $(pref_calendar_content).append(pref_calendar_day)
-    }
-
     $(".pref-calendar").append(pref_calendar_content)
-
 };
 
 function viewShifts() {
