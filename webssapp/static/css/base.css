@@ -754,6 +754,13 @@ select {
     border-color: #dadada !important;
 }
 
+.pref-calendar {
+    display: flex;
+    flex-direction: row;
+    overflow-y: visible;
+     --cell-size: 35px;
+}
+
 .pref-calendar-labels {
     display: flex;
     flex-direction: column;
@@ -770,7 +777,6 @@ select {
     width: 100%;
     height: calc(var(--cell-size) + 8px);
 }
-
 .pref-calendar-name-label-text {
     align-self: center;
     padding-right: 5px;

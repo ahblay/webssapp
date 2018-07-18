@@ -55,7 +55,9 @@ function renderPrefCalendar(data) {
     $(pref_calendar_labels).append(pref_calendar_day_label)
     for (i = 0; i < employees.length; i ++) {
         let pref_calendar_name_label = document.createElement("div")
-        $(pref_calendar_name_label).addClass("pref-calendar-name-label").text(employees[i]["name"])
+        $(pref_calendar_name_label).addClass("pref-calendar-name-label");
+        $(pref_calendar_name_label).append($("<div />").text(employees[i]['name'])
+                                                       .addClass("pref-calendar-name-label-text"));
         $(pref_calendar_labels).append(pref_calendar_name_label)
     }
     $(".pref-calendar").append(pref_calendar_labels)
@@ -73,6 +75,7 @@ function renderPrefCalendar(data) {
 
         let pref_calendar_day_title = document.createElement("div")
         $(pref_calendar_day_title).addClass("pref-calendar-title").text(dateToAbbreviatedString(days[i]))
+                                                                  .attr("data-date", days[i]);
         $(pref_calendar_day).append(pref_calendar_day_title)
 
         let pref_calendar_all_prefs = document.createElement("div")
@@ -161,7 +164,96 @@ function renderPrefCalendar(data) {
             $(pref_calendar_day).append(pref_calendar_all_prefs)
             $(pref_calendar_content).append(pref_calendar_day)
         }
+    };
     $(".pref-calendar").append(pref_calendar_content)
+};
+
+$(document).on({
+    mouseenter: function(){
+        highlightColumnHeader($($(this).children()[0]));
+        highlightRowLabel($($(this).children()[0]));
+        highlightColumn($(this));
+        highlightRow($(this));
+    },
+    mouseleave: function(){
+        removeHighlights();
+    }
+}, ".pref-calendar-pref-wrapper");
+
+
+// Mouseover column highlighting for pref calendar
+function highlightColumnHeader(pref_cell){
+    $(".pref-calendar-title").each(function(){
+        if ($(this).attr("data-date") == pref_cell.data("date")){
+            $(this).addClass("highlight-grid-cell");
+        };
+    });
+};
+
+function highlightColumn(pref_cell_wrapper){
+    pref_cell_wrapper.parent().addClass('highlight-grid-cell');
+};
+
+function highlightRow(pref_cell_wrapper){
+    $(".pref-calendar-pref").filter(function () {
+        return $(this).data("emp-name") == $(pref_cell_wrapper.children()[0]).data("emp-name");
+    }).each(function(){
+        $(this).parent().addClass("highlight-grid-cell");
+    });
+};
+
+// Mouseover row highlighting for pref calendar
+function highlightRowLabel(pref_cell){
+    $(".pref-calendar-name-label").each(function(){
+        if ($(this).text() == pref_cell.data("emp-name")){
+            $(this).addClass("highlight-grid-cell");
+        };
+    });
+};
+
+function removeHighlights(){
+    $(".highlight-grid-cell").removeClass("highlight-grid-cell");
+};
+
+function renderShiftPrefModal(){
+
+    // Make the header block
+    let header = renderModalHeader($(this));
+
+    // Make the table body
+        // rows = shifts, role/start/end to left, smile/frown buttons to right
+            //make sure scrolling / overflow works in an ok way
+
+    // Make a button to click in and view all of an emps prefs
+}
+
+function renderModalHeader(pref_calendar_cell){
+    let header = $("<div />").addClass("pref-modal-header");
+    let name_cell = $("<div />").addClass("pref-modal-header-name")
+                                .text(pref_calendar_cell.data("emp-name"));
+    let date_cell = $("<div />").addClass("pref-modal-header-date")
+                                .text(pref_calendar_cell.data("date"));
+    let available_cell = $("<div />").addClass("pref-modal-header-available")
+                                     .text("Available");
+
+    header.append(name_cell);
+    header.append(date_cell);
+    header.append(available_cell);
+    header.append(renderAvailabilityButtons(pref_calendar_cell));
+
+    return header
+};
+
+function renderAvailabilityButtons(pref_calendar_cell){
+    let button_container = $("<div />").addClass("pref-modal-header-button-container");
+    let available_button = $("<button />").addClass("btn btn-success pref-modal-header-yes-btn")
+                                          .prop("type", "button")
+                                          .text("Yes");
+    let unavailable_button = $("<button />").addClass("btn btn-danger pref-modal-header-no-btn")
+                                            .prop("type", "button")
+                                            .text("Yes");
+    button_container.append(available_button).append(unavailable_button);
+    return button_container
 };
 
 function viewShifts() {
