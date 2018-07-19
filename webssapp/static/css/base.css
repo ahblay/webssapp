@@ -717,18 +717,33 @@ select {
 }
 
 /* preference calendar */
+.highlight-grid-cell{
+    background-color: #ffcc9e;
+}
+
 .pref-unavailable {
-    border-color: red !important;
-    background-color: #f6c0be;
+    /* border-color: red !important; */
+    border: none !important;
+    background-color: #d33d3b;
 }
-.pref-available {
-    border-color: green !important;
-    background-color: #cae0c4;
-}
+
 .pref-prefer {
+    /* border-color: green !important; */
+    border: none !important;
+    background-color: green;
+}
+
+.pref-dont-prefer {
     border-color: #d4af37 !important;
     background-color: #d4af37;
 }
+
+.pref-split {
+  border: none !important;
+  background-color: #d4af37;
+  background-image: -webkit-linear-gradient(123deg, #d4af37 50%, green 50%);
+}
+
 .pref-empty {
     border-color: grey !important;
     background-color: grey;
@@ -750,7 +765,7 @@ select {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    border-right: 5px solid transparent;
+
 }
 .pref-calendar-label {
     font-weight: bold;
@@ -758,11 +773,18 @@ select {
     height: var(--cell-size);
 }
 .pref-calendar-name-label {
+    display: grid;
+    width: 100%;
+    height: calc(var(--cell-size) + 8px);
+}
+.pref-calendar-name-label-text {
+    align-self: center;
+    padding-right: 5px;
+    padding-left: 5px;
     font-weight: bold;
     font-size: 15px;
-    height: calc(var(--cell-size) + 2px);
-    vertical-align: middle;
 }
+
 .pref-calendar-content {
     overflow-x: scroll;
     display: flex;
@@ -771,11 +793,10 @@ select {
 }
 .pref-calendar-day {
     display: flex;
+    width: calc(1.5*var(--cell-size) + 10px);
     flex-direction: column;
-    justify-content: center;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
 }
+
 .pref-calendar-title {
     text-align: center;
     font-size: 15px;
@@ -783,11 +804,13 @@ select {
     color: #000;
     height: var(--cell-size);
 }
+
 .pref-calendar-roles {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
+
 .pref-calendar-role {
     display: flex;
     flex-direction: column;
@@ -796,23 +819,33 @@ select {
     border-right: 5px solid transparent;
 }
 .pref-calendar-all-prefs {
+    width: calc(1.5*var(--cell-size) + 10px);
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 .pref-calendar-prefs {
     display: grid;
-    grid-template-columns: calc(1.5*var(--cell-size));
-    grid-auto-rows: var(--cell-size);
-    grid-row-gap: 2px;
-    border-left: 1px solid transparent;
-    border-right: 1px solid transparent;
+    grid-template-columns: calc(1.5*var(--cell-size) + 10px);
+    grid-auto-rows: calc(var(--cell-size) + 8px);
 }
+
+.pref-calendar-pref-wrapper {
+    display: grid;
+    width: calc(1.5*var(--cell-size) + 10px);
+    height: calc(var(--cell-size) + 8px);
+}
+
 .pref-calendar-pref {
+    height: var(--cell-size);
+    width: calc(1.5*var(--cell-size));
     border: 1px solid;
     border-radius: 3px;
     cursor: pointer;
+    justify-self: center;
+    align-self: center;
 }
+
 .pref-calendar-text {
     justify-self: center;
     align-self: center;
@@ -830,6 +863,7 @@ select {
     margin-left: 4px;
     margin-top: -4px;
 }
+
 
 /* role color box */
 .role-color-box {
