@@ -456,6 +456,7 @@ def get_user_schedules():
 
 
 @app.route("/view_schedule/<_id>", methods=['GET'])
+@login_required(roles=["admin", "owner"])
 def view_schedule(_id=None):
     if _id is None:
         logger.error("Schedule cannot be viewed: No ID associated with selected schedule.")
@@ -540,6 +541,7 @@ def add_schedule():
 
 
 @app.route('/delete_schedule/<_id>', methods=["POST"])
+@login_required(roles=["admin", "owner"])
 def delete_schedule(_id=None):
     if _id is None:
         logger.error("Schedule cannot be deleted: No ID associated with schedule.")
@@ -552,8 +554,8 @@ def delete_schedule(_id=None):
     return render_template("select_schedule.html", schedules=schedules)
 
 
-@login_required
 @app.route('/employees')
+@login_required(roles=["admin", "owner"])
 def employee_setup():
     employees = get_employees()
 
@@ -568,8 +570,8 @@ def employee_setup():
     return render_template("employee_master.html", employees=employees, schedules=schedules)
 
 
-@login_required
 @app.route('/roles')
+@login_required(roles=["admin", "owner"])
 def role_setup():
     db = get_db()
 
@@ -581,7 +583,6 @@ def role_setup():
     return render_template("role_setup.html", schedules=schedules)
 
 
-@login_required
 @app.route('/_edit_employees', methods=['POST'])
 def edit_employees():
     # gets name from form in add employee modal
@@ -1025,8 +1026,8 @@ def update_shift_pref():
     return jsonify({"success": True, "message": "Database updated with new day preference."})
 
 
-@login_required
 @app.route('/settings')
+@login_required(roles=["admin", "owner"])
 def settings():
     logger.info("Redirecting to /settings.")
     return render_template("settings.html")
@@ -1122,7 +1123,6 @@ def edit_schedule_status():
     return jsonify({"success": True, "message": "Schedule status updated."})
 
 
-@login_required
 @app.route('/_edit_schedule_employees', methods=['POST'])
 def edit_schedule_employees():
     # gets name from form in add employee modal
@@ -1441,6 +1441,7 @@ def log_to_server():
 
 
 @app.route("/employee_portal")
+@login_required(roles=["admin", "owner", "employee"])
 def render_emp_portal():
     return render_template("/employee_portal/emp_portal_base.html")
 
