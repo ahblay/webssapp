@@ -1464,8 +1464,12 @@ def build_test_location(loc_name):
 # error pages
 @app.errorhandler(404)
 def page_not_found(e):
-    print("&" * 100)
     return render_template("/error_pages/404.html"), 404
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template("/error_pages/404.html"), 500
 
 
 build_test_client('Zephyr Cafe')
