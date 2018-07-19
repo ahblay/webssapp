@@ -38,7 +38,11 @@
 
         <!-- Raven.js (used for Sentry logging) -->
         <script src="https://cdn.ravenjs.com/3.26.2/raven.min.js" crossorigin="anonymous"></script>
-        <script>Raven.config('https://e3fdf4ebe51e498a9c6c4f98132e834c@sentry.io/1229877').install()</script>
+        <script>Raven.config('https://e3fdf4ebe51e498a9c6c4f98132e834c@sentry.io/1229877', {
+            autoBreadcrumbs: {
+                console: false
+            }
+        }).install()</script>
 
         <style>
         html { height: 100%; }
