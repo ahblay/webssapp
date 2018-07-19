@@ -1462,6 +1462,11 @@ def build_test_location(loc_name):
 
 
 # error pages
+@app.errorhandler(401)
+def unauthorized(e):
+    return render_template("/error_pages/401.html"), 401
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("/error_pages/404.html"), 404
