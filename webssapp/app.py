@@ -1461,5 +1461,12 @@ def build_test_location(loc_name):
     return BusinessClient.BusinessLocation(loc_name)
 
 
+# error pages
+@app.errorhandler(404)
+def page_not_found(e):
+    print("&" * 100)
+    return render_template("/error_pages/404.html"), 404
+
+
 build_test_client('Zephyr Cafe')
 
