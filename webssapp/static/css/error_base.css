@@ -1,0 +1,15 @@
+.error-container {
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
+    grid-template-rows: 100px auto 100px;
+}
+
+.error-content {
+    grid-row: 2 / 3;
+    grid-column: 2 / 3;
+    justify-self: center;
+}
+
+.error-content h1 {
+    font-size: 80px;
+}
