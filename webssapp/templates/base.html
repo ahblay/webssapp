@@ -80,6 +80,7 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav">
+                            {% block navbaritems %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('select_schedule') }}">Home</a>
                             </li>
@@ -92,6 +93,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('settings') }}">Settings</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('render_emp_portal') }}">My Shifts</a>
+                            </li>
+                            {% endblock navbaritems %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

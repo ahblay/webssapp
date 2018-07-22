@@ -3,6 +3,17 @@
 {% block optionalmeta %}
 {% endblock optionalmeta %}
 
+{% block navbaritems %}
+{% if current_user.is_employee %}
+   <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('render_emp_portal') }}">Home</a>
+    </li>
+{% else %}
+    {{ super() }}
+{% endif %}
+
+{% endblock navbaritems %}
+
 {% block containedcontent %}
 <div class="row">
 <div class="col-md-1"></div>
