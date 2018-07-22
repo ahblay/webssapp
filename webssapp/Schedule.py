@@ -1,3 +1,4 @@
+import os
 import csv
 import datetime
 import pprint
@@ -371,6 +372,7 @@ class ScheduleProcessor:
 
     def to_csv(self):
         if self.output_for_emp_portal is None:
+            print("Schedule output does not exist.")
             return
 
         data = self.output_for_emp_portal
@@ -388,7 +390,21 @@ class ScheduleProcessor:
                 day_counter += 1
             data[employee] = emp
 
-        with open("/static/assets/downloads/csv_schedule.csv", mode="w") as f:
+        print("SOMETHING ELSE")
+
+        #TODO: create subdirectories for each user
+        path = "/users/abel/scheduling/webssapp/static/assets/downloads"
+
+        if not os.path.exists(path):
+            print("Filepath does no exist.")
+            os.makedirs(path)
+
+        filename = str(self._id) + '_output.csv'
+
+        print(os.path.join(path, filename))
+        print("SOMETHING")
+
+        with open(os.path.join(path, filename), mode="w") as f:
             fieldnames = [day.strftime("%m/%d/%Y") for day in self.days]
             fieldnames.insert(0, "Name")
             writer = csv.DictWriter(f, fieldnames=fieldnames)

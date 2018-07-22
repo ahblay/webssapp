@@ -29,6 +29,8 @@ $(document).on("click", "#create-schedule", () => {
     };
 });
 
+$("#download_csv").attr("href", "/static/assets/downloads/" + SCHEDULE_ID + "_output.csv")
+
 function render_vs_calendar(schedule, global_roles) {
     console.log("Rendering vs-calendar.");
 
