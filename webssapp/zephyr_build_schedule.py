@@ -60,14 +60,6 @@ class Schedule:
 
         shifts_by_day = get_shifts_by_day(schedule.days, schedule.shifts)
         pprint.pprint(shifts_by_day)
-        #print('Management Data ---------------------------')
-        #pprint.pprint(management_data)
-        #print('Shifts ---------------------')
-        #pprint.pprint(shifts)
-        #print('Employee Information ----------------------')
-        #pprint.pprint(employee_info)
-        #print('Schedule ----------------------')
-        #pprint.pprint(schedule.to_dict())
 
         # correct number of employees in each shift
         for role, day, shift in product_range(num_roles, num_days, num_shifts):

@@ -13,7 +13,7 @@ function makeTextInputModal(title, on_confirm){
 function makeTextInputContent(){
     let text_input_content = $("<div />").addClass("text-input-modal-content");
     let input_field = $("<input />").addClass("text-input-modal-input-field")
-                                    .prop("type", "button");
+                                    .prop("type", "text");
     text_input_content.append(input_field);
     return text_input_content
 }

@@ -21,3 +21,18 @@ function processPostResponse(response, on_success){
         alert("Sorry, that action could not be completed: \n" + response['message']);
     }
 }
+
+function getIds(db_dicts){
+    let ids = []
+    for (entry=0; entry<db_dicts.length; entry++){
+        ids.push(db_dicts[entry]['_id']);
+    };
+    return ids
+}
+
+function getNames(db_dicts){
+    let names = [];
+    for (entry=0; entry<db_dicts.length; entry++){
+        names.push(db_dicts[entry]['name']);
+    }
+}
