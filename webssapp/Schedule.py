@@ -1,3 +1,5 @@
+import os
+import csv
 import datetime
 import pprint
 import webssapp.utilities as utilities
@@ -265,7 +267,6 @@ class ScheduleProcessor:
                      "status": self.status
         }
 
-        pprint.pprint(payload)
         db.schedules.insert(payload)
 
         print("Saved schedule data to database.")
@@ -369,5 +370,48 @@ class ScheduleProcessor:
         self.employee_info = self.build_employee_info()
         self.training = self.build_training()
 
+    def to_csv(self):
+        if self.output_for_emp_portal is None:
+            print("Schedule output does not exist.")
+            return
 
+        data = self.output_for_emp_portal
+
+        for employee in data:
+            emp = {}
+            day_counter = 0
+            for day in data[employee]:
+                emp["Name"] = employee
+                if day["working"]:
+                    emp[day["date"]] = day["role"] + " " + day["shift_start"] + "-" + day["shift_end"]
+                else:
+                    date = self.days[day_counter].strftime("%m/%d/%Y")
+                    emp[date] = "NO"
+                day_counter += 1
+            data[employee] = emp
+
+        print("SOMETHING ELSE")
+
+        #TODO: create subdirectories for each user
+        path = "/users/abel/scheduling/webssapp/static/assets/downloads"
+
+        if not os.path.exists(path):
+            print("Filepath does no exist.")
+            os.makedirs(path)
+
+        filename = str(self._id) + '_output.csv'
+
+        print(os.path.join(path, filename))
+        print("SOMETHING")
+
+        with open(os.path.join(path, filename), mode="w") as f:
+            fieldnames = [day.strftime("%m/%d/%Y") for day in self.days]
+            fieldnames.insert(0, "Name")
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+
+            writer.writeheader()
+            for employee in data:
+                writer.writerow(data[employee])
+
+        pprint.pprint(f)
 

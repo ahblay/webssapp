@@ -21,14 +21,15 @@ $.getJSON("/get_user_schedules", function(data){
     user_id = data["id"];
     active_schedules = getActiveSchedules(emp_schedules);
     upcoming_schedules = getUpcomingSchedules(emp_schedules);
-    eligible_shifts = getEligibleShifts(upcoming_schedules[0])
 
-    console.log(eligible_shifts)
     console.log(data);
+    console.log(upcoming_schedules)
+    console.log(active_schedules)
 
     renderCalendarDates(14);
     renderUpcomingShifts(active_schedules);
-    renderPreferenceTable(upcoming_schedules[0]);
+
+    renderAllPreferenceTables(upcoming_schedules);
 })
 
 // get active schedules
@@ -319,10 +320,19 @@ function renderUpcomingShifts(schedules) {
             $(".big-calendar-day").each(function() {
                 if (!$(this).hasClass("calendar-empty")) {
                     if (work_info[current_username].length > counter) {
-                        while (work_info[current_username][counter]["upcoming"] == false ||
-                               work_info[current_username][counter]["upcoming"] == undefined) {
+                        while (work_info[current_username][counter]["upcoming"] == undefined ||
+                               work_info[current_username][counter]["upcoming"] == false) {
+                            console.log(work_info[current_username].length, counter)
+                            console.log("In while loop.")
                             counter++;
+                            if (work_info[current_username].length <= counter) {
+                                break;
+                            }
                         }
+                        if (work_info[current_username].length <= counter) {
+                            break;
+                        }
+                        console.log("Out of while loop.")
                         let working_info = work_info[current_username][counter];
                         if (working_info["working"] == true) {
                             let shift = document.createElement("div");
@@ -407,7 +417,7 @@ function updateDailyAvailability(clicked_button, availability) {
     });
 };
 
-// Populate upcoming schedules
+// Render preference table for a given schedule
 function renderPreferenceTable(schedule) {
     let us = document.createElement("div");
     $(us).addClass("upcoming-schedule");
@@ -417,6 +427,13 @@ function renderPreferenceTable(schedule) {
     us.append(thumbnail);
     us.append(prefs);
     $(".emp-portal-upcoming-schedules").append(us);
+}
+
+// Render preferences for all upcoming schedules
+function renderAllPreferenceTables(schedules) {
+    for (let schedule = 0; schedule < schedules.length; schedule++) {
+        renderPreferenceTable(schedules[schedule])
+    }
 }
 
 // Convert from datetime string to mm/dd/yyyy

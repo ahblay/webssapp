@@ -71,6 +71,12 @@ class User:
         self.level = level
         self.id = id
 
+    def is_employee(self):
+        if self.level.values()[0] == "employee":
+            return True
+        else:
+            return False
+
     def is_authenticated(self):
         return True
 
@@ -1361,6 +1367,7 @@ def create_schedule(schedule_id=None):
     schedule.preprocess()
     schedule.build_schedule()
     print('Schedule output created.')
+    schedule.to_csv()
 
     return jsonify(schedule.to_dict())
 
