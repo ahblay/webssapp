@@ -30,7 +30,7 @@ class ShiftTemplate:
         if from_dict:
             self.name = from_dict['name']
             self.shifts = from_dict['shifts']
-            self._id = from_dict['name']
+            self._id = from_dict['_id']
             self.business_client = from_dict['business_client']
         else:
             self.name = name
@@ -57,6 +57,7 @@ class ShiftTemplate:
         if not self._id:
             with app.app_context():
                 db = utilities.get_db()
+                self._id = ObjectId()
                 db.shift_templates.save(vars(self))
         else:
             with app.app_context():
