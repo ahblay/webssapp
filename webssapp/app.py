@@ -12,6 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from webssapp.Schedule import ScheduleProcessor
 from pathlib import Path
 from webssapp.models import BusinessClient
+from webssapp.models.shift_templates import ShiftTemplateCollection, ShiftTemplate
 from functools import wraps
 
 app = Flask(__name__)
@@ -1484,6 +1485,25 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template("/error_pages/404.html"), 500
 
+
+@app.route("/get_shift_templates")
+def get_shift_templates():
+    db = get_db()
+    business_templates = list(db.shift_templates.find({"business_client": session['business']}))
+    if business_templates:
+        return jsonify({"success": True, "message": "Retrieved shift templates.",
+                        "templates": ShiftTemplateCollection().load_dicts(business_templates)})
+    else:
+        return jsonify({"success": True, "message": "Retrieved shift templates.",
+                        "templates": []})
+
+@app.route("/save_shift_template")
+def save_shift_template():
+    pass
+
+@app.route("/apply_shift_template")
+def apply_shift_template():
+    pass
 
 build_test_client('Zephyr Cafe')
 

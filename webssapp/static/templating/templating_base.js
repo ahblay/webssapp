@@ -1,6 +1,7 @@
 // Choose shift template modal
-$(document).on("click", ".choose-shift-template-modal-open", function (){
+$(document).on("click", "#choose-shift-template-modal-open", function (){
     // Get templates
+    console.log("Opening choose shift template modal.");
     let templates = []
     $.getJSON("/get_shift_templates", function(data){
         templates = data;
@@ -50,7 +51,7 @@ function onApplyShiftTemplateSuccess(response){
 };
 
 // Choose emp template modal
-$(document).on("click", ".choose-emp-template-modal-open", function (){
+$(document).on("click", "#choose-emp-template-modal-open", function (){
     // Get templates
     let templates = []
     $.getJSON("/get_emp_templates", function(data){
@@ -101,7 +102,7 @@ function onApplyEmpTemplateSuccess(response){
 };
 
 // Save emp template modal
-$(document).on("click", ".save-emp-template-modal-open", function(){
+$(document).on("click", "#save-emp-template-modal-open", function(){
     let templates = []
     $.getJSON("/get_emp_templates", function(data){
         templates = data;
@@ -152,4 +153,4 @@ function onSaveEmpTemplateSuccess(response){
     // reload prefs?
 };
 
-// Save emp template modal
+// Save shift template modal

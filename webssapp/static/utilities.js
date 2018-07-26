@@ -35,4 +35,5 @@ function getNames(db_dicts){
     for (entry=0; entry<db_dicts.length; entry++){
         names.push(db_dicts[entry]['name']);
     }
+    return names
 }
