@@ -182,34 +182,57 @@ function loadShiftCalendar (data) {
     return console.log("success");
 }
 
+function createTimeOptions(label, id) {
+    let div = document.createElement("div");
+    $(div).attr("id", id);
+
+    let time_label = document.createElement("label");
+    $(time_label).text(label).css("font-size", "13px").css("padding-right", "5px");
+
+    let hour = document.createElement("select");
+    $(hour).css("width", "30px").css("background", "#eee").css("margin-right", "5px");
+    let minute = document.createElement("select");
+    $(minute).css("width", "30px").css("background", "#eee").css("margin-right", "5px");
+    let period = document.createElement("select");
+    $(period).css("width", "35px").css("background", "#eee").css("margin-right", "5px");
+
+    let hour_options = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+    let minute_options = ["00", "15", "30", "45"];
+    let period_options = ["AM", "PM"];
+
+    for (let h = 0; h < hour_options.length; h++) {
+        let option = document.createElement("option");
+        $(option).text(hour_options[h]);
+        $(hour).append(option);
+    }
+
+    for (let m = 0; m < minute_options.length; m++) {
+        let option = document.createElement("option");
+        $(option).text(minute_options[m]);
+        $(minute).append(option);
+    }
+
+    for (let p = 0; p < period_options.length; p++) {
+        let option = document.createElement("option");
+        $(option).text(period_options[p]);
+        $(period).append(option);
+    }
+
+    $(div).append(time_label).append(hour).append(minute).append(period);
+
+    return div;
+}
+
 function buildShiftModalContent(data) {
     // build recurrence functionality, including calendar graphic
     openShiftModal()
 
     // build endtime select dropdown
-    let endInput = document.createElement("input")
-    let endLabel = document.createElement("label")
-    $(endLabel).text("End:").css("font-size", "13px").css("padding-right", "5px")
-    $(function() {
-        $(endInput).timepicker()
-        $(endInput).timepicker('option', { useSelect: true });
-    })
-    let end_div = document.createElement("div")
-    $(end_div).attr("id", "add-shift-end-time")
-    $(end_div).append(endLabel).append(endInput)
+    let end_div = createTimeOptions("End:", "add-shift-end-time");
     $("#add-shift-modal-content").prepend(end_div)
 
     // build starttime select dropdown
-    let startInput = document.createElement("input")
-    let startLabel = document.createElement("label")
-    $(startLabel).text("Start:").css("font-size", "13px").css("padding-right", "5px")
-    $(function() {
-        $(startInput).timepicker()
-        $(startInput).timepicker('option', { useSelect: true });
-    })
-    let start_div = document.createElement("div")
-    $(start_div).attr("id", "add-shift-start-time")
-    $(start_div).append(startLabel).append(startInput)
+    let start_div = createTimeOptions("Start:", "add-shift-start-time");
     $("#add-shift-modal-content").prepend(start_div)
 
     // build number of employees dropdown select
@@ -264,31 +287,11 @@ function openEditShiftModal () {
     let shift_data = $(this).data("all-info")
 
     // build endtime select dropdown
-    let endInput = document.createElement("input")
-    let endLabel = document.createElement("label")
-    $(endLabel).text("End:").css("font-size", "13px").css("padding-right", "5px")
-    $(function() {
-        $(endInput).timepicker()
-        $(endInput).timepicker('option', { useSelect: true });
-    })
-    $(endInput).val(shift_data["end"])
-    let end_div = document.createElement("div")
-    $(end_div).attr("id", "edit-shift-end-time")
-    $(end_div).append(endLabel).append(endInput)
+    let start_div = createTimeOptions("End:", "edit-shift-end-time");
     $("#edit-shift-modal-content").prepend(end_div)
 
     // build starttime select dropdown
-    let startInput = document.createElement("input")
-    let startLabel = document.createElement("label")
-    $(startLabel).text("Start:").css("font-size", "13px").css("padding-right", "5px")
-    $(function() {
-        $(startInput).timepicker()
-        $(startInput).timepicker('option', { useSelect: true });
-    })
-    $(startInput).val(shift_data["start"])
-    let start_div = document.createElement("div")
-    $(start_div).attr("id", "edit-shift-start-time")
-    $(start_div).append(startLabel).append(startInput)
+    let start_div = createTimeOptions("Start:", "edit-shift-start-time");
     $("#edit-shift-modal-content").prepend(start_div)
 
     // build number of employees dropdown select
@@ -731,8 +734,8 @@ function editShift (edit_type) {
 
     var role = $("#edit-shift-role").find("select").val()
     var number_emps = $("#edit-shift-number-emps").find("select").val()
-    var start = $("#edit-shift-start-time").find("select").val()
-    var end = $("#edit-shift-end-time").find("select").val()
+    var start = convertShiftTimes("#edit-shift-start-time")
+    var end = convertShiftTimes("#edit-shift-end-time")
 
     var data = {"date": shift_info["date"],
                 "schedule_id": schedule_id,
@@ -779,12 +782,28 @@ function editShift (edit_type) {
     });
 }
 
+function convertShiftTimes(selector) {
+    let times = $(selector).find("select");
+    let vals = [];
+    for (let t = 0; t < times.length; t++) {
+        vals.push($(times[t]).val());
+    }
+    let output;
+    if (vals[2] == "AM") {
+        output = vals[0] + ":" + vals[1] + "am";
+    }
+    else {
+        output = vals[0] + ":" + vals[1] + "pm";
+    }
+    return output;
+}
+
 function saveShift () {
     var date = selectedDay["date"]
     var role = $("#add-shift-role").find("select").val()
     var number_emps = $("#add-shift-number-emps").find("select").val()
-    var start = $("#add-shift-start-time").find("select").val()
-    var end = $("#add-shift-end-time").find("select").val()
+    var start = convertShiftTimes("#add-shift-start-time")
+    var end = convertShiftTimes("#add-shift-end-time")
 
     var selectedDates = [];
     $(".calendar").children().each(function () {
