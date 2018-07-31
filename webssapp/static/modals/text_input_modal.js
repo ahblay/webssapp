@@ -1,16 +1,16 @@
 // This file defines a simple single line text input modal (eg to enter a name)
 
-function makeTextInputModal(title, on_confirm){
-    let modal = new jBox({
+function makeTextInputModal(title, cancel_button_id, confirm_button_id){
+    let modal = new jBox("Modal", {
         title: title,
+        footer: makeTextInputModalFooter(cancel_button_id, confirm_button_id)
     })
     modal.setContent(makeTextInputModalContent());
-    modal.setFooter(makeTextInputFooter(modal, validate, on_confirm));
-    modal.addClass("text-input-modal");
+    $(modal).addClass("text-input-modal");
     return modal
 };
 
-function makeTextInputContent(){
+function makeTextInputModalContent(){
     let text_input_content = $("<div />").addClass("text-input-modal-content");
     let input_field = $("<input />").addClass("text-input-modal-input-field")
                                     .prop("type", "text");
@@ -18,28 +18,24 @@ function makeTextInputContent(){
     return text_input_content
 }
 
-function makeTextInputFooter(modal, validate, on_confirm){
+function makeTextInputModalFooter(cancel_button_id, confirm_button_id){
     let modal_footer = $("<div />").addClass("text-input-modal-footer");
-    let cancel_button = makeTextInputModalCancel(modal);
-    let confirm_button = makeTextInputModalConfirm(validate, on_confirm);
+    let cancel_button = makeTextInputModalCancel(cancel_button_id);
+    let confirm_button = makeTextInputModalConfirm(confirm_button_id);
     modal_footer.append(cancel_button, confirm_button);
     return modal_footer
 }
 
-function makeTextInputModalCancel(modal){
-    let cancel_button = $("<button />").addClass("btn btn-default select-modal-cancel-button");
-    let on_cancel = function(modal){
-        modal.destroy();
-    }
-    cancel_button.click(on_cancel);
+function makeTextInputModalCancel(cancel_button_id){
+    let cancel_button = $("<button />").addClass("btn btn-default select-modal-cancel-button")
+                                        .text("Cancel")
+                                        .prop("id", cancel_button_id);
     return cancel_button
 };
 
-function makeTextInputModalConfirm(on_confirm){
-    let confirm_button = $("<button />").addClass("btn btn-default select-modal-cancel-button");
-    let on_click = function(on_confirm){
-        on_confirm();
-    };
-    confirm_button.click(on_click);
+function makeTextInputModalConfirm(confirm_button_id){
+    let confirm_button = $("<button />").addClass("btn btn-default select-modal-confirm-button")
+                                        .text("Save")
+                                        .prop("id", confirm_button_id);
     return confirm_button
 }

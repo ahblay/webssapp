@@ -116,6 +116,9 @@ function loadShiftCalendar (data) {
     var allDates = createDates(schedule_dates)
     calendar_dates = findCalendarDates()
 
+    $(".big-calendar-week").remove();
+    $(".big-calendar-date-row").remove();
+
     $(".big-calendar").children().each(function () {
         if ($(this).hasClass("big-calendar-week")) {
             $(this).remove()

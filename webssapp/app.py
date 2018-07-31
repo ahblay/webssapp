@@ -12,7 +12,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from webssapp.Schedule import ScheduleProcessor
 from pathlib import Path
 from webssapp.models import BusinessClient
-from webssapp.models.shift_templates import ShiftTemplateCollection, ShiftTemplate
+from webssapp.models.shift_templates import ShiftTemplate, ShiftTemplateCollection
+from webssapp.models.emp_templates import EmpTemplate, EmpTemplateCollection
 from functools import wraps
 
 app = Flask(__name__)
@@ -1043,10 +1044,11 @@ def settings():
 @app.route('/clear_database')
 def clear():
     db = get_db()
-    db.employees.delete_many({})
-    db.users.delete_many({})
-    db.schedules.delete_many({})
-    db.business_clients.delete_many({})
+    #db.employees.delete_many({})
+    #db.users.delete_many({})
+    #db.schedules.delete_many({})
+    #db.business_clients.delete_many({})
+    db.shift_templates.delete_many({})
     return render_template('landing_page.html')
 
 
@@ -1490,31 +1492,85 @@ def internal_server_error(e):
 def get_shift_templates():
     db = get_db()
     business_templates = list(db.shift_templates.find({"business_client": session['business']}))
+    print(business_templates)
     if business_templates:
         return jsonify({"success": True, "message": "Retrieved shift templates.",
-                        "templates": business_templates})
+                        "templates": ShiftTemplateCollection().load_dicts(business_templates).to_dicts()})
     else:
         return jsonify({"success": True, "message": "Retrieved shift templates.",
                         "templates": []})
 
+
 @app.route("/save_shift_template", methods=['POST'])
 def save_shift_template():
-    new_template = ShiftTemplate(name=request.json['name'], shifts=request.json['shifts'], business_client=session['business'])
-    new_template.update_db()
-    return jsonify({"success": True, "Message": "Template saved successfully."})
+    db = get_db()
+    schedule = ScheduleProcessor(db.schedules.find_one({"_id": ObjectId(request.json['schedule_id'])}))
+    if request.json['name'] in [template['name'] for template in list(db.shift_templates.find())]:
+        template_to_update = ShiftTemplate(db.shift_templates.find_one({"name": request.json['name']}))
+        template_to_update.update_db()
+    else:
+        new_template = ShiftTemplate(name=request.json['name'],
+                                     shifts=schedule.shifts,
+                                     business_client=session['business'],
+                                     num_days=len(schedule.days))
+        new_template.convert_dates_to_index(schedule.days)
+        new_template.remove_shift_dates()
+        new_template.update_db()
+    return jsonify({"success": True, "message": "Template saved successfully."})
 
-@app.route("/apply_shift_template")
+
+@app.route("/apply_shift_template", methods=["POST"])
 def apply_shift_template():
     db = get_db()
     template = ShiftTemplate(db.shift_templates.find_one({"_id": ObjectId(request.json['template_id'])}))
     schedule = ScheduleProcessor(db.schedules.find_one({"_id": ObjectId(request.json['schedule_id'])}))
     # Rebase the template dates to match the schedule.
     template.apply_dates_to_shifts([date.strftime("%m/%d/%Y") for date in schedule.days])
-    db.schedules.update({"_id": ObjectId(request.json["_id"])}, {"$set": {"shifts": template.shifts}})
+    db.schedules.update({"_id": ObjectId(request.json["schedule_id"])}, {"$set": {"shifts": template.shifts}})
     new_schedule = ScheduleProcessor(db.schedules.find_one({"_id": ObjectId(request.json['schedule_id'])}))
     # Return success and the current schedule
-    return {"success": True, "message": "Template '{}' applied to current schedule.".format(template.name),
-            "new_schedule": new_schedule.to_dict()}
-            
+    return jsonify({"success": True, "message": "Template '{}' applied to current schedule.".format(template.name),
+                    "new_schedule": new_schedule.to_dict()})
+
+
+@app.route("/get_emp_templates")
+def get_emp_templates():
+    db = get_db()
+    business_templates = list(db.emp_templates.find({"business_client": session['business']}))
+    print(business_templates)
+    if business_templates:
+        return jsonify({"success": True, "message": "Retrieved emp templates.",
+                        "templates": EmpTemplateCollection().load_dicts(business_templates).to_dicts()})
+    else:
+        return jsonify({"success": True, "message": "Retrieved emp templates.",
+                        "templates": []})
+
+
+@app.route("/save_emp_template", methods=['POST'])
+def save_emp_template():
+    db = get_db()
+    schedule = ScheduleProcessor(db.schedules.find_one({"_id": ObjectId(request.json['schedule_id'])}))
+    if request.json['name'] in [template['name'] for template in list(db.emp_templates.find())]:
+        template_to_update = EmpTemplate(db.emp_templates.find_one({"name": request.json['name']}))
+        template_to_update.update_db()
+    else:
+        new_template = EmpTemplate(name=request.json['name'],
+                                   employees=schedule.employees,
+                                   business_client=session['business'])
+        new_template.update_db()
+    return jsonify({"success": True, "message": "Template saved successfully."})
+
+
+@app.route("/apply_emp_template", methods=['POST'])
+def apply_emp_template():
+    db = get_db()
+    template = EmpTemplate(db.emp_templates.find_one({"_id": ObjectId(request.json['template_id'])}))
+    db.schedules.update({"_id": ObjectId(request.json["schedule_id"])}, {"$set": {"employees": template.employees}})
+    new_schedule = ScheduleProcessor(db.schedules.find_one({"_id": ObjectId(request.json['schedule_id'])}))
+    # Return success and the current schedule
+    return jsonify({"success": True, "message": "Template '{}' applied to current schedule.".format(template.name),
+                    "new_schedule": new_schedule.to_dict()})
+
+
 build_test_client('Zephyr Cafe')
 

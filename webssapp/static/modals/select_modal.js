@@ -4,66 +4,83 @@
 // You can pass in a function as on_complete which will be run when a user clicks select.
 // The select button is disabled when there is no selection.
 
-function createSelectModal(title, data, on_complete){
+function createSelectModal(title, data, labels, button_ids){
+    console.log("Creating select modal.");
     let modal = new jBox("Modal", {
         title: title,
+        footer: makeSelectModalFooter(button_ids)
     });
-    modal.setContent(makeSelectModalContent(data));
-    modal.setFooter(makeSelectModalFooter(modal, data, on_complete));
-    modal.addClass("select-modal")
+    modal.setContent(makeSelectModalContent(data, labels));
+    $(modal).addClass("select-modal")
     return modal
 };
 
-function makeSelectModalContent(data){
-    let modal_content = $("<div />").addClass("select-modal-content");
-    modal_content.append(makeSelectModalContentHeader(data));
-    let data_by_row = makeArrayFromDictValues(data);
-    for (row=0; row<data_by_row.length; row++){
-        modal_content.append(makeSelectModalContentRow(data_by_row[row]));
+function makeSelectModalContent(data, labels){
+    let modal_content = null;
+    console.log(data);
+    if (data['ids'] == []){
+        modal_content = $("<div />").addClass("select-modal-content");
+        modal_content.append(makeSelectModalContentHeader(data, labels));
+        let data_by_row = makeArrayFromDictValues(data);
+        console.log(data_by_row)
+        for (row=0; row<data_by_row.length; row++){
+            modal_content.append(makeSelectModalContentRow(data_by_row[row]));
+        };
+    } else {
+        modal_content = $("<div />").addClass("select-modal-no-shift-templates")
+                                        .text("You do not have any templates which can be applied" +
+                                        " to the current schedule.");
     };
     return modal_content
 };
 
-function makeSelectModalContentHeader(data){
+function makeSelectModalContentHeader(data, labels){
     // Render header from data keys
+    console.log("Rendering select modal header.")
     let modal_content_header = $("<div />").addClass("select-modal-content-header");
-    for (key=0; key<Object.keys(data).length; key++){
+    for (index=0; index<labels.length; index++){
         // TODO: You may need text formatting here
+        console.log("Adding key: " + labels[index]);
         modal_content_header.append($("<div />").addClass("select-modal-content-header-label")
-                                                .text(Object.keys(data)[key]))
-
-    }
+                                                .text(labels[index]));
+    };
     return modal_content_header
-}
+};
 
 function makeSelectModalContentRow(row_data){
     let modal_content_row = $("<div />").addClass("select-modal-content-row");
-    for (field=0; field<row_data.length; field++){
+    let checkbox = $("<input />").addClass("select-modal-row-checkbox")
+                                 .attr("data-id", row_data[0])
+                                 .prop("type", "checkbox");
+    modal_content_row.append(checkbox);
+    for (field=1; field<row_data.length; field++){
         modal_content_row.append($("<div />").addClass("select-modal-content-row-field")
                                              .text(row_data[field]));
     };
     return modal_content_row
 };
 
-function makeSelectModalFooter(data, on_complete){
-    let cancel_button = makeSelectModalCancelButton();
-    let select_button = makeSelectModalSelectButton(data, on_complete);
+function makeSelectModalFooter(button_ids){
+    console.log("Rendering modal footer.");
+    let cancel_button = makeSelectModalCancelButton(button_ids['cancel']);
+    let select_button = makeSelectModalSelectButton(button_ids['confirm']);
     let modal_footer = $("<div />").addClass("select-modal-footer")
                                     .append(cancel_button, select_button);
     return modal_footer
 };
 
-function makeSelectModalCancelButton(modal){
-    let cancel_button = $("<button />").addClass("btn btn-default select-modal-cancel-button");
-    let on_cancel = function(modal){
-        modal.destroy();
-    }
-    cancel_button.click(on_cancel);
+function makeSelectModalCancelButton(cancel_button_id){
+    console.log("Rendering select modal cancel button.")
+    let cancel_button = $("<button />").addClass("btn btn-default select-modal-cancel-button")
+                                        .prop("id", cancel_button_id)
+                                        .text("Cancel");
     return cancel_button
 }
 
-function makeSelectModalSelectButton(data, on_complete){
-    let select_button = $("<button />").addClass("select-modal-select-button");
-    select_button.click(on_complete);
+function makeSelectModalSelectButton(confirm_button_id){
+    console.log("Rendering select modal select button.")
+    let select_button = $("<button />").addClass("btn btn-confirm select-modal-select-button")
+                                        .prop("id", confirm_button_id)
+                                        .text("Apply");
     return select_button
 }

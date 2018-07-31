@@ -1040,3 +1040,16 @@ form .error {
     background-image: url('/static/lit.jpeg')
 }
 
+
+/* Templating */
+.select-modal-content-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-auto-flow: row;
+}
+
+.select-modal-content-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-auto-flow: row;
+}

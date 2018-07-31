@@ -40,7 +40,7 @@ def get_schedule(schedule_id):
 
     return schedule
 
-
+# TODO: We built an intentional misspelling into our code to avoid solving an import problem. We should fix.
 def product_rang(num_emps=None, num_roles=None, num_days=None, num_shifts=None, num_shifts_per_day=None):
 
     if num_shifts is not None and num_shifts_per_day is not None:
