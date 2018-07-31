@@ -287,7 +287,7 @@ function openEditShiftModal () {
     let shift_data = $(this).data("all-info")
 
     // build endtime select dropdown
-    let start_div = createTimeOptions("End:", "edit-shift-end-time");
+    let end_div = createTimeOptions("End:", "edit-shift-end-time");
     $("#edit-shift-modal-content").prepend(end_div)
 
     // build starttime select dropdown
