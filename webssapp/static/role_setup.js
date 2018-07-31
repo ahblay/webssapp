@@ -59,6 +59,16 @@ $(document).on("change", ".row-select-checkbox", function(){
     };
 });
 
+$("#role-color-select").spectrum({
+    showPaletteOnly: true,
+    showPalette: true,
+    palette: [
+        ['#717270', '#28B799', '#F8Bf39',
+        '#F1EAD1', '#D75749'],
+        ['#225085', '#28B5C7', '#EA7D33', '#C24B74']
+    ]
+});
+
 $(function() {
     console.log("Validating add master role form.")
     $("#add-roles-master-form").validate({
