@@ -281,6 +281,19 @@ function openAddShiftModal() {
     addShiftModal.open();
 }
 
+function getTimeElements(time) {
+    console.log(time)
+    let time_elements = [];
+    let hour = time.split(":")[0];
+    let minute = time.split(":")[1].slice(0, 2);
+    let period = time.slice(-2).toUpperCase();
+    time_elements.push(hour);
+    time_elements.push(minute);
+    time_elements.push(period);
+
+    return time_elements;
+}
+
 function openEditShiftModal () {
     $("#edit-shift-modal-content").empty()
 
@@ -288,10 +301,20 @@ function openEditShiftModal () {
 
     // build endtime select dropdown
     let end_div = createTimeOptions("End:", "edit-shift-end-time");
+    let end_times = getTimeElements(shift_data["end"]);
+    let end_time_inputs = $(end_div).find("select");
+    for (let i = 0; i < end_times.length; i++) {
+        $(end_time_inputs[i]).val(end_times[i]);
+    }
     $("#edit-shift-modal-content").prepend(end_div)
 
     // build starttime select dropdown
     let start_div = createTimeOptions("Start:", "edit-shift-start-time");
+    let start_times = getTimeElements(shift_data["start"]);
+    let start_time_inputs = $(start_div).find("select");
+    for (let i = 0; i < start_times.length; i++) {
+        $(start_time_inputs[i]).val(start_times[i]);
+    }
     $("#edit-shift-modal-content").prepend(start_div)
 
     // build number of employees dropdown select
